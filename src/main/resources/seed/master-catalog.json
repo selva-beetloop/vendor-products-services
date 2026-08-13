@@ -1,0 +1,241 @@
+[
+  {
+    "id": "mpr_curcumin95",
+    "type": "PRODUCT",
+    "categoryCode": "RAW_MATERIALS",
+    "name": "Curcumin 95% (HPLC) Botanical Extract",
+    "synonyms": [
+      "turmeric extract",
+      "curcuminoids"
+    ],
+    "imageUrl": null,
+    "attributes": {
+      "casNumber": "458-37-7",
+      "chemicalFormula": "C21H20O6",
+      "materialType": "BOTANICAL_EXTRACT"
+    },
+    "facets": {
+      "type": "BOTANICAL_EXTRACT",
+      "form": "POWDER",
+      "origin": "IN"
+    }
+  },
+  {
+    "id": "mpr_ashwagandha",
+    "type": "PRODUCT",
+    "categoryCode": "RAW_MATERIALS",
+    "name": "Ashwagandha Root Extract 5% Withanolides",
+    "synonyms": [
+      "withania somnifera"
+    ],
+    "imageUrl": null,
+    "attributes": {
+      "materialType": "BOTANICAL_EXTRACT"
+    },
+    "facets": {
+      "type": "BOTANICAL_EXTRACT",
+      "form": "POWDER",
+      "origin": "IN"
+    }
+  },
+  {
+    "id": "mpr_electrolyte",
+    "type": "PRODUCT",
+    "categoryCode": "FINISHED_GOODS",
+    "name": "Sparkling Electrolyte Water 250 ml",
+    "synonyms": [
+      "electrolyte",
+      "hydration"
+    ],
+    "imageUrl": null,
+    "attributes": {
+      "brand": "Generic",
+      "category": "RTD",
+      "form": "Liquid",
+      "commercialStage": "Commercial",
+      "countryOfOrigin": "India",
+      "defaultPackaging": "250 ml Aluminium Can"
+    },
+    "facets": {
+      "industry": "BEVERAGE",
+      "sector": "FUNCTIONAL_BEVERAGE",
+      "category": "RTD",
+      "stage": "COMMERCIAL"
+    }
+  },
+  {
+    "id": "mpr_ribbonblender",
+    "type": "PRODUCT",
+    "categoryCode": "PROCESSING_MACHINERY",
+    "name": "Ribbon Blender 500 L",
+    "synonyms": [
+      "blender",
+      "powder mixer"
+    ],
+    "imageUrl": null,
+    "attributes": {
+      "machineCategory": "MIXING_BLENDING"
+    },
+    "facets": {
+      "category": "MIXING_BLENDING",
+      "subCategory": "RIBBON_BLENDER",
+      "origin": "IN"
+    }
+  },
+  {
+    "id": "mpr_retortpouch",
+    "type": "PRODUCT",
+    "categoryCode": "PACKAGING_MATERIALS",
+    "name": "Retort Stand-up Pouch 500 ml",
+    "synonyms": [
+      "retort pouch"
+    ],
+    "imageUrl": null,
+    "attributes": {
+      "packagingCategory": "FLEXIBLE"
+    },
+    "facets": {
+      "category": "FLEXIBLE",
+      "subCategory": "RETORT_POUCH",
+      "materialType": "MULTI_LAYER_LAMINATE"
+    }
+  },
+  {
+    "id": "mpr_vffs200",
+    "type": "PRODUCT",
+    "categoryCode": "PACKAGING_MACHINERY",
+    "name": "VFFS Pouch Packing Machine VFFS-200",
+    "synonyms": [
+      "vffs",
+      "pouch packer"
+    ],
+    "imageUrl": null,
+    "attributes": {
+      "category": "POUCH_PACKING"
+    },
+    "facets": {
+      "category": "POUCH_PACKING",
+      "subCategory": "VFFS",
+      "origin": "IN"
+    }
+  },
+  {
+    "id": "msv_heavymetals",
+    "type": "SERVICE",
+    "categoryCode": "LAB_TESTING",
+    "name": "Heavy Metals by ICP-MS",
+    "synonyms": [
+      "lead",
+      "arsenic",
+      "cadmium",
+      "mercury"
+    ],
+    "imageUrl": null,
+    "attributes": {
+      "serviceType": "INDIVIDUAL_TEST",
+      "typicalTat": "5 working days",
+      "keyParametersAnalytes": [
+        "Pb",
+        "As",
+        "Cd",
+        "Hg"
+      ]
+    },
+    "facets": {
+      "industry": "FOOD",
+      "category": "CHEMICAL_TESTING"
+    }
+  },
+  {
+    "id": "msv_pesticide",
+    "type": "SERVICE",
+    "categoryCode": "LAB_TESTING",
+    "name": "Pesticide Residue Screening (GC-MS/MS)",
+    "synonyms": [
+      "pesticide",
+      "residue"
+    ],
+    "imageUrl": null,
+    "attributes": {
+      "serviceType": "PANEL",
+      "typicalTat": "7 working days"
+    },
+    "facets": {
+      "industry": "FOOD",
+      "category": "CHEMICAL_TESTING"
+    }
+  },
+  {
+    "id": "msv_fssai",
+    "type": "SERVICE",
+    "categoryCode": "CONSULTANCY",
+    "name": "FSSAI Licensing & Compliance Advisory",
+    "synonyms": [
+      "fssai",
+      "licence"
+    ],
+    "imageUrl": null,
+    "attributes": {
+      "serviceType": "INDIVIDUAL_SERVICE"
+    },
+    "facets": {
+      "industry": "FOOD",
+      "category": "REGULATORY"
+    }
+  },
+  {
+    "id": "msv_copack",
+    "type": "SERVICE",
+    "categoryCode": "CONTRACT_MANUFACTURER",
+    "name": "Powder Blending & Sachet Filling",
+    "synonyms": [
+      "co-pack",
+      "sachet"
+    ],
+    "imageUrl": null,
+    "attributes": {
+      "serviceType": "END_TO_END_PROGRAM"
+    },
+    "facets": {
+      "industry": "NUTRACEUTICAL",
+      "category": "CONTRACT_MANUFACTURING"
+    }
+  },
+  {
+    "id": "msv_apc",
+    "type": "SERVICE",
+    "categoryCode": "AGRO_CLUSTER",
+    "name": "Erode Turmeric Processing Cluster",
+    "synonyms": [
+      "agro cluster",
+      "apc"
+    ],
+    "imageUrl": null,
+    "attributes": {
+      "providerType": "AGRO_PROCESSING_CLUSTER_APC"
+    },
+    "facets": {
+      "providerType": "AGRO_PROCESSING_CLUSTER_APC",
+      "state": "TAMIL_NADU"
+    }
+  },
+  {
+    "id": "msv_gi",
+    "type": "SERVICE",
+    "categoryCode": "CRO",
+    "name": "Postprandial Glycaemic Response Study (ISO 26642)",
+    "synonyms": [
+      "glycaemic index",
+      "gi study"
+    ],
+    "imageUrl": null,
+    "attributes": {
+      "studyType": "INTERVENTIONAL",
+      "studyPhase": "POST_PRANDIAL"
+    },
+    "facets": {
+      "therapeuticArea": "GLYCEMIC_METABOLIC",
+      "studyType": "INTERVENTIONAL"
+    }
+  }
+]

@@ -1,0 +1,1016 @@
+{
+  "id": "tpl_PACKAGING_MACHINERY_v2",
+  "type": "PRODUCT",
+  "categoryCode": "PACKAGING_MACHINERY",
+  "version": 2,
+  "status": "ACTIVE",
+  "label": "Packaging Machinery",
+  "steps": [
+    {
+      "key": "identity",
+      "dataKey": "identity",
+      "label": "Machine Identity",
+      "pageHeading": "1. Machine Identity",
+      "subtitle": "Basic machine identity",
+      "required": true,
+      "primaryAction": null,
+      "discriminator": null,
+      "sections": [
+        {
+          "key": "basicMachineInformation",
+          "label": "1.1 Basic Machine Information",
+          "dataKey": "basicMachineInformation",
+          "fields": [
+            {
+              "key": "machineName",
+              "label": "Machine Name",
+              "type": "TEXT",
+              "required": true,
+              "maxLength": 150
+            },
+            {
+              "key": "category",
+              "label": "Category",
+              "type": "SELECT",
+              "required": true,
+              "vocabularyCode": "PKG_MACHINE_CATEGORY"
+            },
+            {
+              "key": "subCategory",
+              "label": "Sub-Category",
+              "type": "SELECT",
+              "required": true,
+              "vocabularyCode": "PKG_MACHINE_SUBCATEGORY",
+              "parentField": "category"
+            },
+            {
+              "key": "machineType",
+              "label": "Machine Type",
+              "type": "SELECT",
+              "required": true,
+              "vocabularyCode": "AUTOMATION_LEVEL"
+            },
+            {
+              "key": "baseModelSeries",
+              "label": "Base Model / Series",
+              "type": "TEXT",
+              "required": true
+            },
+            {
+              "key": "brandOem",
+              "label": "Brand / OEM",
+              "type": "TEXT",
+              "required": true
+            },
+            {
+              "key": "modelDesignation",
+              "label": "Model Designation",
+              "type": "TEXT"
+            },
+            {
+              "key": "machineCodeSkuInternal",
+              "label": "Machine Code / SKU (Internal)",
+              "type": "TEXT"
+            }
+          ]
+        },
+        {
+          "key": "",
+          "dataKey": "",
+          "fields": [
+            {
+              "key": "shortDescription",
+              "label": "1.2 Short Description",
+              "type": "TEXTAREA",
+              "required": true,
+              "maxLength": 150
+            },
+            {
+              "key": "longDescription",
+              "label": "1.3 Long Description",
+              "type": "TEXTAREA",
+              "required": true,
+              "maxLength": 1000
+            }
+          ]
+        },
+        {
+          "key": "originClassification",
+          "label": "1.4 Origin & Classification",
+          "dataKey": "originClassification",
+          "fields": [
+            {
+              "key": "countryOfOriginManufacturer",
+              "label": "Country of Origin (Manufacturer)",
+              "type": "COUNTRY",
+              "required": true
+            },
+            {
+              "key": "cityManufacturingLocation",
+              "label": "City / Manufacturing Location",
+              "type": "TEXT"
+            },
+            {
+              "key": "yearOfManufacture",
+              "label": "Year of Manufacture",
+              "type": "NUMBER",
+              "min": 1997,
+              "max": 2026
+            },
+            {
+              "key": "hsnCustomsCode",
+              "label": "HSN / Customs Code",
+              "type": "TEXT"
+            },
+            {
+              "key": "productTagsKeywords",
+              "label": "Product Tags / Keywords",
+              "type": "CHIPS",
+              "maxItems": 20
+            }
+          ]
+        },
+        {
+          "key": "",
+          "dataKey": "",
+          "fields": [
+            {
+              "key": "machineImages",
+              "label": "Machine Images",
+              "type": "FILE_MULTI",
+              "required": true,
+              "maxItems": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "role",
+      "dataKey": "role",
+      "label": "Your Role",
+      "pageHeading": "2. Your Role",
+      "subtitle": "Role & commercial terms",
+      "required": true,
+      "primaryAction": null,
+      "discriminator": {
+        "field": "businessRole",
+        "label": "Your Role",
+        "control": "CARD_SELECT",
+        "defaultValue": null,
+        "helpText": null,
+        "options": [
+          {
+            "code": "OEM_MANUFACTURER",
+            "label": "OEM / Manufacturer",
+            "storeUnder": "oemManufacturer",
+            "cardCopy": null,
+            "primary": true,
+            "sections": [
+              {
+                "key": "",
+                "dataKey": "",
+                "fields": [
+                  {
+                    "key": "manufacturingCompanyName",
+                    "label": "Manufacturing Company Name",
+                    "type": "TEXT",
+                    "required": true
+                  },
+                  {
+                    "key": "countryOfManufacturing",
+                    "label": "Country of Manufacturing",
+                    "type": "COUNTRY",
+                    "required": true
+                  },
+                  {
+                    "key": "yearsOfManufacturingExperience",
+                    "label": "Years of Manufacturing Experience",
+                    "type": "TEXT",
+                    "required": true
+                  },
+                  {
+                    "key": "plantFacilityName",
+                    "label": "Plant / Facility Name",
+                    "type": "TEXT",
+                    "required": true
+                  },
+                  {
+                    "key": "monthlyProductionCapacity",
+                    "label": "Monthly Production Capacity",
+                    "type": "TEXT",
+                    "required": true
+                  },
+                  {
+                    "key": "typicalLeadTimeWeeks",
+                    "label": "Typical Lead Time (weeks)",
+                    "type": "TEXT",
+                    "required": true
+                  },
+                  {
+                    "key": "certificationsHeld",
+                    "label": "Certifications Held",
+                    "type": "CHIPS",
+                    "allowCustomValues": true,
+                    "vocabularyCode": "MACHINE_CERTIFICATION"
+                  },
+                  {
+                    "key": "machineCategoriesManufactured",
+                    "label": "Machine Categories Manufactured",
+                    "type": "CHIPS",
+                    "allowCustomValues": true,
+                    "vocabularyCode": "PKG_MACHINE_CATEGORY"
+                  },
+                  {
+                    "key": "companyProfileBrochure",
+                    "label": "Company Profile / Brochure",
+                    "type": "FILE_SINGLE"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": "AUTHORIZED_DISTRIBUTOR",
+            "label": "Authorized Distributor",
+            "storeUnder": "authorizedDistributor",
+            "cardCopy": null,
+            "primary": true,
+            "sections": [
+              {
+                "key": "",
+                "dataKey": "",
+                "fields": [
+                  {
+                    "key": "representingBrandPrincipalCompany",
+                    "label": "Representing Brand / Principal",
+                    "type": "TEXT",
+                    "required": true
+                  },
+                  {
+                    "key": "countryOfBrandPrincipal",
+                    "label": "Country of Brand Principal",
+                    "type": "COUNTRY",
+                    "required": true
+                  },
+                  {
+                    "key": "authorizationType",
+                    "label": "Authorization Type",
+                    "type": "SELECT",
+                    "required": true,
+                    "vocabularyCode": "AUTHORIZATION_TYPE"
+                  },
+                  {
+                    "key": "territoryRegionCovered",
+                    "label": "Territory / Region Covered",
+                    "type": "TEXT",
+                    "required": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": "DEALER_RESELLER",
+            "label": "Dealer / Reseller",
+            "storeUnder": "dealerAndReseller",
+            "cardCopy": null,
+            "primary": true,
+            "sections": [
+              {
+                "key": "",
+                "dataKey": "",
+                "fields": [
+                  {
+                    "key": "companyName",
+                    "label": "Company Name",
+                    "type": "TEXT",
+                    "required": true
+                  },
+                  {
+                    "key": "countryOfRegistration",
+                    "label": "Country of Registration",
+                    "type": "COUNTRY",
+                    "required": true
+                  },
+                  {
+                    "key": "readyStockAvailability",
+                    "label": "Ready Stock Availability",
+                    "type": "TOGGLE"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": "SYSTEM_INTEGRATOR",
+            "label": "System Integrator",
+            "storeUnder": "systemIntegrator",
+            "cardCopy": null,
+            "primary": true,
+            "sections": [
+              {
+                "key": "",
+                "dataKey": "",
+                "fields": [
+                  {
+                    "key": "companyBusinessName",
+                    "label": "Company / Business Name",
+                    "type": "TEXT",
+                    "required": true
+                  },
+                  {
+                    "key": "countryOfOperation",
+                    "label": "Country of Operation",
+                    "type": "COUNTRY",
+                    "required": true
+                  },
+                  {
+                    "key": "yearsOfIntegrationExperience",
+                    "label": "Years of Integration Experience",
+                    "type": "TEXT",
+                    "required": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": "SERVICE_AFTER_SALES_PARTNER",
+            "label": "Service / After-Sales Partner",
+            "storeUnder": "serviceAndAfterSalesPartner",
+            "cardCopy": null,
+            "primary": true,
+            "sections": [
+              {
+                "key": "",
+                "dataKey": "",
+                "fields": [
+                  {
+                    "key": "companyName",
+                    "label": "Company Name",
+                    "type": "TEXT",
+                    "required": true
+                  },
+                  {
+                    "key": "serviceCoverage",
+                    "label": "Service Coverage",
+                    "type": "SELECT",
+                    "required": true,
+                    "vocabularyCode": "SERVICE_COVERAGE"
+                  },
+                  {
+                    "key": "serviceEngineers",
+                    "label": "Service Engineers",
+                    "type": "TEXT",
+                    "required": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": "EXPORTER",
+            "label": "Exporter",
+            "storeUnder": "exporter",
+            "cardCopy": null,
+            "primary": false,
+            "sections": [
+              {
+                "key": "",
+                "dataKey": "",
+                "fields": [
+                  {
+                    "key": "exportBusinessName",
+                    "label": "Export Business Name",
+                    "type": "TEXT",
+                    "required": true
+                  },
+                  {
+                    "key": "iecCode",
+                    "label": "IEC Code",
+                    "type": "TEXT",
+                    "required": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": "IMPORTER",
+            "label": "Importer",
+            "storeUnder": "importer",
+            "cardCopy": null,
+            "primary": false,
+            "sections": [
+              {
+                "key": "",
+                "dataKey": "",
+                "fields": [
+                  {
+                    "key": "importingCompanyName",
+                    "label": "Importing Company Name",
+                    "type": "TEXT",
+                    "required": true
+                  },
+                  {
+                    "key": "iecCode",
+                    "label": "IEC Code",
+                    "type": "TEXT",
+                    "required": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": "STOCKIST",
+            "label": "Stockist",
+            "storeUnder": "stockist",
+            "cardCopy": null,
+            "primary": false,
+            "sections": [
+              {
+                "key": "",
+                "dataKey": "",
+                "fields": [
+                  {
+                    "key": "companyName",
+                    "label": "Company Name",
+                    "type": "TEXT",
+                    "required": true
+                  },
+                  {
+                    "key": "warehouseOfficeAddress",
+                    "label": "Warehouse / Office Address",
+                    "type": "TEXT",
+                    "required": true
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "sections": []
+    },
+    {
+      "key": "variants",
+      "dataKey": "variants",
+      "label": "Variants & Models",
+      "pageHeading": "3. Variants & Models",
+      "subtitle": "Add models / variants",
+      "required": true,
+      "primaryAction": null,
+      "discriminator": null,
+      "sections": [
+        {
+          "key": "",
+          "dataKey": "",
+          "fields": [
+            {
+              "key": "pagination",
+              "label": "Pagination",
+              "type": "OBJECT",
+              "access": "DERIVED"
+            },
+            {
+              "key": "counters",
+              "label": "Counters",
+              "type": "OBJECT",
+              "access": "DERIVED"
+            },
+            {
+              "key": "groupings",
+              "label": "Groupings",
+              "type": "OBJECT",
+              "access": "DERIVED"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "review",
+      "dataKey": "review",
+      "label": "Review & Submit",
+      "pageHeading": "4. Review & Submit",
+      "subtitle": null,
+      "required": false,
+      "primaryAction": "Submit for QC",
+      "discriminator": null,
+      "sections": [
+        {
+          "key": "",
+          "dataKey": "",
+          "fields": [
+            {
+              "key": "acknowledgedAt",
+              "label": "Acknowledged at",
+              "type": "TEXT"
+            },
+            {
+              "key": "acknowledgedBy",
+              "label": "Acknowledged by",
+              "type": "TEXT"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "childCollection": "VARIANTS",
+  "childSections": [
+    {
+      "key": "variant-details",
+      "label": "Variant Details",
+      "dataKey": "variantDetails",
+      "fields": [
+        {
+          "key": "variantModelName",
+          "label": "Variant / Model Name",
+          "type": "TEXT",
+          "required": true
+        },
+        {
+          "key": "variantCodeSku",
+          "label": "Variant Code / SKU",
+          "type": "TEXT",
+          "required": true
+        },
+        {
+          "key": "baseModelSeries",
+          "label": "Base Model / Series",
+          "type": "TEXT",
+          "required": true
+        },
+        {
+          "key": "variantType",
+          "label": "Variant Type",
+          "type": "SELECT",
+          "required": true,
+          "vocabularyCode": "AUTOMATION_LEVEL"
+        },
+        {
+          "key": "automationLevel",
+          "label": "Automation Level",
+          "type": "SELECT",
+          "required": true,
+          "vocabularyCode": "AUTOMATION_LEVEL"
+        },
+        {
+          "key": "driveType",
+          "label": "Drive Type",
+          "type": "SELECT",
+          "required": true,
+          "vocabularyCode": "PKG_DRIVE_TYPE"
+        },
+        {
+          "key": "capacityOutput",
+          "label": "Capacity / Output (Pouches/Hour)",
+          "type": "MEASURE",
+          "units": [
+            "pouches/hr",
+            "units/hr"
+          ],
+          "required": true
+        },
+        {
+          "key": "pouchSizeRange",
+          "label": "Pouch Size Range (ml)",
+          "type": "MEASURE",
+          "units": [
+            "ml",
+            "g"
+          ],
+          "required": true
+        },
+        {
+          "key": "powerSource",
+          "label": "Power Source",
+          "type": "SELECT",
+          "required": true,
+          "vocabularyCode": "POWER_SOURCE"
+        },
+        {
+          "key": "powerRequirement",
+          "label": "Power Requirement",
+          "type": "MEASURE",
+          "units": [
+            "kW",
+            "HP"
+          ]
+        },
+        {
+          "key": "voltage",
+          "label": "Voltage",
+          "type": "MEASURE",
+          "units": [
+            "V"
+          ]
+        },
+        {
+          "key": "frequency",
+          "label": "Frequency",
+          "type": "MEASURE",
+          "units": [
+            "Hz"
+          ]
+        },
+        {
+          "key": "materialOfConstruction",
+          "label": "Material of Construction",
+          "type": "SELECT",
+          "vocabularyCode": "MATERIAL_OF_CONSTRUCTION"
+        },
+        {
+          "key": "surfaceFinish",
+          "label": "Surface Finish",
+          "type": "SELECT",
+          "vocabularyCode": "SURFACE_FINISH"
+        },
+        {
+          "key": "status",
+          "label": "Status",
+          "type": "SELECT",
+          "vocabularyCode": "VARIANT_STATUS"
+        }
+      ],
+      "order": 1
+    },
+    {
+      "key": "technical-specifications",
+      "label": "Technical Specifications",
+      "dataKey": "technicalSpecifications",
+      "fields": [
+        {
+          "key": "data",
+          "label": "Specification groups",
+          "type": "SPEC_GROUPS",
+          "minItems": 1
+        },
+        {
+          "key": "overallCompletion",
+          "label": "Overall completion",
+          "type": "OBJECT",
+          "access": "DERIVED"
+        },
+        {
+          "key": "pagination",
+          "label": "Pagination",
+          "type": "OBJECT",
+          "access": "DERIVED"
+        }
+      ],
+      "order": 2
+    },
+    {
+      "key": "applications-features",
+      "label": "Applications & Machine Features",
+      "dataKey": "applicationsAndMachineFeatures",
+      "fields": [
+        {
+          "key": "applications",
+          "label": "Applications",
+          "type": "CHIPS"
+        },
+        {
+          "key": "endUseIndustries",
+          "label": "End-use Industries",
+          "type": "CHIPS"
+        },
+        {
+          "key": "keyFeatures",
+          "label": "Key Features",
+          "type": "REPEATABLE",
+          "fields": [
+            {
+              "key": "id",
+              "label": "Id",
+              "type": "TEXT",
+              "access": "AUTO"
+            },
+            {
+              "key": "title",
+              "label": "Title",
+              "type": "TEXT"
+            },
+            {
+              "key": "description",
+              "label": "Description",
+              "type": "TEXTAREA",
+              "maxLength": 300
+            }
+          ]
+        },
+        {
+          "key": "benefits",
+          "label": "Benefits",
+          "type": "CHIPS"
+        },
+        {
+          "key": "optionalAccessories",
+          "label": "Optional Accessories",
+          "type": "CHIPS"
+        }
+      ],
+      "order": 3
+    },
+    {
+      "key": "compliance-certifications",
+      "label": "Compliance & Certifications",
+      "dataKey": "complianceCertifications",
+      "fields": [
+        {
+          "key": "data",
+          "label": "Certificates & Documents",
+          "type": "REPEATABLE",
+          "fields": [
+            {
+              "key": "certificateId",
+              "label": "Id",
+              "type": "TEXT",
+              "access": "AUTO"
+            },
+            {
+              "key": "name",
+              "label": "Name",
+              "type": "TEXT",
+              "required": true,
+              "placeholder": "e.g. FSSAI License"
+            },
+            {
+              "key": "type",
+              "label": "Type",
+              "type": "SELECT",
+              "vocabularyCode": "CERTIFICATE_TYPE"
+            },
+            {
+              "key": "referenceNo",
+              "label": "Reference No.",
+              "type": "TEXT",
+              "placeholder": "e.g. 10012345000123"
+            },
+            {
+              "key": "authority",
+              "label": "Authority",
+              "type": "TEXT",
+              "placeholder": "e.g. FSSAI"
+            },
+            {
+              "key": "applicableTo",
+              "label": "Applicable To",
+              "type": "TEXT",
+              "placeholder": "e.g. All Grades"
+            },
+            {
+              "key": "date",
+              "label": "Date",
+              "type": "DATE_TEXT",
+              "placeholder": "e.g. 12 May 2025"
+            },
+            {
+              "key": "expiryDate",
+              "label": "Expiry Date",
+              "type": "DATE_TEXT",
+              "placeholder": "e.g. 11 May 2027"
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "SELECT",
+              "access": "DERIVED"
+            },
+            {
+              "key": "daysExpired",
+              "label": "Days expired",
+              "type": "NUMBER",
+              "access": "DERIVED"
+            },
+            {
+              "key": "dateInterpretation",
+              "label": "Date interpretation",
+              "type": "OBJECT",
+              "access": "DERIVED"
+            },
+            {
+              "key": "file",
+              "label": "Document File",
+              "type": "FILE_SINGLE"
+            }
+          ]
+        },
+        {
+          "key": "pagination",
+          "label": "Pagination",
+          "type": "OBJECT",
+          "access": "DERIVED"
+        }
+      ],
+      "order": 4
+    },
+    {
+      "key": "marketplace-search",
+      "label": "Marketplace & Search",
+      "dataKey": "marketplaceAndSearch",
+      "fields": [
+        {
+          "key": "searchTagsAndKeywords",
+          "label": "Search Tags & Keywords",
+          "type": "CHIPS",
+          "required": true,
+          "maxItems": 30
+        },
+        {
+          "key": "buyerSearchIntents",
+          "label": "Buyer Search Intents",
+          "type": "REPEATABLE",
+          "access": "DERIVED"
+        },
+        {
+          "key": "seoKeywords",
+          "label": "SEO Keywords (longtail)",
+          "type": "TEXT",
+          "maxLength": 300
+        },
+        {
+          "key": "indexedCategories",
+          "label": "Indexed Categories",
+          "type": "TEXT",
+          "access": "DERIVED"
+        },
+        {
+          "key": "synonymsOrAlternativeNames",
+          "label": "Synonyms / Alternative Names",
+          "type": "CHIPS"
+        },
+        {
+          "key": "commonMisspellings",
+          "label": "Common Misspellings",
+          "type": "CHIPS"
+        },
+        {
+          "key": "searchAliases",
+          "label": "Search Aliases",
+          "type": "CHIPS"
+        },
+        {
+          "key": "negativeKeywords",
+          "label": "Negative Keywords",
+          "type": "CHIPS",
+          "rules": [
+            {
+              "type": "MUTUALLY_EXCLUSIVE",
+              "params": {
+                "against": "searchTagsAndKeywords"
+              },
+              "message": "A keyword cannot be both a search tag and a negative keyword."
+            }
+          ]
+        },
+        {
+          "key": "marketplaceListing",
+          "label": "Marketplace Listing",
+          "type": "OBJECT",
+          "fields": [
+            {
+              "key": "listingTitle",
+              "label": "Listing Title",
+              "type": "TEXT",
+              "required": true,
+              "maxLength": 120
+            },
+            {
+              "key": "marketplaceTagline",
+              "label": "Marketplace Tagline",
+              "type": "TEXT",
+              "maxLength": 90
+            },
+            {
+              "key": "promotionTier",
+              "label": "Promotion tier",
+              "type": "RADIO",
+              "access": "BILLING_GATED",
+              "vocabularyCode": "PROMOTION_TIER"
+            },
+            {
+              "key": "selectedFlavourChips",
+              "label": "Flavours",
+              "type": "CHIPS"
+            }
+          ]
+        },
+        {
+          "key": "advancedDetails",
+          "label": "Advanced Details",
+          "type": "OBJECT",
+          "fields": [
+            {
+              "key": "visibility",
+              "label": "Visibility",
+              "type": "RADIO",
+              "vocabularyCode": "VISIBILITY"
+            },
+            {
+              "key": "documentSharingDefault",
+              "label": "Document Sharing Default",
+              "type": "SELECT",
+              "vocabularyCode": "DOCUMENT_SHARING"
+            },
+            {
+              "key": "aiRerankBoost",
+              "label": "AI-driven Re-rank Boost",
+              "type": "OBJECT",
+              "fields": [
+                {
+                  "key": "enabled",
+                  "label": "Enabled",
+                  "type": "TOGGLE"
+                },
+                {
+                  "key": "qualityScore",
+                  "label": "Quality score",
+                  "type": "NUMBER",
+                  "access": "DERIVED"
+                },
+                {
+                  "key": "tier",
+                  "label": "Tier",
+                  "type": "TEXT",
+                  "access": "DERIVED"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "order": 5
+    }
+  ],
+  "gridColumns": [
+    {
+      "key": "variantModelName",
+      "label": "Variant / Model Name"
+    },
+    {
+      "key": "capacityOutput",
+      "label": "Capacity / Output (Pouches/Hour)"
+    },
+    {
+      "key": "automationLevel",
+      "label": "Automation Level"
+    },
+    {
+      "key": "driveType",
+      "label": "Drive Type"
+    },
+    {
+      "key": "powerSource",
+      "label": "Power Source"
+    },
+    {
+      "key": "pouchSizeRange",
+      "label": "Pouch Size Range (ml)"
+    },
+    {
+      "key": "status",
+      "label": "Status"
+    }
+  ],
+  "variantTabs": [],
+  "seedData": {
+    "technicalSpecifications": [
+      {
+        "title": "Assay & Purity Specification",
+        "badge": "PRIMARY",
+        "parameterSlots": 2,
+        "parameters": [
+          {
+            "parameterName": "Assay / Purity",
+            "unit": "%",
+            "testMethodOrStandard": "HPLC / Titration"
+          }
+        ]
+      },
+      {
+        "title": "Physical Specifications",
+        "badge": "PRIMARY",
+        "parameterSlots": 3,
+        "parameters": [
+          {
+            "parameterName": "Loss on Drying",
+            "unit": "%",
+            "testMethodOrStandard": "AOAC 925.09"
+          }
+        ]
+      },
+      {
+        "title": "Microbiological Specifications",
+        "badge": "OPTIONAL",
+        "parameterSlots": 2,
+        "parameters": []
+      }
+    ]
+  },
+  "publishedAt": "2026-07-02T10:00:00Z"
+}

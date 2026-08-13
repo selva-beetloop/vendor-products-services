@@ -1,0 +1,61 @@
+spring:
+  application.name: beetloop-catalog-service
+  threads.virtual.enabled: true
+  data.mongodb:
+    uri: ${MONGODB_URI:mongodb://localhost:27017/beetloop_catalog?replicaSet=rs0}
+    auto-index-creation: true
+  cache.type: caffeine
+  cache.caffeine.spec: maximumSize=2000,expireAfterWrite=60m
+  jackson:
+    default-property-inclusion: non_null
+    serialization.write-dates-as-timestamps: false
+  servlet.multipart:
+    max-file-size: 25MB
+    max-request-size: 25MB
+  security.oauth2.resourceserver.jwt:
+    # Point at your IdP in dev/staging/prod. The `local` profile uses an HS256 secret instead.
+    jwk-set-uri: ${JWT_JWK_SET_URI:}
+
+server:
+  port: ${PORT:8080}
+  error.whitelabel.enabled: false
+  servlet.context-path: /api/v1
+
+springdoc:
+  api-docs.path: /openapi
+  swagger-ui.path: /swagger
+
+management.endpoints.web.exposure.include: health,info,metrics,prometheus
+
+beetloop:
+  catalog:
+    limits:
+      max-variants-per-listing: 500
+      max-configurations-per-listing: 100
+      max-other-images: 7
+      max-variant-images: 6
+      max-tags: 20
+      max-upload-size-mb: 10
+      max-bulk-upload-rows: 5000
+    save:
+      require-if-match-on-save-all: true
+      reject-unknown-data-keys: true
+    documents:
+      expiring-soon-window-days: 30
+      allowed-mime-types:
+        - application/pdf
+        - image/png
+        - image/jpeg
+        - image/webp
+        - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+    qc:
+      claim-timeout-minutes: 120
+    idempotency:
+      ttl-hours: 24
+    storage:
+      base-dir: ${STORAGE_DIR:./.storage}
+      public-base-url: ${STORAGE_URL:http://localhost:8080/api/v1/vendor/documents}
+    seed:
+      enabled: true
+
+logging.level.com.beetloop.catalog: DEBUG

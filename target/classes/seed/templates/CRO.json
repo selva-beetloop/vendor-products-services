@@ -1,0 +1,1004 @@
+{
+  "id": "tpl_CRO_v2",
+  "type": "SERVICE",
+  "categoryCode": "CRO",
+  "version": 2,
+  "status": "ACTIVE",
+  "label": "Contract Research Organization (CRO)",
+  "steps": [
+    {
+      "key": "select-service",
+      "dataKey": "selectService",
+      "label": "Select Service",
+      "pageHeading": "1. Select Service",
+      "subtitle": "From Commercial Master",
+      "required": true,
+      "primaryAction": null,
+      "discriminator": null,
+      "sections": [
+        {
+          "key": "",
+          "dataKey": "",
+          "fields": [
+            {
+              "key": "entryPath",
+              "label": "Entry path",
+              "type": "SELECT",
+              "vocabularyCode": "ENTRY_PATH"
+            },
+            {
+              "key": "selectedServices",
+              "label": "Selected services",
+              "type": "REPEATABLE",
+              "minItems": 1,
+              "fields": [
+                {
+                  "key": "selectionId",
+                  "label": "Id",
+                  "type": "TEXT",
+                  "access": "AUTO"
+                },
+                {
+                  "key": "masterServiceId",
+                  "label": "Master service",
+                  "type": "TEXT"
+                },
+                {
+                  "key": "requestCode",
+                  "label": "Request code",
+                  "type": "TEXT",
+                  "access": "AUTO"
+                },
+                {
+                  "key": "name",
+                  "label": "Name",
+                  "type": "TEXT",
+                  "required": true
+                },
+                {
+                  "key": "serviceType",
+                  "label": "Service type",
+                  "type": "TEXT"
+                },
+                {
+                  "key": "source",
+                  "label": "Source",
+                  "type": "TEXT"
+                },
+                {
+                  "key": "readOnlyFields",
+                  "label": "Read-only fields",
+                  "type": "CHIPS",
+                  "access": "DERIVED"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "configure-services",
+      "dataKey": "configureServices",
+      "label": "Configure Services",
+      "pageHeading": "2. Configure Services",
+      "subtitle": null,
+      "required": true,
+      "primaryAction": null,
+      "discriminator": null,
+      "sections": [
+        {
+          "key": "",
+          "dataKey": "",
+          "fields": [
+            {
+              "key": "counters",
+              "label": "Counters",
+              "type": "OBJECT",
+              "access": "DERIVED"
+            },
+            {
+              "key": "pagination",
+              "label": "Pagination",
+              "type": "OBJECT",
+              "access": "DERIVED"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "compliance",
+      "dataKey": "compliance",
+      "label": "Accreditations & Certifications",
+      "pageHeading": "3. Accreditations & Certifications",
+      "subtitle": null,
+      "required": true,
+      "primaryAction": null,
+      "discriminator": null,
+      "sections": [
+        {
+          "key": "",
+          "dataKey": "",
+          "fields": [
+            {
+              "key": "libraryDocumentIds",
+              "label": "Library documents",
+              "type": "CHIPS"
+            },
+            {
+              "key": "links",
+              "label": "Document links",
+              "type": "REPEATABLE",
+              "fields": [
+                {
+                  "key": "linkId",
+                  "label": "Id",
+                  "type": "TEXT",
+                  "access": "AUTO"
+                },
+                {
+                  "key": "selectionId",
+                  "label": "Selection",
+                  "type": "TEXT"
+                },
+                {
+                  "key": "libraryDocumentId",
+                  "label": "Library document",
+                  "type": "TEXT",
+                  "required": true
+                },
+                {
+                  "key": "linkType",
+                  "label": "Link type",
+                  "type": "SELECT",
+                  "vocabularyCode": "DOCUMENT_LINK_TYPE"
+                },
+                {
+                  "key": "applicability",
+                  "label": "Applicability",
+                  "type": "SELECT",
+                  "vocabularyCode": "DOCUMENT_APPLICABILITY"
+                }
+              ]
+            },
+            {
+              "key": "counters",
+              "label": "Counters",
+              "type": "OBJECT",
+              "access": "DERIVED"
+            },
+            {
+              "key": "perService",
+              "label": "Per-service rollup",
+              "type": "REPEATABLE",
+              "access": "DERIVED"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "review",
+      "dataKey": "review",
+      "label": "Review & Publish",
+      "pageHeading": "4. Review & Publish",
+      "subtitle": null,
+      "required": false,
+      "primaryAction": "Submit for QC",
+      "discriminator": null,
+      "sections": [
+        {
+          "key": "",
+          "dataKey": "",
+          "fields": [
+            {
+              "key": "acknowledgedAt",
+              "label": "Acknowledged at",
+              "type": "TEXT"
+            },
+            {
+              "key": "acknowledgedBy",
+              "label": "Acknowledged by",
+              "type": "TEXT"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "childCollection": "CONFIGURATIONS",
+  "childSections": [
+    {
+      "key": "service-information",
+      "label": "Service Information",
+      "dataKey": "serviceInformation",
+      "fields": [
+        {
+          "key": "commercialCatalogueCodeName",
+          "label": "Commercial Catalogue Code / Name",
+          "type": "TEXT",
+          "required": true
+        },
+        {
+          "key": "yourServiceStudyName",
+          "label": "Your Service / Study Name",
+          "type": "TEXT",
+          "required": true
+        },
+        {
+          "key": "internalServiceCodeSku",
+          "label": "Internal Service Code / SKU",
+          "type": "TEXT",
+          "required": true
+        },
+        {
+          "key": "shortDescription",
+          "label": "Short Description",
+          "type": "TEXTAREA",
+          "required": true,
+          "maxLength": 250
+        },
+        {
+          "key": "detailedDescription",
+          "label": "Detailed Description",
+          "type": "TEXTAREA",
+          "required": true,
+          "maxLength": 1000
+        },
+        {
+          "key": "therapeuticArea",
+          "label": "Therapeutic Area",
+          "type": "SELECT",
+          "required": true,
+          "vocabularyCode": "THERAPEUTIC_AREA"
+        },
+        {
+          "key": "studyType",
+          "label": "Study Type",
+          "type": "SELECT",
+          "required": true,
+          "vocabularyCode": "STUDY_TYPE"
+        },
+        {
+          "key": "studyPhase",
+          "label": "Study Phase",
+          "type": "SELECT",
+          "required": true,
+          "vocabularyCode": "STUDY_PHASE"
+        },
+        {
+          "key": "studyModel",
+          "label": "Study Model",
+          "type": "SELECT",
+          "required": true,
+          "vocabularyCode": "STUDY_MODEL"
+        },
+        {
+          "key": "methodStandard",
+          "label": "Method / Standard",
+          "type": "SELECT",
+          "required": true,
+          "vocabularyCode": "METHOD_STANDARD"
+        },
+        {
+          "key": "guideline",
+          "label": "Guideline",
+          "type": "SELECT",
+          "vocabularyCode": "GUIDELINE"
+        },
+        {
+          "key": "endpointType",
+          "label": "Endpoint Type",
+          "type": "SELECT",
+          "required": true,
+          "vocabularyCode": "ENDPOINT_TYPE"
+        },
+        {
+          "key": "primaryEndpoint",
+          "label": "Primary Endpoint",
+          "type": "TEXT",
+          "required": true
+        },
+        {
+          "key": "secondaryEndpoints",
+          "label": "Secondary Endpoints",
+          "type": "MULTI_SELECT"
+        },
+        {
+          "key": "studyDurationTypical",
+          "label": "Study Duration (Typical)",
+          "type": "TEXT",
+          "required": true
+        },
+        {
+          "key": "noOfVisitsTypical",
+          "label": "No. of Visits (Typical)",
+          "type": "TEXT",
+          "required": true
+        }
+      ],
+      "order": 1
+    },
+    {
+      "key": "study-classification",
+      "label": "Study Classification",
+      "dataKey": "studyClassification",
+      "fields": [
+        {
+          "key": "studyCategory",
+          "label": "Study Category",
+          "type": "TEXT",
+          "required": true
+        },
+        {
+          "key": "studySubCategory",
+          "label": "Study Sub-Category",
+          "type": "TEXT"
+        },
+        {
+          "key": "regulatoryPathway",
+          "label": "Regulatory Pathway",
+          "type": "TEXT"
+        },
+        {
+          "key": "blinding",
+          "label": "Blinding",
+          "type": "SELECT",
+          "vocabularyCode": "BLINDING"
+        },
+        {
+          "key": "controlType",
+          "label": "Control Type",
+          "type": "SELECT",
+          "vocabularyCode": "CONTROL_TYPE"
+        },
+        {
+          "key": "randomisationRatio",
+          "label": "Randomisation Ratio",
+          "type": "TEXT"
+        },
+        {
+          "key": "adaptiveDesign",
+          "label": "Adaptive Design",
+          "type": "TOGGLE"
+        }
+      ],
+      "order": 2
+    },
+    {
+      "key": "indications-application",
+      "label": "Indications & Application",
+      "dataKey": "indicationsAndApplication",
+      "fields": [
+        {
+          "key": "indications",
+          "label": "Indications",
+          "type": "CHIPS",
+          "required": true,
+          "allowCustomValues": true,
+          "vocabularyCode": null
+        },
+        {
+          "key": "targetProductCategories",
+          "label": "Target Product Categories",
+          "type": "CHIPS",
+          "required": false,
+          "allowCustomValues": true,
+          "vocabularyCode": null
+        },
+        {
+          "key": "claimsSupported",
+          "label": "Claims Supported",
+          "type": "CHIPS",
+          "required": false,
+          "allowCustomValues": true,
+          "vocabularyCode": null
+        },
+        {
+          "key": "applicableRegulations",
+          "label": "Applicable Regulations",
+          "type": "CHIPS",
+          "required": false,
+          "allowCustomValues": true,
+          "vocabularyCode": null
+        }
+      ],
+      "order": 3
+    },
+    {
+      "key": "study-overview",
+      "label": "Study Overview",
+      "dataKey": "studyOverview",
+      "fields": [
+        {
+          "key": "objective",
+          "label": "Objective",
+          "type": "TEXTAREA",
+          "required": true,
+          "maxLength": 1000
+        },
+        {
+          "key": "rationale",
+          "label": "Rationale",
+          "type": "TEXTAREA",
+          "maxLength": 1000
+        },
+        {
+          "key": "summary",
+          "label": "Summary",
+          "type": "TEXTAREA",
+          "maxLength": 1000
+        },
+        {
+          "key": "expectedOutcome",
+          "label": "Expected Outcome",
+          "type": "TEXTAREA",
+          "maxLength": 1000
+        }
+      ],
+      "order": 4
+    },
+    {
+      "key": "study-design",
+      "label": "Study Design",
+      "dataKey": "studyDesign",
+      "fields": [
+        {
+          "key": "designNarrative",
+          "label": "Design Narrative",
+          "type": "TEXTAREA",
+          "required": true,
+          "maxLength": 2000
+        },
+        {
+          "key": "armsAndGroups",
+          "label": "Arms & Groups",
+          "type": "REPEATABLE",
+          "minItems": 1,
+          "fields": [
+            {
+              "key": "id",
+              "label": "Id",
+              "type": "TEXT",
+              "access": "AUTO"
+            },
+            {
+              "key": "name",
+              "label": "Name",
+              "type": "TEXT",
+              "required": true
+            },
+            {
+              "key": "n",
+              "label": "N",
+              "type": "NUMBER",
+              "min": 0
+            },
+            {
+              "key": "intervention",
+              "label": "Intervention",
+              "type": "TEXT"
+            }
+          ]
+        },
+        {
+          "key": "visitSchedule",
+          "label": "Visit Schedule",
+          "type": "REPEATABLE",
+          "fields": [
+            {
+              "key": "id",
+              "label": "Id",
+              "type": "TEXT",
+              "access": "AUTO"
+            },
+            {
+              "key": "visit",
+              "label": "Visit",
+              "type": "TEXT"
+            },
+            {
+              "key": "day",
+              "label": "Day",
+              "type": "TEXT"
+            },
+            {
+              "key": "procedures",
+              "label": "Procedures",
+              "type": "CHIPS"
+            }
+          ]
+        },
+        {
+          "key": "inclusionCriteria",
+          "label": "Inclusion Criteria",
+          "type": "CHIPS",
+          "required": true,
+          "allowCustomValues": true,
+          "vocabularyCode": null
+        },
+        {
+          "key": "exclusionCriteria",
+          "label": "Exclusion Criteria",
+          "type": "CHIPS",
+          "required": true,
+          "allowCustomValues": true,
+          "vocabularyCode": null
+        },
+        {
+          "key": "washoutPeriod",
+          "label": "Washout Period",
+          "type": "TEXT"
+        },
+        {
+          "key": "samplingSchedule",
+          "label": "Sampling Schedule",
+          "type": "TEXT"
+        },
+        {
+          "key": "statisticalMethod",
+          "label": "Statistical Method",
+          "type": "TEXT"
+        }
+      ],
+      "order": 5
+    },
+    {
+      "key": "key-deliverables",
+      "label": "Key Deliverables",
+      "dataKey": "keyDeliverables",
+      "fields": [
+        {
+          "key": "includedDeliverables",
+          "label": "Included Deliverables",
+          "type": "CHECKBOX_GROUP",
+          "required": true,
+          "allowCustomValues": true,
+          "vocabularyCode": "CRO_DELIVERABLE"
+        },
+        {
+          "key": "optionalDeliverables",
+          "label": "Optional Deliverables",
+          "type": "REPEATABLE",
+          "fields": [
+            {
+              "key": "id",
+              "label": "Id",
+              "type": "TEXT",
+              "access": "AUTO"
+            },
+            {
+              "key": "name",
+              "label": "Name",
+              "type": "TEXT"
+            },
+            {
+              "key": "price",
+              "label": "Price",
+              "type": "NUMBER",
+              "min": 0
+            }
+          ]
+        },
+        {
+          "key": "reportFormats",
+          "label": "Report Formats",
+          "type": "CHIPS",
+          "required": false,
+          "allowCustomValues": true,
+          "vocabularyCode": null
+        },
+        {
+          "key": "dataFormats",
+          "label": "Data Formats",
+          "type": "CHIPS",
+          "required": false,
+          "allowCustomValues": true,
+          "vocabularyCode": null
+        }
+      ],
+      "order": 6
+    },
+    {
+      "key": "population-sites",
+      "label": "Population & Sites",
+      "dataKey": "populationAndSites",
+      "fields": [
+        {
+          "key": "targetPopulation",
+          "label": "Target Population",
+          "type": "TEXT",
+          "required": true
+        },
+        {
+          "key": "sampleSize",
+          "label": "Sample Size",
+          "type": "NUMBER",
+          "required": true,
+          "min": 1
+        },
+        {
+          "key": "ageRange",
+          "label": "Age Range",
+          "type": "TEXT"
+        },
+        {
+          "key": "genderDistribution",
+          "label": "Gender Distribution",
+          "type": "TEXT"
+        },
+        {
+          "key": "sites",
+          "label": "Sites",
+          "type": "REPEATABLE",
+          "minItems": 1,
+          "fields": [
+            {
+              "key": "siteId",
+              "label": "Id",
+              "type": "TEXT",
+              "access": "AUTO"
+            },
+            {
+              "key": "name",
+              "label": "Name",
+              "type": "TEXT",
+              "required": true
+            },
+            {
+              "key": "city",
+              "label": "City",
+              "type": "TEXT"
+            },
+            {
+              "key": "country",
+              "label": "Country",
+              "type": "COUNTRY"
+            },
+            {
+              "key": "principalInvestigator",
+              "label": "Principal Investigator",
+              "type": "TEXT"
+            },
+            {
+              "key": "capacity",
+              "label": "Capacity",
+              "type": "NUMBER",
+              "min": 0
+            },
+            {
+              "key": "ethicsApproval",
+              "label": "Ethics Approval",
+              "type": "FILE_SINGLE"
+            }
+          ]
+        },
+        {
+          "key": "recruitmentStrategy",
+          "label": "Recruitment Strategy",
+          "type": "TEXT"
+        },
+        {
+          "key": "dropoutAllowancePct",
+          "label": "Dropout Allowance %",
+          "type": "NUMBER",
+          "min": 0,
+          "max": 100
+        }
+      ],
+      "order": 7
+    },
+    {
+      "key": "configure-commercials",
+      "label": "Configure Commercials",
+      "dataKey": "configureCommercials",
+      "fields": [
+        {
+          "key": "costBreakdown",
+          "label": "Cost Breakdown",
+          "type": "REPEATABLE",
+          "minItems": 1,
+          "fields": [
+            {
+              "key": "id",
+              "label": "Id",
+              "type": "TEXT",
+              "access": "AUTO"
+            },
+            {
+              "key": "head",
+              "label": "Head",
+              "type": "TEXT",
+              "required": true
+            },
+            {
+              "key": "amount",
+              "label": "Amount",
+              "type": "NUMBER",
+              "min": 0
+            },
+            {
+              "key": "currency",
+              "label": "Currency",
+              "type": "SELECT",
+              "vocabularyCode": "CURRENCY"
+            }
+          ]
+        },
+        {
+          "key": "paymentMilestones",
+          "label": "Payment Milestones",
+          "type": "REPEATABLE",
+          "fields": [
+            {
+              "key": "id",
+              "label": "Id",
+              "type": "TEXT",
+              "access": "AUTO"
+            },
+            {
+              "key": "milestone",
+              "label": "Milestone",
+              "type": "TEXT"
+            },
+            {
+              "key": "pct",
+              "label": "Percentage",
+              "type": "NUMBER",
+              "min": 0,
+              "max": 100
+            }
+          ]
+        },
+        {
+          "key": "passThroughCosts",
+          "label": "Pass-Through Costs",
+          "type": "CHIPS",
+          "required": false,
+          "allowCustomValues": true,
+          "vocabularyCode": null
+        }
+      ],
+      "order": 8
+    },
+    {
+      "key": "expertise-capabilities",
+      "label": "Expertise & Capabilities",
+      "dataKey": "expertiseAndCapabilities",
+      "fields": [
+        {
+          "key": "keyCapabilities",
+          "label": "Key Capabilities",
+          "type": "REPEATABLE",
+          "minItems": 1,
+          "fields": [
+            {
+              "key": "id",
+              "label": "Id",
+              "type": "TEXT",
+              "access": "AUTO"
+            },
+            {
+              "key": "title",
+              "label": "Title",
+              "type": "TEXT",
+              "required": true
+            },
+            {
+              "key": "description",
+              "label": "Description",
+              "type": "TEXTAREA",
+              "maxLength": 300
+            }
+          ]
+        },
+        {
+          "key": "accreditations",
+          "label": "Accreditations",
+          "type": "CHIPS",
+          "required": false,
+          "allowCustomValues": true,
+          "vocabularyCode": null
+        },
+        {
+          "key": "gcpCompliance",
+          "label": "GCP Compliance",
+          "type": "TOGGLE"
+        },
+        {
+          "key": "gLpCompliance",
+          "label": "GLP Compliance",
+          "type": "TOGGLE"
+        },
+        {
+          "key": "ethicsCommittee",
+          "label": "Ethics Committee",
+          "type": "TEXT"
+        },
+        {
+          "key": "yearsOfExperience",
+          "label": "Years of Experience",
+          "type": "NUMBER",
+          "min": 0
+        },
+        {
+          "key": "studiesCompleted",
+          "label": "Studies Completed",
+          "type": "NUMBER",
+          "min": 0
+        },
+        {
+          "key": "therapeuticAreasCovered",
+          "label": "Therapeutic Areas Covered",
+          "type": "CHIPS",
+          "required": false,
+          "allowCustomValues": true,
+          "vocabularyCode": "THERAPEUTIC_AREA"
+        }
+      ],
+      "order": 9
+    },
+    {
+      "key": "commercial-pricing",
+      "label": "Commercial & Pricing",
+      "dataKey": "commercialAndPricing",
+      "fields": [
+        {
+          "key": "pricingModel",
+          "label": "Pricing Model",
+          "type": "SELECT",
+          "required": true,
+          "vocabularyCode": "CRO_PRICING_MODEL"
+        },
+        {
+          "key": "price",
+          "label": "Price",
+          "type": "NUMBER",
+          "required": true,
+          "min": 0
+        },
+        {
+          "key": "currency",
+          "label": "Currency",
+          "type": "SELECT",
+          "required": true,
+          "vocabularyCode": "CURRENCY"
+        },
+        {
+          "key": "perSubjectCost",
+          "label": "Per Subject Cost",
+          "type": "NUMBER",
+          "min": 0
+        },
+        {
+          "key": "minimumEngagementValue",
+          "label": "Minimum Engagement Value",
+          "type": "NUMBER",
+          "min": 0
+        },
+        {
+          "key": "paymentTerms",
+          "label": "Payment Terms",
+          "type": "SELECT",
+          "vocabularyCode": "PAYMENT_TERMS"
+        },
+        {
+          "key": "timelineWeeks",
+          "label": "Timeline (weeks)",
+          "type": "NUMBER",
+          "min": 0
+        },
+        {
+          "key": "cancellationPolicy",
+          "label": "Cancellation Policy",
+          "type": "TEXTAREA",
+          "maxLength": 500
+        }
+      ],
+      "order": 10
+    },
+    {
+      "key": "marketplace-search",
+      "label": "Marketplace & Search",
+      "dataKey": "marketplaceAndSearch",
+      "fields": [
+        {
+          "key": "searchAndIndexing",
+          "label": "Search & Indexing",
+          "type": "OBJECT",
+          "fields": [
+            {
+              "key": "searchTagsAndKeywords",
+              "label": "Search Tags & Keywords",
+              "type": "CHIPS",
+              "required": true
+            },
+            {
+              "key": "synonymsOrAlternativeNames",
+              "label": "Synonyms / Alternative Names",
+              "type": "CHIPS"
+            },
+            {
+              "key": "commonMisspellings",
+              "label": "Common Misspellings",
+              "type": "CHIPS"
+            },
+            {
+              "key": "searchAliases",
+              "label": "Search Aliases",
+              "type": "CHIPS"
+            },
+            {
+              "key": "negativeKeywords",
+              "label": "Negative Keywords",
+              "type": "CHIPS"
+            },
+            {
+              "key": "seoKeywordsLongtail",
+              "label": "SEO Keywords (longtail)",
+              "type": "TEXT",
+              "maxLength": 300
+            }
+          ]
+        },
+        {
+          "key": "marketplaceListing",
+          "label": "Marketplace Listing",
+          "type": "OBJECT",
+          "fields": [
+            {
+              "key": "listingTitle",
+              "label": "Listing Title",
+              "type": "TEXT",
+              "required": true,
+              "maxLength": 120
+            },
+            {
+              "key": "marketplaceTagline",
+              "label": "Marketplace Tagline",
+              "type": "TEXT",
+              "maxLength": 90
+            },
+            {
+              "key": "shortDescription",
+              "label": "Short Description",
+              "type": "TEXTAREA",
+              "required": true,
+              "maxLength": 200
+            },
+            {
+              "key": "listingTier",
+              "label": "Listing Tier",
+              "type": "RADIO",
+              "access": "BILLING_GATED",
+              "vocabularyCode": "PROMOTION_TIER"
+            }
+          ]
+        },
+        {
+          "key": "marketingSupportingAssets",
+          "label": "Marketing & Supporting Assets",
+          "type": "OBJECT",
+          "fields": [
+            {
+              "key": "productBrochure",
+              "label": "Product Brochure",
+              "type": "FILE_SINGLE"
+            },
+            {
+              "key": "packShotImage",
+              "label": "Pack Shot Image",
+              "type": "FILE_SINGLE"
+            }
+          ]
+        }
+      ],
+      "order": 11
+    }
+  ],
+  "gridColumns": [],
+  "variantTabs": [],
+  "seedData": {},
+  "publishedAt": "2026-07-02T10:00:00Z"
+}

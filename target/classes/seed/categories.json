@@ -1,0 +1,353 @@
+[
+  {
+    "id": "cat_RAW_MATERIALS",
+    "type": "PRODUCT",
+    "code": "RAW_MATERIALS",
+    "title": "Raw Materials",
+    "description": "Ingredients, extracts, commodities and functional actives.",
+    "live": true,
+    "examples": [
+      "Curcumin extract",
+      "Whey protein",
+      "Stevia",
+      "Cocoa powder"
+    ],
+    "buttonLabel": "List raw material ->",
+    "escapeHatchLabel": "Add New Material",
+    "commonFor": [
+      "Food",
+      "Nutraceuticals",
+      "Cosmetics",
+      "Pet Food",
+      "Others"
+    ],
+    "searchFacets": [
+      "type",
+      "form",
+      "origin"
+    ],
+    "order": 1,
+    "outerSteps": null,
+    "configurationSubSteps": null,
+    "marketingStepClaim": null
+  },
+  {
+    "id": "cat_PROCESSING_MACHINERY",
+    "type": "PRODUCT",
+    "code": "PROCESSING_MACHINERY",
+    "title": "Processing Machinery",
+    "description": "Mixing, drying, extrusion and separation equipment.",
+    "live": true,
+    "examples": [
+      "Ribbon blender",
+      "Spray dryer",
+      "Homogenizer"
+    ],
+    "buttonLabel": "List processing machinery ->",
+    "escapeHatchLabel": "Add New Machine",
+    "commonFor": [
+      "Food",
+      "Nutraceuticals",
+      "Cosmetics",
+      "Pet Food",
+      "Others"
+    ],
+    "searchFacets": [
+      "category",
+      "subCategory",
+      "origin"
+    ],
+    "order": 2,
+    "outerSteps": null,
+    "configurationSubSteps": null,
+    "marketingStepClaim": null
+  },
+  {
+    "id": "cat_FINISHED_GOODS",
+    "type": "PRODUCT",
+    "code": "FINISHED_GOODS",
+    "title": "Finished Goods",
+    "description": "Retail-ready and private-label finished products.",
+    "live": true,
+    "examples": [
+      "RTD beverage",
+      "Protein bar",
+      "Gummy"
+    ],
+    "buttonLabel": "List finished good ->",
+    "escapeHatchLabel": "Add New Products",
+    "commonFor": [
+      "Food",
+      "Nutraceuticals",
+      "Cosmetics",
+      "Pet Food",
+      "Others"
+    ],
+    "searchFacets": [
+      "industry",
+      "sector",
+      "category",
+      "stage",
+      "claims"
+    ],
+    "order": 3,
+    "outerSteps": null,
+    "configurationSubSteps": null,
+    "marketingStepClaim": null
+  },
+  {
+    "id": "cat_PACKAGING_MATERIALS",
+    "type": "PRODUCT",
+    "code": "PACKAGING_MATERIALS",
+    "title": "Packaging Materials",
+    "description": "Films, pouches, bottles, closures and cartons.",
+    "live": true,
+    "examples": [
+      "Retort pouch",
+      "PET bottle",
+      "Screw cap"
+    ],
+    "buttonLabel": "List packaging material ->",
+    "escapeHatchLabel": "Add New Product",
+    "commonFor": [
+      "Food",
+      "Nutraceuticals",
+      "Cosmetics",
+      "Pet Food",
+      "Others"
+    ],
+    "searchFacets": [
+      "category",
+      "subCategory",
+      "materialType",
+      "productType",
+      "application"
+    ],
+    "order": 4,
+    "outerSteps": null,
+    "configurationSubSteps": null,
+    "marketingStepClaim": null
+  },
+  {
+    "id": "cat_PACKAGING_MACHINERY",
+    "type": "PRODUCT",
+    "code": "PACKAGING_MACHINERY",
+    "title": "Packaging Machinery",
+    "description": "Filling, capping, labeling and pouch-packing equipment.",
+    "live": true,
+    "examples": [
+      "VFFS",
+      "Capping machine",
+      "Labeler"
+    ],
+    "buttonLabel": "List packaging machinery ->",
+    "escapeHatchLabel": "Add New Machine",
+    "commonFor": [
+      "Food",
+      "Nutraceuticals",
+      "Cosmetics",
+      "Pet Food",
+      "Others"
+    ],
+    "searchFacets": [
+      "category",
+      "subCategory",
+      "origin"
+    ],
+    "order": 5,
+    "outerSteps": null,
+    "configurationSubSteps": null,
+    "marketingStepClaim": null
+  },
+  {
+    "id": "cat_OTHERS_PRODUCT",
+    "type": "PRODUCT",
+    "code": "OTHERS_PRODUCT",
+    "title": "Others",
+    "description": "Anything that does not fit the five categories above.",
+    "live": true,
+    "examples": [],
+    "buttonLabel": "List in Others Category ->",
+    "escapeHatchLabel": null,
+    "commonFor": [
+      "Food",
+      "Nutraceuticals",
+      "Cosmetics",
+      "Pet Food",
+      "Others"
+    ],
+    "searchFacets": [],
+    "order": 6,
+    "outerSteps": null,
+    "configurationSubSteps": null,
+    "marketingStepClaim": null
+  },
+  {
+    "id": "cat_LAB_TESTING",
+    "type": "SERVICE",
+    "code": "LAB_TESTING",
+    "title": "Lab Testing Services",
+    "description": "Accredited chemical, microbiological and nutritional testing.",
+    "live": true,
+    "examples": [
+      "Heavy metals",
+      "Pesticide residue"
+    ],
+    "buttonLabel": "+ List lab testing services ->",
+    "escapeHatchLabel": "Add new service",
+    "commonFor": [
+      "Food",
+      "Nutraceuticals",
+      "Cosmetics",
+      "Pet Food",
+      "Others"
+    ],
+    "searchFacets": [
+      "industry",
+      "category"
+    ],
+    "order": 1,
+    "outerSteps": 4,
+    "configurationSubSteps": 5,
+    "marketingStepClaim": "Form: 8 steps"
+  },
+  {
+    "id": "cat_CONSULTANCY",
+    "type": "SERVICE",
+    "code": "CONSULTANCY",
+    "title": "Consultancy Services",
+    "description": "Regulatory, quality and strategy advisory.",
+    "live": true,
+    "examples": [
+      "FSSAI licensing",
+      "HACCP"
+    ],
+    "buttonLabel": "+ List consulting services ->",
+    "escapeHatchLabel": "Add new service",
+    "commonFor": [
+      "Food",
+      "Nutraceuticals",
+      "Cosmetics",
+      "Pet Food",
+      "Others"
+    ],
+    "searchFacets": [
+      "industry",
+      "category"
+    ],
+    "order": 2,
+    "outerSteps": 4,
+    "configurationSubSteps": 3,
+    "marketingStepClaim": "Form: 8 steps"
+  },
+  {
+    "id": "cat_CONTRACT_MANUFACTURER",
+    "type": "SERVICE",
+    "code": "CONTRACT_MANUFACTURER",
+    "title": "Contract Manufacturer / Co-Pack / Private Label",
+    "description": "Manufacturing, co-packing and private-label programmes.",
+    "live": true,
+    "examples": [
+      "Powder blending",
+      "Sachet filling"
+    ],
+    "buttonLabel": "+ List Contract Manufacturer ->",
+    "escapeHatchLabel": "Add new service",
+    "commonFor": [
+      "Food",
+      "Nutraceuticals",
+      "Cosmetics",
+      "Pet Food",
+      "Others"
+    ],
+    "searchFacets": [
+      "industry",
+      "category"
+    ],
+    "order": 3,
+    "outerSteps": 4,
+    "configurationSubSteps": 5,
+    "marketingStepClaim": "Form: 15 steps"
+  },
+  {
+    "id": "cat_AGRO_CLUSTER",
+    "type": "SERVICE",
+    "code": "AGRO_CLUSTER",
+    "title": "Agro-Processing Cluster / PMKSY / CDP / ODOP",
+    "description": "Scheme-backed infrastructure: food parks, clusters and cold chains.",
+    "live": true,
+    "examples": [
+      "Mega Food Park",
+      "Cold chain"
+    ],
+    "buttonLabel": "+ List Agro Cluster ->",
+    "escapeHatchLabel": "Add new service",
+    "commonFor": [
+      "Food",
+      "Nutraceuticals",
+      "Cosmetics",
+      "Pet Food",
+      "Others"
+    ],
+    "searchFacets": [
+      "providerType",
+      "state"
+    ],
+    "order": 4,
+    "outerSteps": 4,
+    "configurationSubSteps": 5,
+    "marketingStepClaim": "Form: 10 steps"
+  },
+  {
+    "id": "cat_CRO",
+    "type": "SERVICE",
+    "code": "CRO",
+    "title": "Contract Research Organization (CRO)",
+    "description": "Human and preclinical studies with regulatory-grade reporting.",
+    "live": true,
+    "examples": [
+      "Glycaemic index study",
+      "Toxicology"
+    ],
+    "buttonLabel": "+ List CRO ->",
+    "escapeHatchLabel": "Add new service",
+    "commonFor": [
+      "Food",
+      "Nutraceuticals",
+      "Cosmetics",
+      "Pet Food",
+      "Others"
+    ],
+    "searchFacets": [
+      "therapeuticArea",
+      "studyType"
+    ],
+    "order": 5,
+    "outerSteps": 4,
+    "configurationSubSteps": 11,
+    "marketingStepClaim": "Form: 10 steps"
+  },
+  {
+    "id": "cat_OTHERS_SERVICE",
+    "type": "SERVICE",
+    "code": "OTHERS_SERVICE",
+    "title": "Others",
+    "description": "Anything that does not fit the five categories above.",
+    "live": true,
+    "examples": [],
+    "buttonLabel": "+ List in Others Category ->",
+    "escapeHatchLabel": null,
+    "commonFor": [
+      "Food",
+      "Nutraceuticals",
+      "Cosmetics",
+      "Pet Food",
+      "Others"
+    ],
+    "searchFacets": [],
+    "order": 6,
+    "outerSteps": null,
+    "configurationSubSteps": null,
+    "marketingStepClaim": null
+  }
+]

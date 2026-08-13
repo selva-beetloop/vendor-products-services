@@ -1,0 +1,890 @@
+{
+  "id": "tpl_LAB_TESTING_v3",
+  "type": "SERVICE",
+  "categoryCode": "LAB_TESTING",
+  "version": 3,
+  "status": "ACTIVE",
+  "label": "Lab Testing Services",
+  "steps": [
+    {
+      "key": "select-service",
+      "dataKey": "selectService",
+      "label": "Select Service",
+      "pageHeading": "1. Select Service",
+      "subtitle": "From Commercial Master",
+      "required": true,
+      "primaryAction": null,
+      "discriminator": null,
+      "sections": [
+        {
+          "key": "",
+          "dataKey": "",
+          "fields": [
+            {
+              "key": "entryPath",
+              "label": "Entry path",
+              "type": "SELECT",
+              "vocabularyCode": "ENTRY_PATH"
+            },
+            {
+              "key": "selectedServices",
+              "label": "Selected services",
+              "type": "REPEATABLE",
+              "minItems": 1,
+              "fields": [
+                {
+                  "key": "selectionId",
+                  "label": "Id",
+                  "type": "TEXT",
+                  "access": "AUTO"
+                },
+                {
+                  "key": "masterServiceId",
+                  "label": "Master service",
+                  "type": "TEXT"
+                },
+                {
+                  "key": "requestCode",
+                  "label": "Request code",
+                  "type": "TEXT",
+                  "access": "AUTO"
+                },
+                {
+                  "key": "name",
+                  "label": "Name",
+                  "type": "TEXT",
+                  "required": true
+                },
+                {
+                  "key": "serviceType",
+                  "label": "Service type",
+                  "type": "TEXT"
+                },
+                {
+                  "key": "source",
+                  "label": "Source",
+                  "type": "TEXT"
+                },
+                {
+                  "key": "readOnlyFields",
+                  "label": "Read-only fields",
+                  "type": "CHIPS",
+                  "access": "DERIVED"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "configure-services",
+      "dataKey": "configureServices",
+      "label": "Configure Services",
+      "pageHeading": "2. Configure Services",
+      "subtitle": null,
+      "required": true,
+      "primaryAction": null,
+      "discriminator": null,
+      "sections": [
+        {
+          "key": "",
+          "dataKey": "",
+          "fields": [
+            {
+              "key": "counters",
+              "label": "Counters",
+              "type": "OBJECT",
+              "access": "DERIVED"
+            },
+            {
+              "key": "pagination",
+              "label": "Pagination",
+              "type": "OBJECT",
+              "access": "DERIVED"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "compliance",
+      "dataKey": "compliance",
+      "label": "Accreditations & Certifications",
+      "pageHeading": "3. Accreditations & Certifications",
+      "subtitle": null,
+      "required": true,
+      "primaryAction": null,
+      "discriminator": null,
+      "sections": [
+        {
+          "key": "",
+          "dataKey": "",
+          "fields": [
+            {
+              "key": "libraryDocumentIds",
+              "label": "Library documents",
+              "type": "CHIPS"
+            },
+            {
+              "key": "links",
+              "label": "Document links",
+              "type": "REPEATABLE",
+              "fields": [
+                {
+                  "key": "linkId",
+                  "label": "Id",
+                  "type": "TEXT",
+                  "access": "AUTO"
+                },
+                {
+                  "key": "selectionId",
+                  "label": "Selection",
+                  "type": "TEXT"
+                },
+                {
+                  "key": "libraryDocumentId",
+                  "label": "Library document",
+                  "type": "TEXT",
+                  "required": true
+                },
+                {
+                  "key": "linkType",
+                  "label": "Link type",
+                  "type": "SELECT",
+                  "vocabularyCode": "DOCUMENT_LINK_TYPE"
+                },
+                {
+                  "key": "applicability",
+                  "label": "Applicability",
+                  "type": "SELECT",
+                  "vocabularyCode": "DOCUMENT_APPLICABILITY"
+                }
+              ]
+            },
+            {
+              "key": "counters",
+              "label": "Counters",
+              "type": "OBJECT",
+              "access": "DERIVED"
+            },
+            {
+              "key": "perService",
+              "label": "Per-service rollup",
+              "type": "REPEATABLE",
+              "access": "DERIVED"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "review",
+      "dataKey": "review",
+      "label": "Review & Publish",
+      "pageHeading": "4. Review & Publish",
+      "subtitle": null,
+      "required": false,
+      "primaryAction": "Submit for QC",
+      "discriminator": null,
+      "sections": [
+        {
+          "key": "",
+          "dataKey": "",
+          "fields": [
+            {
+              "key": "acknowledgedAt",
+              "label": "Acknowledged at",
+              "type": "TEXT"
+            },
+            {
+              "key": "acknowledgedBy",
+              "label": "Acknowledged by",
+              "type": "TEXT"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "childCollection": "CONFIGURATIONS",
+  "childSections": [
+    {
+      "key": "service-details",
+      "label": "Service Details",
+      "dataKey": "serviceDetails",
+      "sections": [
+        {
+          "key": "serviceClassification",
+          "label": "1. Service Classification",
+          "dataKey": "serviceClassification",
+          "fields": [
+            {
+              "key": "requestCode",
+              "label": "Request Code",
+              "type": "AUTO_TEXT",
+              "access": "AUTO"
+            },
+            {
+              "key": "industry",
+              "label": "Industry",
+              "type": "SELECT",
+              "required": true,
+              "vocabularyCode": "INDUSTRY"
+            },
+            {
+              "key": "category",
+              "label": "Category",
+              "type": "SELECT",
+              "required": true,
+              "vocabularyCode": "LAB_CATEGORY"
+            },
+            {
+              "key": "subCategory",
+              "label": "Sub-category",
+              "type": "SELECT",
+              "required": true,
+              "vocabularyCode": "LAB_SUBCATEGORY",
+              "parentField": "category"
+            },
+            {
+              "key": "serviceType",
+              "label": "Service Type",
+              "type": "SELECT",
+              "required": true,
+              "vocabularyCode": "LAB_SERVICE_TYPE"
+            },
+            {
+              "key": "serviceName",
+              "label": "Service Name",
+              "type": "TEXT",
+              "required": true
+            },
+            {
+              "key": "commercialDisplayName",
+              "label": "Commercial Display Name",
+              "type": "TEXT",
+              "required": true
+            },
+            {
+              "key": "status",
+              "label": "Status",
+              "type": "SELECT",
+              "vocabularyCode": "VARIANT_STATUS"
+            },
+            {
+              "key": "isPackage",
+              "label": "Is this a package that contains multiple tests?",
+              "type": "TOGGLE"
+            },
+            {
+              "key": "childTests",
+              "label": "Tests included in the package",
+              "type": "CHIPS",
+              "rules": [
+                {
+                  "type": "REQUIRED_WHEN",
+                  "params": {
+                    "field": "isPackage",
+                    "equals": true
+                  },
+                  "message": "Select at least one test to include in this package."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "serviceDefinition",
+          "label": "2. Service Definition",
+          "dataKey": "serviceDefinition",
+          "fields": [
+            {
+              "key": "shortDescription",
+              "label": "Short Description",
+              "type": "TEXTAREA",
+              "required": true,
+              "maxLength": 300
+            },
+            {
+              "key": "detailedDescription",
+              "label": "Detailed Description",
+              "type": "TEXTAREA",
+              "required": true,
+              "maxLength": 1000
+            },
+            {
+              "key": "primaryTestMethod",
+              "label": "Primary Test Method",
+              "type": "TEXT",
+              "required": true
+            },
+            {
+              "key": "alternativeTestMethods",
+              "label": "Alternative Test Method(s)",
+              "type": "CHIPS",
+              "required": false,
+              "allowCustomValues": true,
+              "vocabularyCode": "TEST_METHOD"
+            },
+            {
+              "key": "referenceStandards",
+              "label": "Reference Standard(s)",
+              "type": "CHIPS",
+              "required": false,
+              "allowCustomValues": true,
+              "vocabularyCode": "REFERENCE_STANDARD"
+            },
+            {
+              "key": "applicableSampleTypes",
+              "label": "Applicable Sample Types",
+              "type": "CHIPS",
+              "required": false,
+              "allowCustomValues": true,
+              "vocabularyCode": "SAMPLE_TYPE"
+            },
+            {
+              "key": "applicableIndustries",
+              "label": "Applicable Industries",
+              "type": "CHIPS",
+              "required": false,
+              "allowCustomValues": true,
+              "vocabularyCode": "INDUSTRY"
+            },
+            {
+              "key": "resultUnit",
+              "label": "Result Unit",
+              "type": "TEXT",
+              "required": true
+            },
+            {
+              "key": "reportFormat",
+              "label": "Report Format",
+              "type": "SELECT",
+              "required": true,
+              "vocabularyCode": "REPORT_FORMAT"
+            },
+            {
+              "key": "typicalTurnaroundTime",
+              "label": "Typical Turnaround Time (TAT)",
+              "type": "TEXT",
+              "required": true
+            },
+            {
+              "key": "expressTurnaroundTime",
+              "label": "Express Turnaround Time",
+              "type": "TEXT"
+            },
+            {
+              "key": "sampleQuantity",
+              "label": "Sample Quantity",
+              "type": "TEXT"
+            },
+            {
+              "key": "keyParametersAnalytes",
+              "label": "Key Parameters / Analytes",
+              "type": "CHIPS",
+              "required": false,
+              "allowCustomValues": true,
+              "vocabularyCode": null
+            },
+            {
+              "key": "claimsSupported",
+              "label": "Claims Supported",
+              "type": "CHIPS",
+              "required": false,
+              "allowCustomValues": true,
+              "vocabularyCode": null
+            },
+            {
+              "key": "methodUnderAccreditation",
+              "label": "Method is under accreditation",
+              "type": "TOGGLE"
+            },
+            {
+              "key": "accreditationBody",
+              "label": "Accreditation Body (if applicable)",
+              "type": "TEXT",
+              "rules": [
+                {
+                  "type": "REQUIRED_WHEN",
+                  "params": {
+                    "field": "methodUnderAccreditation",
+                    "equals": true
+                  },
+                  "message": "Name the accreditation body for an accredited method."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "order": 1
+    },
+    {
+      "key": "configure-pricing-details",
+      "label": "Configure Pricing & Details",
+      "dataKey": "configurePricingAndDetails",
+      "sections": [
+        {
+          "key": "pricingCommercialDetails",
+          "label": "2.1 Pricing & Commercial Details",
+          "dataKey": "pricingCommercialDetails",
+          "fields": [
+            {
+              "key": "pricingModel",
+              "label": "Pricing Model",
+              "type": "SELECT",
+              "required": true,
+              "vocabularyCode": "LAB_PRICING_MODEL"
+            },
+            {
+              "key": "price",
+              "label": "Price",
+              "type": "NUMBER",
+              "required": true,
+              "min": 0
+            },
+            {
+              "key": "currency",
+              "label": "Currency",
+              "type": "SELECT",
+              "required": true,
+              "vocabularyCode": "CURRENCY"
+            },
+            {
+              "key": "standardTat",
+              "label": "Standard TAT",
+              "type": "SELECT",
+              "required": true,
+              "vocabularyCode": "LAB_TAT"
+            },
+            {
+              "key": "minSampleQty",
+              "label": "Min. Sample Qty",
+              "type": "MEASURE",
+              "required": true,
+              "units": [
+                "g",
+                "ml",
+                "pcs",
+                "kg"
+              ]
+            },
+            {
+              "key": "maxSampleQty",
+              "label": "Max. Sample Qty",
+              "type": "MEASURE",
+              "units": [
+                "g",
+                "ml",
+                "pcs",
+                "kg"
+              ]
+            },
+            {
+              "key": "preferredSampleQty",
+              "label": "Preferred Sample Qty",
+              "type": "MEASURE",
+              "units": [
+                "g",
+                "ml",
+                "pcs",
+                "kg"
+              ]
+            },
+            {
+              "key": "sampleFormatAccepted",
+              "label": "Sample Format (Accepted)",
+              "type": "CHIPS",
+              "required": true,
+              "allowCustomValues": true,
+              "vocabularyCode": null
+            },
+            {
+              "key": "coldChainRequired",
+              "label": "Cold Chain Required?",
+              "type": "SELECT",
+              "required": true,
+              "vocabularyCode": "COLD_CHAIN"
+            },
+            {
+              "key": "expressAvailable",
+              "label": "Express Available?",
+              "type": "TOGGLE"
+            },
+            {
+              "key": "pickupAvailable",
+              "label": "Pickup Available?",
+              "type": "TOGGLE"
+            }
+          ]
+        },
+        {
+          "key": "",
+          "dataKey": "",
+          "fields": [
+            {
+              "key": "volumePricing",
+              "label": "Volume Pricing (Per Sample)",
+              "type": "REPEATABLE",
+              "rules": [
+                {
+                  "type": "CONTIGUOUS_TIERS",
+                  "params": {
+                    "min": "minSamples",
+                    "max": "maxSamples"
+                  },
+                  "message": null
+                }
+              ],
+              "fields": [
+                {
+                  "key": "tierId",
+                  "label": "Id",
+                  "type": "TEXT",
+                  "access": "AUTO"
+                },
+                {
+                  "key": "minSamples",
+                  "label": "Min. Samples",
+                  "type": "NUMBER",
+                  "min": 0
+                },
+                {
+                  "key": "maxSamples",
+                  "label": "Max. Samples",
+                  "type": "NUMBER",
+                  "min": 0
+                },
+                {
+                  "key": "price",
+                  "label": "Price",
+                  "type": "NUMBER",
+                  "min": 0
+                },
+                {
+                  "key": "discountVsBasePct",
+                  "label": "Discount vs Base %",
+                  "type": "NUMBER",
+                  "access": "DERIVED"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "key": "repeatAnalysisOptions",
+          "label": "Repeat Analysis Options",
+          "dataKey": "repeatAnalysisOptions",
+          "fields": [
+            {
+              "key": "duplicateAnalysis",
+              "label": "Duplicate Analysis",
+              "type": "SELECT",
+              "vocabularyCode": "AVAILABILITY"
+            },
+            {
+              "key": "triplicateAnalysis",
+              "label": "Triplicate Analysis",
+              "type": "SELECT",
+              "vocabularyCode": "AVAILABILITY"
+            },
+            {
+              "key": "maxRepeatAnalysis",
+              "label": "Max Repeat Analysis",
+              "type": "NUMBER",
+              "min": 0
+            }
+          ]
+        },
+        {
+          "key": "retestAdditionalCharges",
+          "label": "Retest / Additional Charges",
+          "dataKey": "retestAdditionalCharges",
+          "fields": [
+            {
+              "key": "retestPrice",
+              "label": "Retest Price",
+              "type": "NUMBER",
+              "min": 0
+            },
+            {
+              "key": "onsiteCollectionCharge",
+              "label": "Onsite Collection Charge",
+              "type": "NUMBER",
+              "min": 0
+            },
+            {
+              "key": "weekendHolidayTesting",
+              "label": "Weekend / Holiday Testing",
+              "type": "SELECT",
+              "vocabularyCode": "WEEKEND_TESTING"
+            }
+          ]
+        },
+        {
+          "key": "deliverablesRemarksStandards",
+          "label": "2.2 Deliverables, Remarks & Standards",
+          "dataKey": "deliverablesRemarksStandards",
+          "fields": [
+            {
+              "key": "deliverablesIncludedInPrice",
+              "label": "Deliverables (Included in Price)",
+              "type": "CHECKBOX_GROUP",
+              "required": true,
+              "allowCustomValues": true,
+              "vocabularyCode": "LAB_DELIVERABLE"
+            },
+            {
+              "key": "remarksSpecialNotes",
+              "label": "Remarks / Special Notes",
+              "type": "TEXTAREA",
+              "maxLength": 250
+            },
+            {
+              "key": "standardsAndReferences",
+              "label": "Standards & References",
+              "type": "CHIPS",
+              "required": true,
+              "allowCustomValues": true,
+              "vocabularyCode": null
+            },
+            {
+              "key": "applicableRegulations",
+              "label": "Applicable Regulations",
+              "type": "CHIPS",
+              "required": false,
+              "allowCustomValues": true,
+              "vocabularyCode": null
+            }
+          ]
+        }
+      ],
+      "order": 2
+    },
+    {
+      "key": "technical-specification",
+      "label": "Technical Specification",
+      "dataKey": "technicalSpecification",
+      "fields": [
+        {
+          "key": "analysisSpecifications",
+          "label": "3.1 Analysis Specifications",
+          "type": "OBJECT",
+          "fields": [
+            {
+              "key": "data",
+              "label": "Specification groups",
+              "type": "SPEC_GROUPS",
+              "minItems": 1
+            },
+            {
+              "key": "overallCompletion",
+              "label": "Overall completion",
+              "type": "OBJECT",
+              "access": "DERIVED"
+            }
+          ]
+        },
+        {
+          "key": "analysisSummary",
+          "label": "3.2 Analysis Summary",
+          "type": "OBJECT",
+          "access": "DERIVED"
+        }
+      ],
+      "order": 3
+    },
+    {
+      "key": "capabilities",
+      "label": "Capabilities",
+      "dataKey": "capabilities",
+      "fields": [
+        {
+          "key": "keyCapabilities",
+          "label": "Key Capabilities",
+          "type": "REPEATABLE",
+          "minItems": 1,
+          "fields": [
+            {
+              "key": "id",
+              "label": "Id",
+              "type": "TEXT",
+              "access": "AUTO"
+            },
+            {
+              "key": "title",
+              "label": "Title",
+              "type": "TEXT",
+              "required": true
+            },
+            {
+              "key": "description",
+              "label": "Description",
+              "type": "TEXTAREA",
+              "maxLength": 300
+            }
+          ]
+        },
+        {
+          "key": "laboratoryOverview",
+          "label": "Laboratory Overview",
+          "type": "REPEATABLE",
+          "fields": [
+            {
+              "key": "id",
+              "label": "Id",
+              "type": "TEXT",
+              "access": "AUTO"
+            },
+            {
+              "key": "label",
+              "label": "Label",
+              "type": "TEXT"
+            },
+            {
+              "key": "value",
+              "label": "Value",
+              "type": "TEXT"
+            }
+          ]
+        },
+        {
+          "key": "industryExperience",
+          "label": "Industry Experience",
+          "type": "CHIPS",
+          "required": false,
+          "allowCustomValues": true,
+          "vocabularyCode": "INDUSTRY"
+        },
+        {
+          "key": "keyPerformanceIndicators",
+          "label": "Key Performance Indicators",
+          "type": "REPEATABLE",
+          "fields": [
+            {
+              "key": "id",
+              "label": "Id",
+              "type": "TEXT",
+              "access": "AUTO"
+            },
+            {
+              "key": "label",
+              "label": "Label",
+              "type": "TEXT"
+            },
+            {
+              "key": "value",
+              "label": "Value",
+              "type": "TEXT"
+            }
+          ]
+        }
+      ],
+      "order": 4
+    },
+    {
+      "key": "marketplace-search",
+      "label": "Marketplace & Search",
+      "dataKey": "marketplaceAndSearch",
+      "fields": [
+        {
+          "key": "searchAndIndexing",
+          "label": "Search & Indexing",
+          "type": "OBJECT",
+          "fields": [
+            {
+              "key": "searchTagsAndKeywords",
+              "label": "Search Tags & Keywords",
+              "type": "CHIPS",
+              "required": true
+            },
+            {
+              "key": "synonymsOrAlternativeNames",
+              "label": "Synonyms / Alternative Names",
+              "type": "CHIPS"
+            },
+            {
+              "key": "commonMisspellings",
+              "label": "Common Misspellings",
+              "type": "CHIPS"
+            },
+            {
+              "key": "searchAliases",
+              "label": "Search Aliases",
+              "type": "CHIPS"
+            },
+            {
+              "key": "negativeKeywords",
+              "label": "Negative Keywords",
+              "type": "CHIPS"
+            },
+            {
+              "key": "seoKeywordsLongtail",
+              "label": "SEO Keywords (longtail)",
+              "type": "TEXT",
+              "maxLength": 300
+            }
+          ]
+        },
+        {
+          "key": "marketplaceListing",
+          "label": "Marketplace Listing",
+          "type": "OBJECT",
+          "fields": [
+            {
+              "key": "listingTitle",
+              "label": "Listing Title",
+              "type": "TEXT",
+              "required": true,
+              "maxLength": 120
+            },
+            {
+              "key": "marketplaceTagline",
+              "label": "Marketplace Tagline",
+              "type": "TEXT",
+              "maxLength": 90
+            },
+            {
+              "key": "shortDescription",
+              "label": "Short Description",
+              "type": "TEXTAREA",
+              "required": true,
+              "maxLength": 200
+            },
+            {
+              "key": "listingTier",
+              "label": "Listing Tier",
+              "type": "RADIO",
+              "access": "BILLING_GATED",
+              "vocabularyCode": "PROMOTION_TIER"
+            }
+          ]
+        },
+        {
+          "key": "marketingSupportingAssets",
+          "label": "Marketing & Supporting Assets",
+          "type": "OBJECT",
+          "fields": [
+            {
+              "key": "productBrochure",
+              "label": "Product Brochure",
+              "type": "FILE_SINGLE"
+            },
+            {
+              "key": "packShotImage",
+              "label": "Pack Shot Image",
+              "type": "FILE_SINGLE"
+            }
+          ]
+        }
+      ],
+      "order": 5
+    }
+  ],
+  "gridColumns": [],
+  "variantTabs": [],
+  "seedData": {},
+  "publishedAt": "2026-07-02T10:00:00Z"
+}
