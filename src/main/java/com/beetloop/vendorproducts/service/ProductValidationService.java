@@ -103,13 +103,17 @@ public class ProductValidationService {
             errors.add(prefix + "variantDetails.name", "Variant Name is required");
         }
 
-        if (details != null) {
-            List<FieldDefinition> extraFields = registry.variantExtraFields(category);
-            if (!extraFields.isEmpty()) {
-                rejectUnknownKeys(details.extraOrEmpty(), extraFields,
-                        prefix + "variantDetails.extra", errors);
-            }
-        }
+        // `variantDetails.extra` is deliberately an OPEN bag.
+        //
+        // It exists to carry whatever category-specific fields a variant row has
+        // (capacity, powerRating, thicknessUm, barrierLevel, closureType, …), and
+        // those differ per category and evolve with the UI. Rejecting undeclared
+        // keys here would defeat its purpose and force the frontend to know the
+        // backend's field list before it could send anything.
+        //
+        // The identity and role payloads are the opposite case — their field sets
+        // ARE the contract, so unknown keys there are still rejected (see
+        // validateIdentity / validateRole), which is where drift actually matters.
 
         // Technical specifications: a parameter row is either fully blank (ignored
         // on save, exactly like the UI's isSpecRowComplete check) or complete.
