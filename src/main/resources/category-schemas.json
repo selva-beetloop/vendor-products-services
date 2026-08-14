@@ -1,0 +1,958 @@
+{
+  "_comment": [
+    "Executable field mapping for the Vendor > Products & Services module.",
+    "Every field name here was taken from the frontend source of truth in",
+    "vendarfebeetloop/components/myProductsandServices_new/<Category>/ — the *-data.ts",
+    "form-state interfaces and the validate() blocks in the identity pages.",
+    "`required` mirrors the exact fields the frontend blocks Save & Continue on.",
+    "This file drives server-side validation (CategoryFieldRegistry) and is served",
+    "as-is by GET /catalog/categories."
+  ],
+  "categories": {
+    "raw-materials": {
+      "label": "Raw Materials",
+      "groupId": "materials",
+      "actionButtonLabel": "Add New Material",
+      "typeLabel": "Material",
+      "steps": [
+        { "key": "identity", "title": "Product Identity", "subtitle": "Create base product" },
+        { "key": "role", "title": "Your Role", "subtitle": "Brand & ownership" },
+        { "key": "variants", "title": "Variants", "subtitle": "Forms, flavors, pack sizes" },
+        { "key": "review", "title": "Review & Submit", "subtitle": "Final review" }
+      ],
+      "identity": {
+        "typeSelectorLabel": "Raw Material Type",
+        "baseFields": [
+          { "name": "compoundName", "label": "Compound Name", "type": "text", "required": true },
+          { "name": "chemicalNameIupac", "label": "Chemical Name (IUPAC)", "type": "text" },
+          { "name": "commonName", "label": "Common Name", "type": "text" },
+          { "name": "molecularFormula", "label": "Molecular Formula", "type": "text" },
+          { "name": "molecularWeight", "label": "Molecular Weight", "type": "text" },
+          { "name": "casNumber", "label": "CAS Number", "type": "text", "required": true },
+          { "name": "ecNumber", "label": "EC Number", "type": "text" },
+          { "name": "sourceMaterial", "label": "Source Material", "type": "text" },
+          { "name": "productionMethod", "label": "Production Method", "type": "text", "required": true },
+          { "name": "sourceCountry", "label": "Source Country", "type": "text" },
+          { "name": "manufacturingFacility", "label": "Manufacturing Facility", "type": "text" },
+          { "name": "assayPurity", "label": "Assay / Purity (%)", "type": "text", "required": true },
+          { "name": "chemicalForm", "label": "Chemical Form", "type": "text" },
+          { "name": "physicalForm", "label": "Physical Form", "type": "text" },
+          { "name": "colour", "label": "Colour", "type": "text" },
+          { "name": "odour", "label": "Odour", "type": "text" },
+          { "name": "markerCompound", "label": "Marker Compound", "type": "text" },
+          { "name": "identificationMethod", "label": "Identification Method", "type": "text", "required": true },
+          { "name": "referenceStandard", "label": "Reference Standard", "type": "text" },
+          { "name": "solubility", "label": "Solubility", "type": "text" },
+          { "name": "meltingPoint", "label": "Melting Point", "type": "text" },
+          { "name": "bulkDensity", "label": "Bulk Density", "type": "text" },
+          { "name": "particleSize", "label": "Particle Size", "type": "text" },
+          { "name": "lossOnDrying", "label": "Loss on Drying", "type": "text" },
+          { "name": "phSolution", "label": "pH (Solution)", "type": "text" },
+          { "name": "heatStability", "label": "Heat Stability", "type": "text" },
+          { "name": "lightStability", "label": "Light Stability", "type": "text" },
+          { "name": "oxidationStability", "label": "Oxidation Stability", "type": "text" },
+          { "name": "storageCondition", "label": "Storage Condition", "type": "text" },
+          { "name": "shelfLife", "label": "Shelf Life (months)", "type": "text" },
+          { "name": "retestPeriod", "label": "Retest Period (months)", "type": "text" },
+          { "name": "regulatoryCategory", "label": "Regulatory Category", "type": "text", "required": true },
+          { "name": "foodGrade", "label": "Food Grade", "type": "select", "options": ["Yes", "No"] },
+          { "name": "pharmaGrade", "label": "Pharma Grade", "type": "select", "options": ["Yes", "No"] },
+          { "name": "cosmeticGrade", "label": "Cosmetic Grade", "type": "select", "options": ["Yes", "No"] },
+          { "name": "reachRegistered", "label": "REACH Registered", "type": "select", "options": ["Yes", "No"] },
+          { "name": "grasStatus", "label": "GRAS Status", "type": "select", "options": ["Yes", "No"] },
+          { "name": "description", "label": "Description", "type": "textarea" },
+          { "name": "chemicalFormula", "label": "Chemical Formula", "type": "text" },
+          { "name": "purity", "label": "Purity", "type": "text" }
+        ],
+        "types": {
+          "raw-commodity": {
+            "title": "Raw Commodity",
+            "description": "Unprocessed natural materials, grains, seeds, or bulk agricultural raw inputs.",
+            "fields": [
+              { "name": "commodityName", "label": "Commodity Name", "type": "text", "required": true },
+              { "name": "botanicalName", "label": "Botanical Name", "type": "text", "required": true },
+              { "name": "commonTradeName", "label": "Common / Trade Name", "type": "text" },
+              { "name": "plantPart", "label": "Plant Part", "type": "select", "required": true, "options": ["Grain", "Seed", "Leaf", "Root", "Rhizome", "Fruit", "Whole Plant"] },
+              { "name": "varietyCultivar", "label": "Variety / Cultivar", "type": "text" },
+              { "name": "cropYear", "label": "Crop Year", "type": "text" },
+              { "name": "cropOriginCountry", "label": "Crop Origin Country", "type": "select", "required": true, "options": ["India", "USA", "Canada", "Australia", "Russia", "Ukraine", "Brazil"] },
+              { "name": "growingRegionState", "label": "Growing Region / State", "type": "text" },
+              { "name": "harvestSeason", "label": "Harvest Season", "type": "select", "options": ["Rabi (Oct - Apr)", "Kharif (Jul - Oct)", "Zaid (Mar - Jun)", "Year-round"] },
+              { "name": "moistureContent", "label": "Moisture Content (%)", "type": "text", "required": true },
+              { "name": "foreignMatter", "label": "Foreign Matter (%)", "type": "text", "required": true },
+              { "name": "admixture", "label": "Admixture (%)", "type": "text" },
+              { "name": "appearanceColor", "label": "Appearance / Color", "type": "text" },
+              { "name": "odor", "label": "Odor", "type": "text" },
+              { "name": "taste", "label": "Taste", "type": "text" },
+              { "name": "agmarkGrade", "label": "Agmark Grade", "type": "text" },
+              { "name": "cleaningMethod", "label": "Cleaning Method", "type": "text" },
+              { "name": "postHarvestTreatment", "label": "Post-Harvest Treatment", "type": "text" },
+              { "name": "storageConditions", "label": "Storage Conditions", "type": "text" },
+              { "name": "shelfLife", "label": "Shelf Life (months)", "type": "text" },
+              { "name": "productDescription", "label": "Product Description", "type": "textarea" },
+              { "name": "sourceAgriCluster", "label": "Source Agri Cluster", "type": "select" },
+              { "name": "processingFoodPark", "label": "Processing Food Park", "type": "select" },
+              { "name": "manufacturingTenant", "label": "Manufacturing Tenant", "type": "select" }
+            ]
+          },
+          "processed-commodity": {
+            "title": "Processed Commodity",
+            "description": "Primary processed materials, refined oils, starches, derivatives, or milled flours.",
+            "fields": [
+              { "name": "commodityName", "label": "Commodity Name", "type": "text", "required": true },
+              { "name": "botanicalName", "label": "Botanical Name", "type": "text", "required": true },
+              { "name": "commonTradeName", "label": "Common / Trade Name", "type": "text" },
+              { "name": "plantPart", "label": "Plant Part", "type": "select", "required": true, "options": ["Rhizome", "Root", "Leaf", "Fruit", "Bark", "Seed", "Tuber", "Whole Plant"] },
+              { "name": "rawMaterialForm", "label": "Raw Material Form", "type": "select" },
+              { "name": "processingType", "label": "Processing Type", "type": "select", "required": true },
+              { "name": "processGrade", "label": "Process Grade", "type": "select" },
+              { "name": "processingAid", "label": "Processing Aid", "type": "text" },
+              { "name": "inputOrigin", "label": "Input Raw Material Origin", "type": "select", "required": true },
+              { "name": "sourceRegionState", "label": "Source Region / State", "type": "text" },
+              { "name": "processingLocation", "label": "Processing Location", "type": "text", "required": true },
+              { "name": "batchLotId", "label": "Batch / Lot ID", "type": "text" },
+              { "name": "dryingMethod", "label": "Drying Method", "type": "select", "required": true },
+              { "name": "dryingTemperature", "label": "Drying Temperature (°C)", "type": "text" },
+              { "name": "finalMoistureContent", "label": "Final Moisture Content (%)", "type": "text", "required": true },
+              { "name": "particleSize", "label": "Particle Size", "type": "text" },
+              { "name": "yieldRatio", "label": "Yield Ratio", "type": "text" },
+              { "name": "preservatives", "label": "Preservatives", "type": "text" },
+              { "name": "antiCakingAgent", "label": "Anti-caking Agent", "type": "text" },
+              { "name": "irradiation", "label": "Irradiation", "type": "select", "options": ["Yes", "No"] },
+              { "name": "colour", "label": "Colour", "type": "text" },
+              { "name": "odor", "label": "Odor", "type": "text" },
+              { "name": "taste", "label": "Taste", "type": "text" },
+              { "name": "foreignMatter", "label": "Foreign Matter (%)", "type": "text" },
+              { "name": "productDescription", "label": "Product Description", "type": "textarea" },
+              { "name": "sourceAgriCluster", "label": "Source Agri Cluster", "type": "select" },
+              { "name": "processingFoodPark", "label": "Processing Food Park", "type": "select" },
+              { "name": "manufacturingTenant", "label": "Manufacturing Tenant", "type": "select" }
+            ]
+          },
+          "botanical-extract": {
+            "title": "Botanical Extract",
+            "description": "Concentrated plant, herb, fruit, or root extracts and standardized phytochemicals.",
+            "fields": [
+              { "name": "extractName", "label": "Extract Name / Product Name", "type": "text", "required": true },
+              { "name": "botanicalName", "label": "Botanical Name", "type": "text", "required": true },
+              { "name": "commonTradeName", "label": "Common / Trade Name", "type": "text" },
+              { "name": "plantPartUsed", "label": "Plant Part Used", "type": "select", "required": true, "options": ["Rhizome", "Root", "Leaf", "Fruit", "Bark", "Seed", "Flower", "Whole Plant"] },
+              { "name": "extractType", "label": "Extract Type", "type": "select", "required": true, "options": ["Standardized Extract", "Ratio Extract", "Whole Herb Powder", "Liquid Extract", "Oleoresin"] },
+              { "name": "extractionMethod", "label": "Extraction Method", "type": "select", "required": true },
+              { "name": "solventUsed", "label": "Solvent Used", "type": "text" },
+              { "name": "markerCompound", "label": "Marker Compound", "type": "text", "required": true },
+              { "name": "markerAssay", "label": "Marker Assay / Strength", "type": "text", "required": true },
+              { "name": "standardizationType", "label": "Standardization Type", "type": "select", "required": true },
+              { "name": "extractionRatio", "label": "Extraction Ratio", "type": "text" },
+              { "name": "countryOfOrigin", "label": "Country of Origin", "type": "select", "required": true },
+              { "name": "rawMaterialSource", "label": "Raw Material Source", "type": "text" },
+              { "name": "sourceRegionState", "label": "Source Region / State", "type": "text" },
+              { "name": "gmoStatus", "label": "GMO Status", "type": "select", "options": ["Non-GMO", "GMO"] },
+              { "name": "irradiation", "label": "Irradiation", "type": "select", "options": ["Yes", "No"] },
+              { "name": "purityCurcuminoids", "label": "Purity (as marker)", "type": "text", "required": true },
+              { "name": "totalCurcuminoids", "label": "Total Marker Content", "type": "text" },
+              { "name": "appearance", "label": "Appearance", "type": "text" },
+              { "name": "color", "label": "Color", "type": "text" },
+              { "name": "identification", "label": "Identification", "type": "text" },
+              { "name": "dnaAuthentication", "label": "DNA Authentication", "type": "text" },
+              { "name": "heavyMetals", "label": "Heavy Metals", "type": "text" },
+              { "name": "microbialCompliance", "label": "Microbial Compliance", "type": "text" },
+              { "name": "productDescription", "label": "Product Description", "type": "textarea" },
+              { "name": "sourceAgriCluster", "label": "Source Agri Cluster", "type": "select" },
+              { "name": "processingFoodPark", "label": "Processing Food Park", "type": "select" },
+              { "name": "manufacturingTenant", "label": "Manufacturing Tenant", "type": "select" }
+            ]
+          },
+          "blend": {
+            "title": "Blend",
+            "description": "Customized or standardized mixtures, pre-mixes, and multi-ingredient blends.",
+            "_note": "No dedicated form in the UI — selecting this card falls through to the base '1.2 Product Identity' block, so this card uses identity.baseFields. Leave `fields` empty to keep that behaviour.",
+            "fields": []
+          },
+          "sweetener": {
+            "title": "Sweetener",
+            "description": "Natural or synthetic caloric, non-caloric, and polyol sweetening agents.",
+            "fields": [
+              { "name": "sweetenerType", "label": "Sweetener Type", "type": "select", "options": ["High Intensity Sweetener", "Bulk Sweetener", "Natural Sweetener", "Polyol / Sugar Alcohol", "Novel Sweetener"] },
+              { "name": "ingredientName", "label": "Ingredient Name (INCI / Common)", "type": "text", "required": true },
+              { "name": "commercialName", "label": "Commercial / Trade Name", "type": "text", "required": true },
+              { "name": "synonyms", "label": "Synonyms", "type": "text" },
+              { "name": "ingredientCode", "label": "Ingredient Code", "type": "text" },
+              { "name": "functionalClass", "label": "Functional Class", "type": "select", "required": true },
+              { "name": "sweetenerSource", "label": "Sweetener Source", "type": "select", "required": true },
+              { "name": "chemicalName", "label": "Chemical Name", "type": "text" },
+              { "name": "casNumber", "label": "CAS Number", "type": "text" },
+              { "name": "eNumber", "label": "E Number / INS Number", "type": "text", "required": true },
+              { "name": "molecularFormula", "label": "Molecular Formula", "type": "text" },
+              { "name": "molecularWeight", "label": "Molecular Weight", "type": "text" },
+              { "name": "originCountry", "label": "Origin / Country of Manufacture", "type": "select", "required": true },
+              { "name": "regulatoryStatus", "label": "Regulatory Status", "type": "multiselect", "options": ["FDA GRAS", "EFSA Approved", "FSSAI Approved", "JECFA Approved"] },
+              { "name": "productionTechnology", "label": "Production Technology", "type": "select" },
+              { "name": "physicalForm", "label": "Physical Form", "type": "select", "required": true },
+              { "name": "color", "label": "Color", "type": "text" },
+              { "name": "odor", "label": "Odor", "type": "text" },
+              { "name": "tasteProfile", "label": "Taste Profile", "type": "text" },
+              { "name": "sweetness", "label": "Sweetness (Relative to Sucrose)", "type": "text", "required": true },
+              { "name": "caloricValue", "label": "Caloric Value", "type": "text" },
+              { "name": "solubility", "label": "Solubility", "type": "select", "required": true },
+              { "name": "phStability", "label": "pH Stability", "type": "text", "required": true },
+              { "name": "heatStability", "label": "Heat Stability", "type": "text", "required": true },
+              { "name": "lightStability", "label": "Light Stability", "type": "text" },
+              { "name": "typicalUsageLevel", "label": "Typical Usage Level", "type": "text", "required": true },
+              { "name": "maxUsageLevel", "label": "Maximum Usage Level (As per regulation)", "type": "text", "required": true },
+              { "name": "suitableFor", "label": "Suitable For", "type": "multiselect", "options": ["Beverages", "Bakery", "Dairy", "Confectionery", "Tabletop"] },
+              { "name": "gmoStatus", "label": "GMO Status", "type": "select", "options": ["Non-GMO", "GMO"] },
+              { "name": "shortDescription", "label": "Short Description", "type": "textarea" },
+              { "name": "imagePreviewUrl", "label": "Image", "type": "image" }
+            ]
+          },
+          "enzyme": {
+            "title": "Enzyme",
+            "description": "Biocatalysts for food processing, digestion, fermentation, or industrial use.",
+            "fields": [
+              { "name": "enzymeType", "label": "Enzyme Type", "type": "select" },
+              { "name": "commonName", "label": "Enzyme Name (Common)", "type": "text", "required": true },
+              { "name": "ecNumber", "label": "Enzyme Code (EC Number)", "type": "text", "required": true },
+              { "name": "systematicName", "label": "Systematic Name", "type": "text" },
+              { "name": "synonyms", "label": "Synonyms", "type": "text" },
+              { "name": "sourceOrganism", "label": "Source Organism", "type": "text", "required": true },
+              { "name": "sourceType", "label": "Source Type", "type": "select", "required": true },
+              { "name": "strain", "label": "Strain", "type": "text" },
+              { "name": "productionMethod", "label": "Production Method", "type": "select", "required": true },
+              { "name": "physicalForm", "label": "Physical Form", "type": "select", "required": true },
+              { "name": "appearance", "label": "Appearance", "type": "text" },
+              { "name": "molecularWeight", "label": "Molecular Weight", "type": "text" },
+              { "name": "casNumber", "label": "CAS Number", "type": "text" },
+              { "name": "activityUnit", "label": "Activity Unit", "type": "text", "required": true },
+              { "name": "activityMin", "label": "Activity (Min.)", "type": "text", "required": true },
+              { "name": "activityTypical", "label": "Activity (Typical)", "type": "text", "required": true },
+              { "name": "activityMax", "label": "Activity (Max.)", "type": "text", "required": true },
+              { "name": "assayBasis", "label": "Assay Basis", "type": "select", "required": true },
+              { "name": "definitionOfActivity", "label": "Definition of Activity", "type": "textarea" },
+              { "name": "optimumPh", "label": "Optimum pH", "type": "text" },
+              { "name": "optimumTemperature", "label": "Optimum Temperature", "type": "text" },
+              { "name": "phRange", "label": "pH Range", "type": "text" },
+              { "name": "temperatureRange", "label": "Temperature Range", "type": "text" },
+              { "name": "phStability", "label": "pH Stability", "type": "text" },
+              { "name": "thermalStability", "label": "Thermal Stability", "type": "text" },
+              { "name": "shelfLife", "label": "Shelf Life", "type": "text" },
+              { "name": "storageConditions", "label": "Storage Conditions", "type": "text" },
+              { "name": "moistureContent", "label": "Moisture Content", "type": "text" },
+              { "name": "enzymeSourceStatus", "label": "Enzyme Source Status", "type": "select", "options": ["Non-GMO", "GMO"] },
+              { "name": "allergenicity", "label": "Allergenicity", "type": "multiselect", "options": ["Non Allergenic", "Contains Allergen"] },
+              { "name": "foodGradeCompliance", "label": "Food Grade Compliance", "type": "multiselect", "options": ["FSSAI", "FDA", "EFSA"] },
+              { "name": "jecfaStatus", "label": "JECFA Status", "type": "select" },
+              { "name": "kosherHalal", "label": "Kosher / Halal", "type": "multiselect", "options": ["Kosher", "Halal"] },
+              { "name": "shortDescription", "label": "Short Description", "type": "textarea" },
+              { "name": "imagePreviewUrl", "label": "Image", "type": "image" }
+            ]
+          },
+          "vitamin": {
+            "title": "Vitamin",
+            "description": "Essential vitamins, minerals, and micronutrient fortificants.",
+            "fields": [
+              { "name": "vitaminType", "label": "Vitamin Type", "type": "select", "options": ["Vitamin", "Multivitamin Pre-blend", "Vitamin Derivative", "Co-enzyme Vitamin", "Mineral / Micronutrient"] },
+              { "name": "commonName", "label": "Vitamin Name (Common)", "type": "text", "required": true },
+              { "name": "chemicalForm", "label": "Chemical Form", "type": "select" },
+              { "name": "commercialName", "label": "Commercial / Trade Name", "type": "text", "required": true },
+              { "name": "ingredientCode", "label": "Ingredient Code", "type": "text" },
+              { "name": "vitaminClass", "label": "Vitamin Class", "type": "select", "required": true },
+              { "name": "molecularFormula", "label": "Molecular Formula", "type": "text" },
+              { "name": "molecularWeight", "label": "Molecular Weight", "type": "text" },
+              { "name": "casNumber", "label": "CAS Number", "type": "text" },
+              { "name": "physicalForm", "label": "Physical Form", "type": "select", "required": true },
+              { "name": "color", "label": "Color", "type": "text" },
+              { "name": "odor", "label": "Odor", "type": "text" },
+              { "name": "sourceRawMaterial", "label": "Source Raw Material", "type": "text" },
+              { "name": "solubility", "label": "Solubility", "type": "text" },
+              { "name": "countryOfOrigin", "label": "Country of Origin", "type": "select", "required": true },
+              { "name": "manufacturingProcess", "label": "Manufacturing Process", "type": "select", "required": true },
+              { "name": "gmpManufacturing", "label": "GMP Manufacturing", "type": "checkbox" },
+              { "name": "potencyStrength", "label": "Potency / Strength", "type": "text", "required": true },
+              { "name": "assayTypical", "label": "Assay (Typical)", "type": "text", "required": true },
+              { "name": "unit", "label": "Unit", "type": "text" },
+              { "name": "assayMethod", "label": "Assay Method", "type": "text" },
+              { "name": "activeContent", "label": "Active Content", "type": "text" },
+              { "name": "carrier", "label": "Carrier", "type": "text" },
+              { "name": "additives", "label": "Additives", "type": "text" },
+              { "name": "packagingCompatibility", "label": "Packaging Compatibility", "type": "multiselect", "options": ["Bottle", "Sachet", "Tablet", "Capsule"] },
+              { "name": "heatStability", "label": "Heat Stability", "type": "text", "required": true },
+              { "name": "lightStability", "label": "Light Stability", "type": "text", "required": true },
+              { "name": "moistureSensitivity", "label": "Moisture Sensitivity", "type": "text" },
+              { "name": "shelfLife", "label": "Shelf Life", "type": "text" },
+              { "name": "storageConditionsText", "label": "Storage Conditions", "type": "textarea" }
+            ]
+          },
+          "food-additive": {
+            "title": "Food Additive",
+            "description": "Preservatives, emulsifiers, stabilizers, colorants, and flavor enhancers.",
+            "fields": [
+              { "name": "additiveType", "label": "Additive Type", "type": "select" },
+              { "name": "commonName", "label": "Additive Name (Common)", "type": "text", "required": true },
+              { "name": "insNumber", "label": "INS Number", "type": "text", "required": true },
+              { "name": "eNumber", "label": "E Number (EU)", "type": "text", "required": true },
+              { "name": "casNumber", "label": "CAS Number", "type": "text", "required": true },
+              { "name": "chemicalName", "label": "Chemical Name", "type": "text" },
+              { "name": "molecularFormula", "label": "Molecular Formula", "type": "text" },
+              { "name": "molecularWeight", "label": "Molecular Weight", "type": "text" },
+              { "name": "functionClass", "label": "Additive Function Class", "type": "select", "required": true },
+              { "name": "functionalNameSystem", "label": "Functional Name (System)", "type": "text" },
+              { "name": "synonyms", "label": "Synonyms", "type": "text" },
+              { "name": "sourceRawMaterial", "label": "Source Raw Material", "type": "text" },
+              { "name": "originOfManufacture", "label": "Origin of Manufacture", "type": "select", "required": true },
+              { "name": "physicalForm", "label": "Physical Form", "type": "select", "required": true },
+              { "name": "color", "label": "Color", "type": "text" },
+              { "name": "odor", "label": "Odor", "type": "text" },
+              { "name": "taste", "label": "Taste", "type": "text" },
+              { "name": "fssaiCategory", "label": "Additive Category (FSSAI)", "type": "select", "required": true },
+              { "name": "fssaiStatus", "label": "FSSAI Approval Status", "type": "select", "required": true },
+              { "name": "permittedInIndia", "label": "Permitted in India", "type": "select", "required": true, "options": ["Yes", "No"] },
+              { "name": "maxPermittedLevel", "label": "Max Permitted Level", "type": "text" },
+              { "name": "codexStatus", "label": "Codex Status", "type": "text" },
+              { "name": "euStatus", "label": "EU Status", "type": "text" },
+              { "name": "usFdaStatus", "label": "US FDA Status", "type": "text" },
+              { "name": "jecfaStatus", "label": "JECFA Status", "type": "text" },
+              { "name": "shortDescription", "label": "Short Description", "type": "textarea" },
+              { "name": "imagePreviewUrl", "label": "Image", "type": "image" }
+            ]
+          },
+          "ingredient-functional-intelligence": {
+            "title": "Ingredient & Functional Intelligence",
+            "description": "Bioactive ingredients, functional complexes, and proprietary bio-actives.",
+            "fields": [
+              { "name": "ingredientName", "label": "Ingredient Name (INCI / Common)", "type": "text", "required": true },
+              { "name": "commercialName", "label": "Commercial / Trade Name", "type": "text", "required": true },
+              { "name": "synonyms", "label": "Synonyms", "type": "text" },
+              { "name": "ingredientCode", "label": "Ingredient Code", "type": "text" },
+              { "name": "functionalClass", "label": "Functional Class", "type": "select", "required": true, "options": ["Sweetener", "Nutraceutical", "Flavors & Fragrances", "Bioactive Ingredient", "Texturizer", "Preservative"] },
+              { "name": "ingredientFamily", "label": "Ingredient Family", "type": "select", "required": true, "options": ["High Intensity Sweetener", "Botanical Extract", "Carbohydrate", "Polyol", "Peptide", "Lipid"] },
+              { "name": "chemicalName", "label": "Chemical Name", "type": "text" },
+              { "name": "casNumber", "label": "CAS Number", "type": "text" },
+              { "name": "eNumber", "label": "E Number / INS Number", "type": "text" },
+              { "name": "molecularFormula", "label": "Molecular Formula", "type": "text" },
+              { "name": "molecularWeight", "label": "Molecular Weight", "type": "text" },
+              { "name": "originSource", "label": "Origin / Source", "type": "select", "required": true },
+              { "name": "productionTechnology", "label": "Production Technology", "type": "select", "required": true },
+              { "name": "physicalForm", "label": "Physical Form", "type": "select", "required": true },
+              { "name": "color", "label": "Color", "type": "text" },
+              { "name": "odor", "label": "Odor", "type": "text" },
+              { "name": "solubility", "label": "Solubility", "type": "text" },
+              { "name": "sweetness", "label": "Sweetness", "type": "text" },
+              { "name": "caloricValue", "label": "Caloric Value", "type": "text" },
+              { "name": "phStability", "label": "pH Stability", "type": "text" },
+              { "name": "heatStability", "label": "Heat Stability", "type": "text" },
+              { "name": "typicalUsageLevel", "label": "Typical Usage Level", "type": "text" },
+              { "name": "maxUsageLevel", "label": "Maximum Usage Level", "type": "text" },
+              { "name": "dietarySuitability", "label": "Dietary Suitability", "type": "multiselect", "options": ["Vegetarian", "Vegan", "Kosher", "Halal"] },
+              { "name": "gmoStatus", "label": "GMO Status", "type": "select", "options": ["Non-GMO", "GMO"] },
+              { "name": "shortDescription", "label": "Short Description", "type": "textarea" },
+              { "name": "imagePreviewUrl", "label": "Image", "type": "image" }
+            ]
+          }
+        }
+      },
+      "roles": {
+        "manufacturer": {
+          "title": "Manufacturer",
+          "description": "I manufacture this material in my own facility under my brand.",
+          "fields": [
+            { "name": "selectFacilityCompany", "label": "Select Facility / Company", "type": "select", "required": true },
+            { "name": "facilityName", "label": "Facility Name", "type": "text" },
+            { "name": "facilityAddress", "label": "Facility Address", "type": "textarea" },
+            { "name": "facilityCountry", "label": "Country", "type": "select" },
+            { "name": "facilityType", "label": "Facility Type", "type": "text" },
+            { "name": "gmpCertified", "label": "GMP Certified", "type": "select", "options": ["Yes", "No"] },
+            { "name": "certifications", "label": "Certifications", "type": "text" },
+            { "name": "legalEntityName", "label": "Legal Entity Name", "type": "text", "required": true },
+            { "name": "gstin", "label": "GSTIN", "type": "text" },
+            { "name": "iecCode", "label": "IEC Code", "type": "text" },
+            { "name": "businessType", "label": "Business Type", "type": "text" }
+          ]
+        },
+        "processor": {
+          "title": "Processor / Extractor",
+          "description": "I process, extract or purify this material using my own facility.",
+          "fields": [
+            { "name": "processingFacility", "label": "Select Processing Facility", "type": "select", "required": true },
+            { "name": "processType", "label": "Process Type", "type": "select", "required": true, "options": ["Botanical Extraction", "Chemical Synthesis", "Fermentation", "Enzymatic Process"] },
+            { "name": "extractionMethod", "label": "Extraction Method", "type": "select", "options": ["Ethanol Extraction", "Water Extraction", "CO₂ Extraction", "Solvent Extraction"] },
+            { "name": "standardization", "label": "Standardization", "type": "select", "options": ["Yes", "No"] },
+            { "name": "markerCompound", "label": "Marker Compound", "type": "text" },
+            { "name": "markerAssay", "label": "Marker Assay (%)", "type": "text" },
+            { "name": "solventUsed", "label": "Solvent Used", "type": "select", "options": ["Ethanol", "Water", "Methanol", "Acetone", "Hexane"] },
+            { "name": "dryingMethod", "label": "Drying Method", "type": "select", "options": ["Spray Drying", "Vacuum Drying", "Freeze Drying", "Tray Drying"] },
+            { "name": "inputRawMaterial", "label": "Input Raw Material", "type": "select" },
+            { "name": "plantPartUsed", "label": "Plant Part Used", "type": "select" },
+            { "name": "sourceCountry", "label": "Source Country", "type": "select" },
+            { "name": "processingGrade", "label": "Processing Grade", "type": "select", "options": ["Nutraceutical Grade", "Food Grade", "Pharma Grade", "Cosmetic Grade"] },
+            { "name": "batchProcessingCapacity", "label": "Batch Processing Capacity", "type": "text" },
+            { "name": "residualSolventCompliance", "label": "Residual Solvent Compliance", "type": "select", "options": ["USP <467>", "ICH Q3C", "EP 5.4", "Not Applicable"] },
+            { "name": "millingSize", "label": "Milling Size (Mesh)", "type": "text" },
+            { "name": "traceabilityAvailable", "label": "Traceability Available", "type": "select", "options": ["Yes", "No"] },
+            { "name": "documents", "label": "Documents", "type": "multiselect" }
+          ]
+        },
+        "refiner": {
+          "title": "Refiner / Converter",
+          "description": "I refine or convert this material to usable grade.",
+          "fields": [
+            { "name": "facility", "label": "Facility", "type": "select", "required": true },
+            { "name": "facilityCertifications", "label": "Facility Certifications", "type": "multiselect", "options": ["GMP", "ISO 22000", "FSSC 22000", "HACCP"] },
+            { "name": "refiningProcess", "label": "Refining Process", "type": "select", "required": true, "options": ["Purification", "Crystallization", "Distillation", "Filtration"] },
+            { "name": "conversionMethod", "label": "Conversion Method", "type": "select", "options": ["Solvent Fractionation", "Chromatography", "Precipitation", "Membrane Separation"] },
+            { "name": "purificationLevel", "label": "Purification Level", "type": "select", "options": ["Highly Purified", "Purified", "Semi-Purified", "Crude"] },
+            { "name": "finalGrade", "label": "Final Grade", "type": "select" },
+            { "name": "inputMaterial", "label": "Input Material", "type": "text" },
+            { "name": "outputMaterial", "label": "Output Material", "type": "text" },
+            { "name": "markerAssay", "label": "Marker Assay", "type": "text" },
+            { "name": "recoveryYield", "label": "Recovery Yield (%)", "type": "text" },
+            { "name": "solventUsed", "label": "Solvent Used", "type": "select" },
+            { "name": "residualSolventCompliance", "label": "Residual Solvent Compliance", "type": "select" },
+            { "name": "traceabilityAvailable", "label": "Traceability Available", "type": "select", "options": ["Yes", "No"] },
+            { "name": "documents", "label": "Documents", "type": "multiselect" }
+          ]
+        },
+        "bulk-trader": {
+          "title": "Bulk Trader / Importer",
+          "description": "I source and import this material in bulk and supply to buyers.",
+          "fields": [
+            { "name": "sourceManufacturer", "label": "Source Manufacturer", "type": "text", "required": true },
+            { "name": "importCountry", "label": "Import Country", "type": "select" },
+            { "name": "countryOfOrigin", "label": "Country of Origin", "type": "select", "required": true },
+            { "name": "portOfImport", "label": "Port of Import", "type": "select", "options": ["Nhava Sheva (India)", "Mundra (India)", "Chennai (India)", "Shanghai (China)"] },
+            { "name": "incotermsUsed", "label": "Incoterms Used", "type": "select", "options": ["CIF", "FOB", "EXW", "DDP", "CFR", "FCA"] },
+            { "name": "importFrequency", "label": "Import Frequency", "type": "select", "options": ["Monthly", "Quarterly", "Half-Yearly", "Annually", "On Demand"] },
+            { "name": "importDocuments", "label": "Import Documents", "type": "file", "multiple": true },
+            { "name": "warehouseName", "label": "Warehouse", "type": "select" },
+            { "name": "warehouseCapacity", "label": "Warehouse Capacity", "type": "text" },
+            { "name": "warehouseAvailableCapacity", "label": "Available Capacity", "type": "text" },
+            { "name": "warehouseStorageCondition", "label": "Storage Condition", "type": "select", "options": ["Ambient", "Cool & Dry", "Refrigerated", "Frozen"] },
+            { "name": "warehouseCertifications", "label": "Warehouse Certifications", "type": "multiselect" }
+          ]
+        },
+        "stockist": {
+          "title": "Stockist / Distributor",
+          "description": "I stock and distribute this material from my warehouse.",
+          "fields": [
+            { "name": "originalManufacturerName", "label": "Original Manufacturer", "type": "text", "required": true },
+            { "name": "originalManufacturerLocation", "label": "Manufacturer Location", "type": "text" },
+            { "name": "manufacturingFacility", "label": "Manufacturing Facility", "type": "text" },
+            { "name": "facilityLocation", "label": "Facility Location", "type": "text" },
+            { "name": "countryOfOrigin", "label": "Country of Origin", "type": "select" },
+            { "name": "manufacturerCertifications", "label": "Manufacturer Certifications", "type": "multiselect" },
+            { "name": "warehouseName", "label": "Warehouse", "type": "select", "required": true },
+            { "name": "warehouseType", "label": "Warehouse Type", "type": "select", "options": ["Owned", "Leased", "Shared / 3PL", "Consolidation & Distribution"] },
+            { "name": "storageCondition", "label": "Storage Condition", "type": "select" },
+            { "name": "warehouseCertifications", "label": "Warehouse Certifications", "type": "multiselect" },
+            { "name": "totalCapacity", "label": "Total Capacity", "type": "text" },
+            { "name": "availableCapacity", "label": "Available Capacity", "type": "text" },
+            { "name": "leadTime", "label": "Lead Time", "type": "select", "options": ["1 - 3 Days", "3 - 5 Days", "1 - 2 Weeks", "2 - 4 Weeks", "4 - 6 Weeks"] },
+            { "name": "regions", "label": "Regional Availability", "type": "multiselect" },
+            { "name": "supplyCoverage", "label": "Supply Coverage", "type": "text" }
+          ]
+        },
+        "aggregator": {
+          "title": "Ingredient Aggregator",
+          "description": "I aggregate from multiple sources and ensure quality & compliance.",
+          "fields": [
+            { "name": "sources", "label": "Aggregated Sources", "type": "repeatable", "required": true },
+            { "name": "consolidationFacility", "label": "Consolidation Facility", "type": "select", "required": true },
+            { "name": "consolidationAddress", "label": "Address", "type": "textarea" },
+            { "name": "warehouseType", "label": "Warehouse Type", "type": "select" },
+            { "name": "certifications", "label": "Certifications", "type": "multiselect" },
+            { "name": "capacity", "label": "Capacity", "type": "text" },
+            { "name": "availableCapacity", "label": "Available Capacity", "type": "text" },
+            { "name": "storageConditions", "label": "Storage Conditions", "type": "select" },
+            { "name": "leadTime", "label": "Lead Time", "type": "select" },
+            { "name": "qualityAssurance", "label": "Quality Assurance Checks", "type": "multiselect" }
+          ]
+        },
+        "private-label": {
+          "title": "Private / White Label Supplier",
+          "description": "I supply this material under private label or for contract manufacturing.",
+          "fields": [
+            { "name": "manufacturingPartner", "label": "Manufacturing Partner", "type": "text", "required": true },
+            { "name": "partnerFacility", "label": "Partner Facility", "type": "select", "required": true },
+            { "name": "supplyModel", "label": "Supply Model", "type": "select", "options": ["Private Label", "White Label", "Contract Manufacturing"] },
+            { "name": "minimumOrderQuantity", "label": "Minimum Order Quantity", "type": "text" },
+            { "name": "leadTime", "label": "Lead Time", "type": "select" },
+            { "name": "brandingSupport", "label": "Branding Support", "type": "select", "options": ["Yes", "No"] },
+            { "name": "customLabel", "label": "Custom Label", "type": "select", "options": ["Yes", "No"] },
+            { "name": "customPackaging", "label": "Custom Packaging", "type": "select", "options": ["Yes", "No"] },
+            { "name": "customFormulation", "label": "Custom Formulation", "type": "select", "options": ["Yes", "No"] },
+            { "name": "documents", "label": "Documents", "type": "multiselect" }
+          ]
+        }
+      },
+      "variant": {
+        "subSteps": [
+          { "key": "variantDetails", "title": "Variant Details", "subtitle": "Basic variant information" },
+          { "key": "technicalSpecifications", "title": "Technical Specifications", "subtitle": "What are the key specs?" },
+          { "key": "commercialPricing", "title": "Commercial & Pricing", "subtitle": "Pricing & terms" },
+          { "key": "complianceCertifications", "title": "Compliance & Certifications", "subtitle": "Compliance details" },
+          { "key": "searchMarketplace", "title": "Search & Marketplace", "subtitle": "Visibility & keywords" }
+        ],
+        "detailFields": [
+          { "name": "name", "label": "Variant Name", "type": "text", "required": true },
+          { "name": "variantType", "label": "Variant Type", "type": "select", "options": ["Grade", "Pack Size", "Assay", "Particle Size", "Combination"] },
+          { "name": "grade", "label": "Grade", "type": "text" },
+          { "name": "assayPurity", "label": "Assay / Purity", "type": "text" },
+          { "name": "packSize", "label": "Pack Size", "type": "text" },
+          { "name": "packagingType", "label": "Packaging Type", "type": "text" },
+          { "name": "particleSize", "label": "Particle Size", "type": "text" },
+          { "name": "skuCode", "label": "SKU Code", "type": "text" },
+          { "name": "batchPrefix", "label": "Batch Prefix", "type": "text" },
+          { "name": "status", "label": "Status", "type": "select", "options": ["Active", "Draft", "Inactive"] },
+          { "name": "images", "label": "Variant Images", "type": "image", "multiple": true }
+        ]
+      }
+    },
+
+    "processing-machinery": {
+      "label": "Processing Machinery",
+      "groupId": "processing-machinery",
+      "actionButtonLabel": "Add New Machine",
+      "typeLabel": "Processing Machinery",
+      "steps": [
+        { "key": "identity", "title": "Machine Identity", "subtitle": "Basic machine details" },
+        { "key": "role", "title": "Your Role", "subtitle": "Role & company details" },
+        { "key": "variants", "title": "Variants & Models", "subtitle": "Add models / variants" },
+        { "key": "review", "title": "Review & Submit", "subtitle": "Final review" }
+      ],
+      "identity": {
+        "typeSelectorLabel": null,
+        "baseFields": [
+          { "name": "machineName", "label": "Machine Name", "type": "text", "required": true },
+          { "name": "commercialModel", "label": "Commercial Model / Series", "type": "text", "required": true },
+          { "name": "brand", "label": "Brand / OEM", "type": "text", "required": true },
+          { "name": "category", "label": "Machine Category", "type": "select", "required": true, "options": ["Mixing & Blending Machines", "Drying Machines", "Homogenizing Machines", "Extrusion Machines", "Size Reduction Machines", "Thermal Processing Machines", "Separation & Filtration"] },
+          { "name": "subCategory", "label": "Sub-category", "type": "select", "required": true, "options": ["Ribbon Blender", "Mixing Tank", "Spray Dryer", "High Pressure Homogenizer", "Twin Screw Extruder", "Grinder / Mill", "Pasteurizer", "Emulsifier"] },
+          { "name": "machineType", "label": "Machine Type", "type": "select", "required": true, "options": ["Batch", "Continuous", "Semi-Continuous", "Modular / Skid"] },
+          { "name": "functionProcess", "label": "Function / Process", "type": "select", "required": true, "options": ["Mixing / Blending", "Drying", "Homogenizing", "Extrusion", "Grinding / Milling", "Pasteurization", "Emulsification", "Heating / Cooling", "Separation"] },
+          { "name": "shortDescription", "label": "Short Description", "type": "textarea", "required": true },
+          { "name": "detailedDescription", "label": "Detailed Description", "type": "textarea", "required": true },
+          { "name": "countryOfManufacture", "label": "Country of Manufacture", "type": "select", "required": true, "options": ["India", "China", "Germany", "Italy", "USA", "Japan", "South Korea"] },
+          { "name": "yearOfManufacture", "label": "Year of Manufacture", "type": "select", "required": true },
+          { "name": "hsnCode", "label": "HSN Code", "type": "text" },
+          { "name": "customsDutyCode", "label": "Customs Duty Code", "type": "text" },
+          { "name": "baseModel", "label": "Base Model / Series", "type": "text", "required": true },
+          { "name": "baseModelCode", "label": "Base Model Code", "type": "text" },
+          { "name": "productLine", "label": "Product Line", "type": "text" },
+          { "name": "typicalUse", "label": "Typical Use", "type": "textarea" },
+          { "name": "targetIndustries", "label": "Target Industries", "type": "text" },
+          { "name": "installationType", "label": "Installation Type", "type": "select", "options": ["Floor Mounted", "Skid Mounted", "Portable", "Inline / Line Integrated", "Containerized"] },
+          { "name": "availabilityStatus", "label": "Availability Status", "type": "select", "required": true, "options": ["Available", "Made to Order", "Limited Stock", "Discontinued"] },
+          { "name": "lifecycleStage", "label": "Lifecycle Stage", "type": "select", "required": true, "options": ["Active", "New Launch", "Mature", "Legacy", "End of Life"] },
+          { "name": "warranty", "label": "Warranty", "type": "select", "options": ["6 Months", "12 Months", "18 Months", "24 Months", "36 Months"] },
+          { "name": "tags", "label": "Tags", "type": "tags" },
+          { "name": "images", "label": "Machine Images", "type": "image", "multiple": true, "required": true, "errorMessage": "Upload a primary image" }
+        ],
+        "types": {}
+      },
+      "roles": {
+        "manufacturer": { "title": "Manufacturer (Original Equipment Manufacturer)", "description": "I own this machinery brand and manufacture it.", "fields": [] },
+        "contract-oem": { "title": "Contract Manufacturer (OEM)", "description": "I manufacture this machinery for another brand.", "fields": [] },
+        "authorised-dealer": { "title": "Authorised Dealer / Distributor", "description": "I sell this machinery from another brand.", "fields": [] },
+        "system-integrator": { "title": "System Integrator", "description": "I provide complete solution with integration services.", "fields": [] },
+        "importer": { "title": "Importer", "description": "I import machinery and supply in local markets.", "fields": [] },
+        "stockist": { "title": "Stockist / Reseller", "description": "I stock and resell machinery from other brands.", "fields": [] },
+        "service-provider": { "title": "Service Provider", "description": "I provide installation, commissioning and after-sales service.", "fields": [] }
+      },
+      "roleSharedFields": [
+        { "name": "oemName", "label": "OEM Name", "type": "text" },
+        { "name": "brandOwner", "label": "Brand Owner", "type": "text" },
+        { "name": "commercialOwner", "label": "Commercial Owner", "type": "text" },
+        { "name": "legalManufacturer", "label": "Legal Manufacturer", "type": "text" },
+        { "name": "exclusiveGeneric", "label": "Exclusive / Generic", "type": "select", "options": ["Exclusive", "Generic", "Semi-Exclusive", "OEM Exclusive"] },
+        { "name": "ipStatus", "label": "IP Status", "type": "select", "options": ["Patented", "Patent Pending", "Trade Secret", "Open / No IP", "Licensed"] },
+        { "name": "patentHolder", "label": "Patent Holder", "type": "text" },
+        { "name": "patentNumber", "label": "Patent Number", "type": "text" },
+        { "name": "licenseHolder", "label": "License Holder", "type": "text" },
+        { "name": "globalManufacturers", "label": "Global Manufacturers", "type": "tags" },
+        { "name": "majorMarkets", "label": "Major Markets", "type": "multiselect", "options": ["India", "USA", "UAE", "Germany", "UK", "Singapore", "Southeast Asia", "Africa"] },
+        { "name": "availabilityRegions", "label": "Availability Regions", "type": "multiselect", "options": ["India", "Asia Pacific", "Middle East", "Europe", "North America", "Africa", "Latin America", "Global"] },
+        { "name": "lifecycleStatus", "label": "Lifecycle Status", "type": "select", "options": ["Active", "New Launch", "Growth", "Mature", "Declining", "End of Life"] },
+        { "name": "marketPositioning", "label": "Market Positioning", "type": "select", "options": ["Premium", "Value", "Economy", "Niche / Specialty", "Volume Leader"] },
+        { "name": "typicalEndUsers", "label": "Typical End Users", "type": "tags" },
+        { "name": "keyCompetitors", "label": "Key Competitors", "type": "tags" },
+        { "name": "usp", "label": "USP", "type": "textarea" },
+        { "name": "commercialNotes", "label": "Commercial Notes", "type": "textarea" },
+        { "name": "documents", "label": "Ownership Documents", "type": "file", "multiple": true }
+      ],
+      "variant": {
+        "subSteps": [
+          { "key": "variantDetails", "title": "Variant Details", "subtitle": "Model configuration" },
+          { "key": "technicalSpecifications", "title": "Technical Specifications", "subtitle": "Capacity, power, dimensions" },
+          { "key": "commercialPricing", "title": "Commercial & Pricing", "subtitle": "Pricing & terms" },
+          { "key": "complianceCertifications", "title": "Compliance & Certifications", "subtitle": "Compliance details" },
+          { "key": "searchMarketplace", "title": "Search & Marketplace", "subtitle": "Visibility & keywords" }
+        ],
+        "detailFields": [
+          { "name": "name", "label": "Model / Variant Name", "type": "text", "required": true },
+          { "name": "variantType", "label": "Variant Type", "type": "select", "options": ["Model", "Capacity", "Automation", "Configuration"] },
+          { "name": "skuCode", "label": "Model Code", "type": "text" },
+          { "name": "status", "label": "Status", "type": "select", "options": ["Active", "Draft", "Inactive"] },
+          { "name": "images", "label": "Variant Images", "type": "image", "multiple": true }
+        ],
+        "extraFields": [
+          { "name": "capacity", "label": "Capacity", "type": "text" },
+          { "name": "powerRating", "label": "Power Rating", "type": "text" },
+          { "name": "automationLevel", "label": "Automation Level", "type": "select" },
+          { "name": "dimensions", "label": "Dimensions", "type": "text" },
+          { "name": "weight", "label": "Weight", "type": "text" },
+          { "name": "materialOfConstruction", "label": "Material of Construction", "type": "text" },
+          { "name": "utilities", "label": "Utilities Required", "type": "text" },
+          { "name": "installationIncluded", "label": "Installation Included", "type": "checkbox" },
+          { "name": "warrantyMonths", "label": "Warranty (Months)", "type": "text" }
+        ]
+      }
+    },
+
+    "finished-goods": {
+      "label": "Finished Goods",
+      "groupId": "finished",
+      "actionButtonLabel": "Add New Product",
+      "typeLabel": "Finished Good",
+      "steps": [
+        { "key": "identity", "title": "Product Identity", "subtitle": "Create base product" },
+        { "key": "role", "title": "Your Role", "subtitle": "Brand & ownership" },
+        { "key": "variants", "title": "Variants", "subtitle": "Forms, flavors, pack sizes" },
+        { "key": "review", "title": "Review & Publish", "subtitle": "Final review" }
+      ],
+      "identity": {
+        "typeSelectorLabel": null,
+        "baseFields": [
+          { "name": "productType", "label": "Product Type", "type": "select", "required": true, "options": ["Branded Product (Retail-Ready)", "Private Label Product", "Generic / Commodity Product", "Sample / Prototype"] },
+          { "name": "brandName", "label": "Brand Name", "type": "text", "required": true },
+          { "name": "commercialProductName", "label": "Commercial Product Name", "type": "text", "required": true },
+          { "name": "industry", "label": "Industry", "type": "select", "required": true, "options": ["Food", "Beverage", "Microbiome", "Herbal", "Nutraceutical", "Cosmeceutical", "Animal/Pet Food", "Seafood"] },
+          { "name": "sector", "label": "Sector", "type": "select", "required": true, "dependsOn": "industry" },
+          { "name": "category", "label": "Category", "type": "select", "required": true },
+          { "name": "commercialStage", "label": "Commercial Stage", "type": "select", "required": true },
+          { "name": "countryOfOrigin", "label": "Country of Origin", "type": "select", "required": true },
+          { "name": "shortDescription", "label": "Short Description", "type": "textarea" },
+          { "name": "detailedDescription", "label": "Detailed Description", "type": "textarea" },
+          { "name": "primaryImage", "label": "Primary Marketplace Image", "type": "image" },
+          { "name": "otherImages", "label": "Other Images", "type": "image", "multiple": true }
+        ],
+        "types": {}
+      },
+      "roles": {
+        "brand-owner": { "title": "Brand Owner (OBM)", "description": "I own this product and brand.", "fields": [] },
+        "contract-manufacturer": { "title": "Contract Manufacturer (OEM)", "description": "I manufacture this product for another company.", "fields": [] },
+        "white-label": { "title": "White Label Manufacturer", "description": "I manufacture and buyers can sell under their own brand.", "fields": [] },
+        "private-label": { "title": "Private Label Manufacturer", "description": "I manufacture as per buyer's specifications.", "fields": [] },
+        "distributor": { "title": "Distributor", "description": "I distribute this product from another brand.", "fields": [] },
+        "exporter": { "title": "Exporter", "description": "I export this product to international markets.", "fields": [] },
+        "product-dev-partner": { "title": "Product Development Partner", "description": "I offer formulation development and manufacturing services.", "fields": [] }
+      },
+      "roleSharedFields": [
+        { "name": "legalEntityName", "label": "Legal Entity Name", "type": "text" },
+        { "name": "manufacturingFacility", "label": "Manufacturing Facility", "type": "select" },
+        { "name": "gstin", "label": "GSTIN", "type": "text" },
+        { "name": "fssaiLicense", "label": "FSSAI License", "type": "text" },
+        { "name": "iecCode", "label": "IEC Code", "type": "text" },
+        { "name": "brandOwnershipProof", "label": "Brand Ownership Proof", "type": "file" },
+        { "name": "authorizedToSell", "label": "Authorized to Sell", "type": "checkbox" },
+        { "name": "commercialNotes", "label": "Commercial Notes", "type": "textarea" }
+      ],
+      "variant": {
+        "subSteps": [
+          { "key": "variantDetails", "title": "Variant Details", "subtitle": "Form, flavor, pack size" },
+          { "key": "technicalSpecifications", "title": "Technical Specifications", "subtitle": "What are the key specs?" },
+          { "key": "commercialPricing", "title": "Commercial & Pricing", "subtitle": "Pricing & terms" },
+          { "key": "complianceCertifications", "title": "Compliance & Certifications", "subtitle": "Compliance details" },
+          { "key": "searchMarketplace", "title": "Search & Marketplace", "subtitle": "Visibility & keywords" }
+        ],
+        "detailFields": [
+          { "name": "name", "label": "Variant Name", "type": "text", "required": true },
+          { "name": "variantType", "label": "Variant Type", "type": "select" },
+          { "name": "skuCode", "label": "SKU Code", "type": "text" },
+          { "name": "packSize", "label": "Pack Size", "type": "text" },
+          { "name": "packagingType", "label": "Packaging Type", "type": "text" },
+          { "name": "status", "label": "Status", "type": "select", "options": ["Active", "Draft", "Inactive"] },
+          { "name": "images", "label": "Variant Images", "type": "image", "multiple": true }
+        ],
+        "extraFields": [
+          { "name": "productVariantCode", "label": "Product Variant Code", "type": "text" },
+          { "name": "form", "label": "Form / Format", "type": "text" },
+          { "name": "flavor", "label": "Flavor", "type": "text" },
+          { "name": "strength", "label": "Strength", "type": "text" },
+          { "name": "gtin", "label": "GTIN", "type": "text" },
+          { "name": "shelfLife", "label": "Shelf Life", "type": "text" },
+          { "name": "storage", "label": "Storage", "type": "text" },
+          { "name": "sampleAvailable", "label": "Sample Available", "type": "checkbox" },
+          { "name": "markets", "label": "Markets", "type": "multiselect" }
+        ]
+      }
+    },
+
+    "packaging-materials": {
+      "label": "Packaging Materials",
+      "groupId": "packaging-materials",
+      "actionButtonLabel": "Add New Packaging Material",
+      "typeLabel": "Packaging Material",
+      "steps": [
+        { "key": "identity", "title": "Product Identity", "subtitle": "Create base product" },
+        { "key": "role", "title": "Your Role", "subtitle": "Brand & commercial terms" },
+        { "key": "variants", "title": "Variants", "subtitle": "Sizes, colors" },
+        { "key": "review", "title": "Review & Submit", "subtitle": "Final review" }
+      ],
+      "identity": {
+        "typeSelectorLabel": null,
+        "baseFields": [
+          { "name": "productName", "label": "Product Name", "type": "text", "required": true },
+          { "name": "commercialName", "label": "Commercial Name", "type": "text", "required": true },
+          { "name": "brand", "label": "Brand", "type": "text" },
+          { "name": "packagingCategory", "label": "Packaging Category", "type": "select", "required": true, "options": ["Flexible Packaging", "Rigid Packaging", "Semi-rigid Packaging", "Secondary Packaging", "Tertiary Packaging"] },
+          { "name": "packagingSubCategory", "label": "Packaging Sub-category", "type": "select", "required": true, "options": ["Retort Pouch", "Bottle", "Jar", "Can", "Carton", "Label", "Cap & Closure", "Film"] },
+          { "name": "packagingFormat", "label": "Packaging Format", "type": "select", "required": true, "options": ["Stand-up Pouch", "Flat Pouch", "Round Bottle", "Wide Mouth Jar", "Slim Can", "RSC Carton", "Screw Cap"] },
+          { "name": "primaryMaterialFamily", "label": "Primary Material Family", "type": "select", "required": true, "options": ["Multi-layer Laminate", "PET", "HDPE", "Glass", "Aluminum", "Paperboard", "PP"] },
+          { "name": "constructionType", "label": "Construction Type", "type": "select", "required": true, "options": ["Multi-layer Laminate", "Mono-layer", "Co-extruded", "Blow Molded", "Injection Molded", "Corrugated"] },
+          { "name": "countryOfOrigin", "label": "Country of Origin", "type": "select", "required": true, "options": ["India", "USA", "China", "Germany", "United Kingdom", "UAE", "Vietnam"] },
+          { "name": "commercialStage", "label": "Commercial Stage", "type": "select", "required": true, "options": ["Commercially Available", "Pilot / Sample", "Pre-Launch", "Custom / Made to Order", "Discontinued"] },
+          { "name": "materialCode", "label": "Material Code", "type": "text" },
+          { "name": "shortDescription", "label": "Short Description", "type": "textarea", "required": true },
+          { "name": "detailedDescription", "label": "Detailed Description", "type": "textarea", "required": true },
+          { "name": "marketplaceImages", "label": "Marketplace Images", "type": "image", "multiple": true, "required": true, "errorMessage": "At least one marketplace image is required" }
+        ],
+        "types": {}
+      },
+      "_roleNote": [
+        "Step 2 for Packaging Materials is NOT a role-card grid — PackagingOwnershipPage renders a",
+        "single ownership/commercial form whose `ownershipType` dropdown carries the role. The role",
+        "ids below are slugs of OWNERSHIP_TYPE_OPTIONS in packaging-ownership-data.ts, and the field",
+        "list is PackagingOwnershipForm verbatim."
+      ],
+      "roles": {
+        "brand-owner": { "title": "Brand Owner", "description": "I own this packaging brand.", "fields": [] },
+        "manufacturer": { "title": "Manufacturer", "description": "I manufacture this packaging material.", "fields": [] },
+        "authorized-distributor": { "title": "Authorized Distributor", "description": "I am authorized to distribute this packaging material.", "fields": [] },
+        "trader-stockist": { "title": "Trader / Stockist", "description": "I stock and trade this packaging material.", "fields": [] },
+        "private-label-supplier": { "title": "Private Label Supplier", "description": "I supply this packaging material under private label.", "fields": [] },
+        "contract-manufacturer": { "title": "Contract Manufacturer", "description": "I manufacture this packaging material for another company.", "fields": [] }
+      },
+      "roleSharedFields": [
+        { "name": "ownershipType", "label": "Ownership Type", "type": "select", "required": true, "options": ["Brand Owner", "Manufacturer", "Authorized Distributor", "Trader / Stockist", "Private Label Supplier", "Contract Manufacturer"] },
+        { "name": "brandOwnerName", "label": "Brand Owner Name", "type": "text" },
+        { "name": "manufacturerName", "label": "Manufacturer Name", "type": "text" },
+        { "name": "authorizedToSell", "label": "Authorized to Sell", "type": "checkbox" },
+        { "name": "currency", "label": "Currency", "type": "select", "options": ["INR", "USD", "EUR", "GBP", "AED"] },
+        { "name": "listPrice", "label": "List Price", "type": "text" },
+        { "name": "moq", "label": "MOQ", "type": "text" },
+        { "name": "moqUnit", "label": "MOQ Unit", "type": "select", "options": ["pcs", "kg", "rolls", "cartons", "sets"] },
+        { "name": "leadTimeDays", "label": "Lead Time (Days)", "type": "text" },
+        { "name": "paymentTerms", "label": "Payment Terms", "type": "select", "options": ["Advance 100%", "30% Advance / 70% Against Delivery", "Net 30", "Net 45", "Letter of Credit (LC)", "Against Delivery"] },
+        { "name": "incoTerm", "label": "Inco Term", "type": "select", "options": ["EXW", "FOB", "CIF", "CFR", "DDP", "DAP"] },
+        { "name": "sampleAvailable", "label": "Sample Available", "type": "checkbox" },
+        { "name": "commercialNotes", "label": "Commercial Notes", "type": "textarea" }
+      ],
+      "variant": {
+        "subSteps": [
+          { "key": "variantDetails", "title": "Variant Details", "subtitle": "Size, color, structure" },
+          { "key": "technicalSpecifications", "title": "Technical Specifications", "subtitle": "Barrier, thickness, seal" },
+          { "key": "commercialPricing", "title": "Commercial & Pricing", "subtitle": "Pricing & terms" },
+          { "key": "complianceCertifications", "title": "Compliance & Certifications", "subtitle": "Migration & food contact" },
+          { "key": "searchMarketplace", "title": "Search & Marketplace", "subtitle": "Visibility & keywords" }
+        ],
+        "detailFields": [
+          { "name": "name", "label": "Variant Name", "type": "text", "required": true },
+          { "name": "variantType", "label": "Variant Type", "type": "select" },
+          { "name": "skuCode", "label": "SKU", "type": "text" },
+          { "name": "packSize", "label": "Dimensions / Size", "type": "text" },
+          { "name": "packagingType", "label": "Packaging Format", "type": "text" },
+          { "name": "status", "label": "Status", "type": "select", "options": ["Active", "Draft", "Inactive"] },
+          { "name": "images", "label": "Variant Images", "type": "image", "multiple": true }
+        ],
+        "extraFields": [
+          { "name": "code", "label": "Variant Code", "type": "text" },
+          { "name": "materialStructure", "label": "Material Structure", "type": "text" },
+          { "name": "thicknessUm", "label": "Thickness (µm)", "type": "number" },
+          { "name": "closureType", "label": "Closure Type", "type": "text" },
+          { "name": "colorFinish", "label": "Color / Finish", "type": "text" },
+          { "name": "barrierLevel", "label": "Barrier Level", "type": "select" },
+          { "name": "layers", "label": "Layer Structure", "type": "repeatable" }
+        ]
+      }
+    },
+
+    "packaging-machinery": {
+      "label": "Packaging Machinery",
+      "groupId": "packaging-machinery",
+      "actionButtonLabel": "Add New Machine",
+      "typeLabel": "Packaging Machinery",
+      "steps": [
+        { "key": "identity", "title": "Machine Identity", "subtitle": "Basic machine identity" },
+        { "key": "role", "title": "Your Role", "subtitle": "Role & commercial terms" },
+        { "key": "variants", "title": "Variants & Models", "subtitle": "Add models / variants" },
+        { "key": "review", "title": "Review & Submit", "subtitle": "Final review" }
+      ],
+      "identity": {
+        "typeSelectorLabel": null,
+        "baseFields": [
+          { "name": "machineName", "label": "Machine Name", "type": "text", "required": true },
+          { "name": "category", "label": "Category", "type": "select", "required": true, "options": ["Filling Machines", "Labeling Machines", "Capping Machines", "Cartoning Machines", "Pouch Packing Machines", "Shrink Wrapping Machines", "Blister Packing Machines"] },
+          { "name": "subCategory", "label": "Sub Category", "type": "select", "required": true, "options": ["Liquid Filling Machines", "Powder Filling Machines", "Wrap-around Labeling", "Screw Capping", "Horizontal Cartoning", "Vertical Form Fill Seal", "L-Sealer + Tunnel"] },
+          { "name": "machineType", "label": "Machine Type", "type": "select", "required": true, "options": ["Automatic", "Semi-Automatic", "Manual", "Fully Automatic"] },
+          { "name": "baseModel", "label": "Base Model / Series", "type": "text", "required": true },
+          { "name": "brand", "label": "Brand / OEM", "type": "text", "required": true },
+          { "name": "modelDesignation", "label": "Model Designation", "type": "text" },
+          { "name": "machineCode", "label": "Machine Code", "type": "text" },
+          { "name": "shortDescription", "label": "Short Description", "type": "textarea", "required": true },
+          { "name": "longDescription", "label": "Long Description", "type": "textarea", "required": true },
+          { "name": "countryOfOrigin", "label": "Country of Origin", "type": "select", "required": true, "options": ["India", "China", "Germany", "Italy", "USA", "Japan", "South Korea"] },
+          { "name": "manufacturingLocation", "label": "Manufacturing Location", "type": "text" },
+          { "name": "yearOfManufacture", "label": "Year of Manufacture", "type": "select" },
+          { "name": "hsnCode", "label": "HSN Code", "type": "text" },
+          { "name": "tags", "label": "Tags", "type": "tags" },
+          { "name": "images", "label": "Machine Images", "type": "image", "multiple": true }
+        ],
+        "types": {}
+      },
+      "roles": {
+        "oem-manufacturer": { "title": "OEM / Manufacturer", "description": "I design and manufacture this packaging machine.", "fields": [] },
+        "authorized-distributor": { "title": "Authorized Distributor", "description": "I am authorized to distribute this machine brand.", "fields": [] },
+        "dealer": { "title": "Dealer / Reseller", "description": "I resell machines sourced from manufacturers or distributors.", "fields": [] },
+        "system-integrator": { "title": "System Integrator", "description": "I integrate machines into turnkey packaging lines.", "fields": [] },
+        "service-partner": { "title": "Service / After-Sales Partner", "description": "I provide installation, spare parts or maintenance services.", "fields": [] },
+        "exporter": { "title": "Machinery Exporter", "description": "I export packaging machines to international markets.", "fields": [] },
+        "importer-stockist": { "title": "Importer / Stockist", "description": "I import and stock machines for local buyers.", "fields": [] }
+      },
+      "roleSharedFields": [
+        { "name": "currency", "label": "Currency", "type": "select", "options": ["INR", "USD", "EUR", "GBP", "AED"] },
+        { "name": "listPrice", "label": "List Price", "type": "text" },
+        { "name": "moq", "label": "MOQ", "type": "text" },
+        { "name": "moqUnit", "label": "MOQ Unit", "type": "select", "options": ["unit", "set", "line"] },
+        { "name": "leadTimeDays", "label": "Lead Time (Days)", "type": "text" },
+        { "name": "paymentTerms", "label": "Payment Terms", "type": "select", "options": ["Advance 100%", "30% Advance / 70% Against Delivery", "Milestone based", "Letter of Credit (LC)", "Net 30", "Net 45"] },
+        { "name": "incoTerm", "label": "Inco Term", "type": "select", "options": ["EXW", "FOB", "CIF", "CFR", "DDP", "DAP"] },
+        { "name": "warrantyMonths", "label": "Warranty (Months)", "type": "text" },
+        { "name": "authorizedToList", "label": "Authorized to List", "type": "checkbox" },
+        { "name": "demoAvailable", "label": "Demo Available", "type": "checkbox" },
+        { "name": "installationIncluded", "label": "Installation Included", "type": "checkbox" },
+        { "name": "commercialNotes", "label": "Commercial Notes", "type": "textarea" }
+      ],
+      "variant": {
+        "subSteps": [
+          { "key": "variantDetails", "title": "Variant Details", "subtitle": "Model configuration" },
+          { "key": "technicalSpecifications", "title": "Technical Specifications", "subtitle": "Speed, format, power" },
+          { "key": "commercialPricing", "title": "Commercial & Pricing", "subtitle": "Pricing & terms" },
+          { "key": "complianceCertifications", "title": "Compliance & Certifications", "subtitle": "CE, safety, compliance" },
+          { "key": "searchMarketplace", "title": "Search & Marketplace", "subtitle": "Visibility & keywords" }
+        ],
+        "detailFields": [
+          { "name": "name", "label": "Model / Variant Name", "type": "text", "required": true },
+          { "name": "variantType", "label": "Variant Type", "type": "select" },
+          { "name": "skuCode", "label": "Model Code", "type": "text" },
+          { "name": "status", "label": "Status", "type": "select", "options": ["Active", "Draft", "Inactive"] },
+          { "name": "images", "label": "Variant Images", "type": "image", "multiple": true }
+        ],
+        "extraFields": [
+          { "name": "outputSpeed", "label": "Output Speed", "type": "text" },
+          { "name": "packFormatRange", "label": "Pack Format Range", "type": "text" },
+          { "name": "fillRange", "label": "Fill Range", "type": "text" },
+          { "name": "powerRating", "label": "Power Rating", "type": "text" },
+          { "name": "airConsumption", "label": "Air Consumption", "type": "text" },
+          { "name": "dimensions", "label": "Dimensions", "type": "text" },
+          { "name": "weight", "label": "Weight", "type": "text" },
+          { "name": "changeOverTime", "label": "Change-over Time", "type": "text" },
+          { "name": "installationIncluded", "label": "Installation Included", "type": "checkbox" },
+          { "name": "warrantyMonths", "label": "Warranty (Months)", "type": "text" }
+        ]
+      }
+    }
+  },
+
+  "sharedVariantSections": {
+    "technicalSpecifications": {
+      "groupFields": [
+        { "name": "title", "label": "Specification Title", "type": "text", "required": true },
+        { "name": "tag", "label": "Tag", "type": "select", "options": ["Primary", "Optional"] },
+        { "name": "collapsed", "label": "Collapsed", "type": "checkbox" }
+      ],
+      "parameterFields": [
+        { "name": "parameter", "label": "Parameter", "type": "text", "required": true },
+        { "name": "specification", "label": "Specification", "type": "text", "required": true },
+        { "name": "unit", "label": "Unit", "type": "text", "required": true },
+        { "name": "method", "label": "Test Method / Standard", "type": "text", "required": true },
+        { "name": "source", "label": "Requirement Source", "type": "select", "required": true, "options": ["Buyer Specification", "Regulatory Requirement", "Internal Standard", "Calculated"] },
+        { "name": "attachment", "label": "Attachment", "type": "file" },
+        { "name": "priority", "label": "Priority", "type": "select", "options": ["High", "Medium", "Low"] },
+        { "name": "remarks", "label": "Remarks", "type": "text" }
+      ]
+    },
+    "commercialPricing": {
+      "tabs": ["Pricing & Quantity", "Commercial & Trade Terms", "Packaging & Samples", "Included Documents & Services"],
+      "pricingQuantity": [
+        { "name": "unit", "label": "Unit", "type": "select" },
+        { "name": "baseCost", "label": "Base Cost / Price per Unit", "type": "number" },
+        { "name": "moq", "label": "MOQ", "type": "text" },
+        { "name": "leadTime", "label": "Lead Time", "type": "text" },
+        { "name": "freightCharges", "label": "Freight Charges", "type": "select", "options": ["Included in Price", "Extra (At Actuals)"] },
+        { "name": "insuranceCharges", "label": "Insurance Charges", "type": "select", "options": ["Included in Price", "Extra (At Actuals)"] },
+        { "name": "handlingCharges", "label": "Handling Charges", "type": "text" },
+        { "name": "otherCharges", "label": "Other Charges", "type": "text" }
+      ],
+      "volumePricingRow": [
+        { "name": "qtyBreak", "label": "Quantity Range", "type": "text" },
+        { "name": "tierLabel", "label": "Tier Name", "type": "text" },
+        { "name": "pricePerUnit", "label": "Price per Unit", "type": "text" },
+        { "name": "discountVsBase", "label": "Discount vs Base", "type": "text" },
+        { "name": "leadTimeDays", "label": "Lead Time (Days)", "type": "text" }
+      ],
+      "commercialTradeTerms": [
+        { "name": "currency", "label": "Currency", "type": "select", "options": ["INR (₹)", "USD ($)", "EUR (€)", "GBP (£)"] },
+        { "name": "paymentTerms", "label": "Payment Terms", "type": "select", "options": ["Net 30 Days", "Net 60 Days", "30% Advance / 70% LC", "Letter of Credit (L/C)", "Advance 30% + Net 30"] },
+        { "name": "incoterms", "label": "Incoterms", "type": "select", "options": ["EXW (Ex Works)", "FOB (Free on Board)", "CIF (Cost, Insurance & Freight)"] },
+        { "name": "priceValidityDays", "label": "Price Validity (Days)", "type": "text" },
+        { "name": "gstTaxes", "label": "GST / Taxes", "type": "select", "options": ["Excl. of GST", "Incl. of GST"] },
+        { "name": "exportAvailable", "label": "Export Available", "type": "toggle" },
+        { "name": "minOrderValue", "label": "Minimum Order Value", "type": "text" },
+        { "name": "partialShipmentAllowed", "label": "Partial Shipment Allowed", "type": "toggle" },
+        { "name": "returnPolicy", "label": "Return Policy", "type": "textarea" },
+        { "name": "warrantyPeriod", "label": "Warranty Period", "type": "text" }
+      ],
+      "packagingRow": [
+        { "name": "packagingType", "label": "Packaging Type", "type": "text" },
+        { "name": "size", "label": "Size", "type": "text" },
+        { "name": "customPackaging", "label": "Custom Packaging", "type": "text" }
+      ],
+      "sampleInformation": [
+        { "name": "sampleAvailable", "label": "Sample Available", "type": "toggle" },
+        { "name": "freePaidSample", "label": "Free / Paid Sample", "type": "select", "options": ["Free", "Paid"] },
+        { "name": "sampleCost", "label": "Sample Cost", "type": "text" },
+        { "name": "sampleTurnaroundDays", "label": "Sample Turnaround (Days)", "type": "text" },
+        { "name": "maxSampleQty", "label": "Max Sample Quantity", "type": "text" },
+        { "name": "sampleShippingBorneBy", "label": "Sample Shipping Borne By", "type": "select", "options": ["Buyer", "Seller"] }
+      ],
+      "includedDocuments": { "type": "checkbox-group", "options": ["CoA", "TDS", "SDS", "Regulatory Documents", "Export Documents", "Stability Report"] },
+      "includedServices": { "type": "checkbox-group", "options": ["Heavy Metal Report", "Application Support", "Formulation Support", "Free Samples"] }
+    },
+    "complianceCertifications": {
+      "documentFields": [
+        { "name": "name", "label": "Name", "type": "text", "required": true },
+        { "name": "category", "label": "Type", "type": "select", "options": ["Standard Certification", "Additional Certification", "Product Document", "COA & Test Report"] },
+        { "name": "reference", "label": "Reference No.", "type": "text" },
+        { "name": "authority", "label": "Authority", "type": "text" },
+        { "name": "applicableTo", "label": "Applicable To", "type": "text" },
+        { "name": "date", "label": "Date", "type": "text" },
+        { "name": "expiryDate", "label": "Expiry Date", "type": "text" },
+        { "name": "status", "label": "Status", "type": "select", "options": ["Active", "Expiring", "Expired"] },
+        { "name": "fileName", "label": "Document File", "type": "file" }
+      ]
+    },
+    "searchMarketplace": {
+      "fields": [
+        { "name": "searchTagsAndKeywords", "label": "Search Tags & Keywords", "type": "tags" },
+        { "name": "seoKeywords", "label": "SEO Keywords", "type": "text" },
+        { "name": "indexedCategories", "label": "Indexed Categories", "type": "text" },
+        { "name": "synonymsOrAlternativeNames", "label": "Synonyms / Alternative Names", "type": "tags" },
+        { "name": "commonMisspellings", "label": "Common Misspellings", "type": "tags" },
+        { "name": "searchAliases", "label": "Search Aliases", "type": "tags" },
+        { "name": "negativeKeywords", "label": "Negative Keywords", "type": "tags" },
+        { "name": "marketplaceListing", "label": "Marketplace Listing", "type": "object" },
+        { "name": "advancedDetails", "label": "Advanced Details", "type": "object" }
+      ]
+    }
+  }
+}

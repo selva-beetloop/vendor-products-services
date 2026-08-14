@@ -1,0 +1,76 @@
+server:
+  port: ${SERVER_PORT:8086}
+  servlet:
+    context-path: /vendor-products
+
+spring:
+  application:
+    name: vendor-products-services
+
+  # H2 file-backed database is the zero-setup default so the service runs with a
+  # single `mvn spring-boot:run`. Switch to PostgreSQL with:
+  #   mvn spring-boot:run -Dspring-boot.run.profiles=postgres
+  datasource:
+    url: jdbc:h2:file:./data/vendor-products;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 25MB
+
+app:
+  storage:
+    root: ${UPLOAD_DIR:./data/uploads}
+    max-file-size-bytes: 10485760
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:3000,http://127.0.0.1:3000}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+
+logging:
+  level:
+    com.beetloop.vendorproducts: INFO
+
+---
+spring:
+  config:
+    activate:
+      on-profile: postgres
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/vendor_products}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
