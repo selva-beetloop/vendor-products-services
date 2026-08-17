@@ -2,6 +2,8 @@ package com.beetloop.vendorproducts.config;
 
 import com.beetloop.vendorproducts.domain.ProductCategory;
 import com.beetloop.vendorproducts.domain.ProductStatus;
+import com.beetloop.vendorproducts.services.domain.ServiceCategory;
+import com.beetloop.vendorproducts.services.domain.ServiceStatus;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
@@ -30,6 +32,18 @@ public class EnumConverterConfig implements WebMvcConfigurer {
             @Override
             public ProductStatus convert(@NonNull String source) {
                 return ProductStatus.from(source);
+            }
+        });
+        registry.addConverter(new Converter<String, ServiceCategory>() {
+            @Override
+            public ServiceCategory convert(@NonNull String source) {
+                return ServiceCategory.from(source);
+            }
+        });
+        registry.addConverter(new Converter<String, ServiceStatus>() {
+            @Override
+            public ServiceStatus convert(@NonNull String source) {
+                return ServiceStatus.from(source);
             }
         });
     }
