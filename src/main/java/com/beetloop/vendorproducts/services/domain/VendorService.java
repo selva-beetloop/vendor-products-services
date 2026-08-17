@@ -57,6 +57,10 @@ public class VendorService {
     @Column(name = "position", nullable = false)
     private int position;
 
+    /** T2 Commercial Master FK — services reuse the same catalogue machine. */
+    @Column(name = "commercial_master_id")
+    private UUID commercialMasterId;
+
     /** Id of the master-catalog service the vendor picked, when not a custom entry. */
     @Column(name = "source_service_id", length = 160)
     private String sourceServiceId;
@@ -178,6 +182,14 @@ public class VendorService {
 
     public void setSourceServiceId(String sourceServiceId) {
         this.sourceServiceId = sourceServiceId;
+    }
+
+    public UUID getCommercialMasterId() {
+        return commercialMasterId;
+    }
+
+    public void setCommercialMasterId(UUID commercialMasterId) {
+        this.commercialMasterId = commercialMasterId;
     }
 
     public boolean isCustom() {

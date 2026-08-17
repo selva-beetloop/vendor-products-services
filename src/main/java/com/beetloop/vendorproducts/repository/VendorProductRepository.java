@@ -10,9 +10,23 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 public interface VendorProductRepository extends JpaRepository<VendorProduct, UUID> {
+
+    List<VendorProduct> findByCommercialMasterId(UUID commercialMasterId);
+
+    @Query("""
+            SELECT p FROM VendorProduct p
+            WHERE p.vendorId = :vendorId
+              AND p.commercialMasterId = :commercialMasterId
+              AND p.status <> :rejected
+            """)
+    List<VendorProduct> findActiveByVendorAndCommercialMaster(
+            @Param("vendorId") String vendorId,
+            @Param("commercialMasterId") UUID commercialMasterId,
+            @Param("rejected") ProductStatus rejected);
 
     /**
      * Backs {@code GET /products}. Mirrors the catalog page's controls: free-text

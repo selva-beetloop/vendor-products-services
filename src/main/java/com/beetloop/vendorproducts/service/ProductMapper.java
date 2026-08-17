@@ -1,5 +1,7 @@
 package com.beetloop.vendorproducts.service;
 
+import com.beetloop.vendorproducts.catalogue.domain.CommercialMaster;
+import com.beetloop.vendorproducts.catalogue.repository.CommercialMasterRepository;
 import com.beetloop.vendorproducts.domain.CommercialPricing;
 import com.beetloop.vendorproducts.domain.ProductVariant;
 import com.beetloop.vendorproducts.domain.VariantComplianceDocument;
@@ -22,6 +24,12 @@ import java.util.Map;
 /** Entity ↔ DTO translation. Response shapes intentionally mirror the wizard's own state objects. */
 @Component
 public class ProductMapper {
+
+    private final CommercialMasterRepository commercialMasters;
+
+    public ProductMapper(CommercialMasterRepository commercialMasters) {
+        this.commercialMasters = commercialMasters;
+    }
 
     private static final Map<String, String> FLAG_BY_COUNTRY = Map.ofEntries(
             Map.entry("india", "🇮🇳"),
@@ -51,8 +59,12 @@ public class ProductMapper {
         boolean identityDone = product.getIdentityPayload() != null && !product.getIdentityPayload().isEmpty();
         boolean roleDone = product.getRoleId() != null && !product.getRoleId().isBlank();
 
+        CommercialMaster t2 = resolveCommercial(product);
+
         return new ProductResponse(
                 product.getId().toString(),
+                product.getListingCode(),
+                product.getListingCode(),
                 product.getCategory().getId(),
                 product.getCategory().getGroupId(),
                 product.getStatus().name(),
@@ -66,6 +78,11 @@ public class ProductMapper {
                 product.getThumbImage(),
                 product.isVerified(),
                 product.getSourceMasterId(),
+                product.getCommercialMasterId() == null ? null : product.getCommercialMasterId().toString(),
+                t2 == null ? product.getSourceMasterId() : t2.getCode(),
+                t2 == null || t2.getScientificMaster() == null ? null : t2.getScientificMaster().getId().toString(),
+                t2 == null || t2.getScientificMaster() == null ? null : t2.getScientificMaster().getCode(),
+                product.isHoldPublish(),
                 new ProductResponse.IdentitySection(product.getIdentityType(),
                         product.getIdentityPayload() == null ? Map.of() : product.getIdentityPayload()),
                 new ProductResponse.RoleSection(product.getRoleId(),
@@ -378,5 +395,12 @@ public class ProductMapper {
         applyCommercialPricing(variant, request.commercialPricing());
         applyComplianceDocuments(variant, request.complianceCertifications());
         applySearchMarketplace(variant, request.searchMarketplace());
+    }
+
+    private CommercialMaster resolveCommercial(VendorProduct product) {
+        if (product.getCommercialMasterId() == null) {
+            return null;
+        }
+        return commercialMasters.findById(product.getCommercialMasterId()).orElse(null);
     }
 }

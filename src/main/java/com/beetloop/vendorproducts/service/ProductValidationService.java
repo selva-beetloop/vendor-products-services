@@ -187,11 +187,61 @@ public class ProductValidationService {
         }
         errors.throwIfAny("Product is not ready for submission");
 
-        // Re-run the per-step rules against what is actually stored, so a product
-        // assembled through several draft saves cannot slip through incomplete.
         validateIdentity(product.getCategory(), product.getIdentityType(),
                 product.getIdentityPayload(), false);
         validateRole(product.getCategory(), product.getRoleId(), product.getRolePayload(), false);
+        validateExpiryDocuments(product);
+    }
+
+    /**
+     * Expired compliance dates are hard errors — they block submit and publish.
+     */
+    public void validateExpiryDocuments(VendorProduct product) {
+        ValidationException.Builder errors = new ValidationException.Builder();
+        java.time.LocalDate today = java.time.LocalDate.now();
+        int variantIndex = 0;
+        for (var variant : product.getVariants()) {
+            int docIndex = 0;
+            for (var document : variant.getComplianceDocuments()) {
+                String raw = document.getExpiryDate();
+                if (raw == null || raw.isBlank()) {
+                    docIndex++;
+                    continue;
+                }
+                java.time.LocalDate expiry = parseDate(raw);
+                if (expiry == null) {
+                    errors.add("variants[" + variantIndex + "].complianceCertifications.data["
+                                    + docIndex + "].expiryDate",
+                            "Expiry date could not be parsed", raw);
+                } else if (expiry.isBefore(today)) {
+                    errors.add("variants[" + variantIndex + "].complianceCertifications.data["
+                                    + docIndex + "].expiryDate",
+                            "Certification is expired", raw);
+                }
+                docIndex++;
+            }
+            variantIndex++;
+        }
+        errors.throwIfAny("Expired or unparseable certifications block submit");
+    }
+
+    private java.time.LocalDate parseDate(String raw) {
+        String value = raw.trim();
+        java.time.format.DateTimeFormatter[] formats = {
+                java.time.format.DateTimeFormatter.ISO_LOCAL_DATE,
+                java.time.format.DateTimeFormatter.ofPattern("d MMM yyyy", java.util.Locale.ENGLISH),
+                java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy", java.util.Locale.ENGLISH),
+                java.time.format.DateTimeFormatter.ofPattern("d MMMM yyyy", java.util.Locale.ENGLISH),
+                java.time.format.DateTimeFormatter.ofPattern("dd MMMM yyyy", java.util.Locale.ENGLISH),
+        };
+        for (java.time.format.DateTimeFormatter formatter : formats) {
+            try {
+                return java.time.LocalDate.parse(value, formatter);
+            } catch (java.time.format.DateTimeParseException ignored) {
+                // try next
+            }
+        }
+        return null;
     }
 
     // ---- helpers ----

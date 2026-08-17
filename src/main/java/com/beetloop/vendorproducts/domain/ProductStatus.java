@@ -30,7 +30,11 @@ public enum ProductStatus {
     QUERY("query", "Query Raised"),
     APPROVED("published", "Approved"),
     REJECTED("query", "Rejected"),
-    PUBLISHED("published", "Published");
+    PUBLISHED("published", "Published"),
+    PENDING_SCIENTIFIC_MASTER("draft", "Pending Scientific Master"),
+    PENDING_COMMERCIAL_MASTER("draft", "Pending Commercial Master"),
+    AWAITING_CATALOGUE_APPROVAL("qc-pending", "Awaiting Catalogue Approval"),
+    SUSPENDED("query", "Suspended");
 
     private final String statusKind;
     private final String statusLabel;
@@ -56,7 +60,8 @@ public enum ProductStatus {
     /** True once the product has left the vendor's editable draft stage. */
     public boolean isSubmitted() {
         return this == SUBMITTED_FOR_QC || this == PENDING_REVIEW || this == APPROVED
-                || this == REJECTED || this == PUBLISHED || this == QUERY;
+                || this == REJECTED || this == PUBLISHED || this == QUERY
+                || this == AWAITING_CATALOGUE_APPROVAL || this == SUSPENDED;
     }
 
     @JsonCreator

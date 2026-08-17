@@ -55,6 +55,22 @@ public class GlobalExceptionHandler {
                 List.of()));
     }
 
+    @ExceptionHandler(DuplicateListingException.class)
+    public ResponseEntity<ApiError> handleDuplicate(DuplicateListingException ex,
+                                                    HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError.of(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage(),
+                request.getRequestURI(),
+                List.of(
+                        new ApiError.FieldError("existingListingId",
+                                ex.getExistingId().toString(), ex.getExistingId()),
+                        new ApiError.FieldError("listingCode",
+                                ex.getListingCode() == null ? "" : ex.getListingCode(),
+                                ex.getListingCode()))));
+    }
+
     @ExceptionHandler(InvalidStateTransitionException.class)
     public ResponseEntity<ApiError> handleConflict(InvalidStateTransitionException ex,
                                                     HttpServletRequest request) {

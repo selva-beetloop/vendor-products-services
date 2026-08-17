@@ -1,5 +1,7 @@
 package com.beetloop.vendorproducts.services.service;
 
+import com.beetloop.vendorproducts.catalogue.CatalogueService;
+import com.beetloop.vendorproducts.catalogue.domain.CommercialMaster;
 import com.beetloop.vendorproducts.dto.PageResponse;
 import com.beetloop.vendorproducts.exception.InvalidStateTransitionException;
 import com.beetloop.vendorproducts.exception.ResourceNotFoundException;
@@ -38,6 +40,7 @@ public class VendorServiceCatalogService {
     private final VendorServiceRepository serviceRepository;
     private final ServiceValidationService validationService;
     private final ServiceMapper mapper;
+    private final CatalogueService catalogue;
 
     /**
      * Flush explicitly rather than calling {@code save()} on a managed entity:
@@ -51,11 +54,13 @@ public class VendorServiceCatalogService {
     public VendorServiceCatalogService(VendorServiceBatchRepository batchRepository,
                                        VendorServiceRepository serviceRepository,
                                        ServiceValidationService validationService,
-                                       ServiceMapper mapper) {
+                                       ServiceMapper mapper,
+                                       CatalogueService catalogue) {
         this.batchRepository = batchRepository;
         this.serviceRepository = serviceRepository;
         this.validationService = validationService;
         this.mapper = mapper;
+        this.catalogue = catalogue;
     }
 
     // ------------------------------------------------------------------ create
@@ -128,6 +133,7 @@ public class VendorServiceCatalogService {
             mapper.applyItemColumns(item, payload.sourceServiceId(), payload.custom(), payload.name(),
                     payload.sku(), payload.categoryLabel(), payload.serviceType(), payload.deliveryMode(),
                     payload.turnaround(), payload.region(), payload.thumbEmoji(), payload.configurationStatus());
+            bindCommercialMaster(item, payload.commercialMasterId(), payload.sourceServiceId());
             Map<String, Object> stages = item.getStagePayloads() == null
                     ? new LinkedHashMap<>() : new LinkedHashMap<>(item.getStagePayloads());
             stages.put(stageKey, new LinkedHashMap<>(payload.dataOrEmpty()));
@@ -218,6 +224,7 @@ public class VendorServiceCatalogService {
                         itemRequest.name(), itemRequest.sku(), itemRequest.categoryLabel(),
                         itemRequest.serviceType(), itemRequest.deliveryMode(), itemRequest.turnaround(),
                         itemRequest.region(), itemRequest.thumbEmoji(), itemRequest.configurationStatus());
+                bindCommercialMaster(item, itemRequest.commercialMasterId(), itemRequest.sourceServiceId());
                 item.setStagePayloads(new LinkedHashMap<>(itemRequest.stagePayloadsOrEmpty()));
                 for (ServiceDtos.DocumentRequest documentRequest : itemRequest.documentsOrEmpty()) {
                     validationService.validateDocument(batch.getCategory(), documentRequest, draft);
@@ -376,9 +383,30 @@ public class VendorServiceCatalogService {
         return item;
     }
 
+    private void bindCommercialMaster(VendorService item, String commercialMasterId, String sourceServiceId) {
+        CommercialMaster t2 = catalogue.findCommercial(firstNonBlank(commercialMasterId, sourceServiceId));
+        if (t2 == null && "lab-hplc-001".equals(sourceServiceId)) {
+            t2 = catalogue.findCommercial("CM-HPLC-001");
+        }
+        if (t2 != null) {
+            item.setCommercialMasterId(t2.getId());
+        }
+    }
+
+    private static String firstNonBlank(String... values) {
+        if (values == null) {
+            return null;
+        }
+        for (String value : values) {
+            if (value != null && !value.isBlank()) {
+                return value;
+            }
+        }
+        return null;
+    }
+
     private void transitionToSubmitted(VendorServiceBatch batch) {
-        boolean anyCustom = batch.getItems().stream().anyMatch(VendorService::isCustom);
-        batch.setStatus(anyCustom ? ServiceStatus.SUBMITTED_FOR_QC : ServiceStatus.PUBLISHED);
+        batch.setStatus(ServiceStatus.SUBMITTED_FOR_QC);
         batch.setSubmittedAt(Instant.now());
         batch.setReviewedAt(null);
         for (VendorService item : batch.getItems()) {

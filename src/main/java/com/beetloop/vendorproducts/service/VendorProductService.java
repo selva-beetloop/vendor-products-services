@@ -1,5 +1,10 @@
 package com.beetloop.vendorproducts.service;
 
+import com.beetloop.vendorproducts.catalogue.CatalogueIdService;
+import com.beetloop.vendorproducts.catalogue.CatalogueService;
+import com.beetloop.vendorproducts.catalogue.LockedBaselineGuard;
+import com.beetloop.vendorproducts.catalogue.domain.CommercialMaster;
+import com.beetloop.vendorproducts.catalogue.domain.ScientificMaster;
 import com.beetloop.vendorproducts.domain.ProductCategory;
 import com.beetloop.vendorproducts.domain.ProductStatus;
 import com.beetloop.vendorproducts.domain.ProductVariant;
@@ -14,6 +19,7 @@ import com.beetloop.vendorproducts.dto.QcDecisionRequest;
 import com.beetloop.vendorproducts.dto.RoleStepRequest;
 import com.beetloop.vendorproducts.dto.VariantRequest;
 import com.beetloop.vendorproducts.dto.VariantResponse;
+import com.beetloop.vendorproducts.exception.DuplicateListingException;
 import com.beetloop.vendorproducts.exception.InvalidStateTransitionException;
 import com.beetloop.vendorproducts.exception.ResourceNotFoundException;
 import com.beetloop.vendorproducts.exception.ValidationException;
@@ -46,6 +52,9 @@ public class VendorProductService {
     private final VendorProductRepository productRepository;
     private final ProductValidationService validationService;
     private final ProductMapper mapper;
+    private final CatalogueService catalogue;
+    private final CatalogueIdService catalogueIds;
+    private final LockedBaselineGuard lockedBaselineGuard;
 
     /**
      * Used instead of {@code repository.save()} on the variant paths.
@@ -62,24 +71,93 @@ public class VendorProductService {
 
     public VendorProductService(VendorProductRepository productRepository,
                                 ProductValidationService validationService,
-                                ProductMapper mapper) {
+                                ProductMapper mapper,
+                                CatalogueService catalogue,
+                                CatalogueIdService catalogueIds,
+                                LockedBaselineGuard lockedBaselineGuard) {
         this.productRepository = productRepository;
         this.validationService = validationService;
         this.mapper = mapper;
+        this.catalogue = catalogue;
+        this.catalogueIds = catalogueIds;
+        this.lockedBaselineGuard = lockedBaselineGuard;
     }
 
     // ------------------------------------------------------------------ create
 
     @Transactional
     public ProductResponse create(CreateProductRequest request, String vendorId, String userId) {
+        CommercialMaster t2 = catalogue.findCommercial(firstNonBlank(
+                request.commercialMasterId(), request.commercialMasterCode(), request.sourceMasterId()));
+        ScientificMaster t1 = catalogue.findScientific(firstNonBlank(
+                request.scientificMasterId(), request.scientificMasterCode()));
+
+        if (t2 == null && t1 != null && !t1.getStatus().isLive()) {
+            ProductCategory category = request.category() != null
+                    ? request.category() : ProductCategory.from(t1.getCategory());
+            VendorProduct pending = new VendorProduct();
+            pending.setCategory(category);
+            pending.setIdentityType(request.identityType());
+            pending.setName(request.name() != null ? request.name() : t1.getName());
+            pending.setVendorId(vendorId);
+            pending.setCreatedBy(userId);
+            pending.setHoldPublish(Boolean.TRUE.equals(request.holdPublish()));
+            pending.setStatus(ProductStatus.PENDING_SCIENTIFIC_MASTER);
+            pending.setSourceMasterId(t1.getCode());
+            return mapper.toResponse(productRepository.save(pending));
+        }
+        if (t2 == null && t1 != null) {
+            t2 = catalogue.createPendingCommercial(t1, request);
+        }
+
+        ProductCategory category = request.category();
+        if (category == null && t2 != null) {
+            category = ProductCategory.from(t2.getCategory());
+        }
+        if (category == null) {
+            throw new ValidationException("Category is required",
+                    List.of(new com.beetloop.vendorproducts.dto.ApiError.FieldError(
+                            "category", "Category is required unless a commercial master is provided", null)));
+        }
+
+        ProductStatus status = ProductStatus.DRAFT;
+        if (t2 != null) {
+            rejectDuplicate(vendorId, t2.getId());
+            boolean live = t2.getStatus().isLive()
+                    && t2.getScientificMaster() != null
+                    && t2.getScientificMaster().getStatus().isLive();
+            if (!live) {
+                status = ProductStatus.PENDING_COMMERCIAL_MASTER;
+            }
+        } else {
+            status = ProductStatus.PENDING_COMMERCIAL_MASTER;
+        }
+
         VendorProduct product = new VendorProduct();
-        product.setCategory(request.category());
-        product.setIdentityType(request.identityType());
-        product.setSourceMasterId(request.sourceMasterId());
-        product.setName(request.name());
+        product.setCategory(category);
+        product.setIdentityType(identityTypeOf(request, t2));
+        product.setName(request.name() != null ? request.name() : (t2 == null ? null : t2.getName()));
         product.setVendorId(vendorId);
         product.setCreatedBy(userId);
-        product.setStatus(ProductStatus.DRAFT);
+        product.setHoldPublish(Boolean.TRUE.equals(request.holdPublish()));
+        product.setStatus(status);
+        attachCommercial(product, t2, vendorId);
+        return mapper.toResponse(productRepository.save(product));
+    }
+
+    @Transactional
+    public ProductResponse repointCommercial(UUID id, String commercialMasterId) {
+        VendorProduct product = loadEditable(id);
+        CommercialMaster t2 = catalogue.findCommercial(commercialMasterId);
+        if (t2 == null) {
+            throw new ResourceNotFoundException("Commercial master " + commercialMasterId + " not found");
+        }
+        rejectDuplicateExcept(product.getVendorId(), t2.getId(), product.getId());
+        attachCommercial(product, t2, product.getVendorId());
+        if (t2.getStatus().isLive() && t2.getScientificMaster().getStatus().isLive()
+                && product.getStatus() == ProductStatus.PENDING_COMMERCIAL_MASTER) {
+            product.setStatus(ProductStatus.DRAFT);
+        }
         return mapper.toResponse(productRepository.save(product));
     }
 
@@ -130,6 +208,7 @@ public class VendorProductService {
 
         validationService.validateIdentity(product.getCategory(), identityType,
                 request.dataOrEmpty(), request.isDraft());
+        enforceLockedBaseline(product, request.dataOrEmpty());
 
         product.setIdentityType(identityType);
         product.setIdentityPayload(new LinkedHashMap<>(request.dataOrEmpty()));
@@ -260,6 +339,7 @@ public class VendorProductService {
                     : product.getIdentityType();
             validationService.validateIdentity(product.getCategory(), identityType,
                     identity.dataOrEmpty(), draft || identity.isDraft());
+            enforceLockedBaseline(product, identity.dataOrEmpty());
             product.setIdentityType(identityType);
             product.setIdentityPayload(new LinkedHashMap<>(identity.dataOrEmpty()));
         }
@@ -301,6 +381,7 @@ public class VendorProductService {
         }
 
         if (request.isSubmitForQc()) {
+            requireLiveCommercialForSubmit(product);
             validationService.validateCompleteProduct(product);
             transitionToSubmitted(product);
         }
@@ -320,9 +401,12 @@ public class VendorProductService {
                 || product.getStatus() == ProductStatus.PENDING_REVIEW) {
             throw InvalidStateTransitionException.cannotSubmit(product.getStatus());
         }
-        if (product.getStatus() == ProductStatus.APPROVED || product.getStatus() == ProductStatus.PUBLISHED) {
+        if (product.getStatus() == ProductStatus.APPROVED || product.getStatus() == ProductStatus.PUBLISHED
+                || product.getStatus() == ProductStatus.AWAITING_CATALOGUE_APPROVAL
+                || product.getStatus() == ProductStatus.SUSPENDED) {
             throw InvalidStateTransitionException.cannotSubmit(product.getStatus());
         }
+        requireLiveCommercialForSubmit(product);
         validationService.validateCompleteProduct(product);
         transitionToSubmitted(product);
         return mapper.toResponse(productRepository.save(product));
@@ -344,11 +428,9 @@ public class VendorProductService {
         }
 
         switch (decision) {
-            case "APPROVE" -> {
-                product.setStatus(ProductStatus.APPROVED);
-                product.setVerified(true);
-            }
+            case "APPROVE" -> applyVendorApprove(product);
             case "PUBLISH" -> {
+                requireGoLive(product);
                 product.setStatus(ProductStatus.PUBLISHED);
                 product.setVerified(true);
             }
@@ -382,7 +464,9 @@ public class VendorProductService {
         VendorProduct product = load(id);
         ProductStatus status = product.getStatus();
         if (status == ProductStatus.APPROVED || status == ProductStatus.PUBLISHED
-                || status == ProductStatus.SUBMITTED_FOR_QC || status == ProductStatus.PENDING_REVIEW) {
+                || status == ProductStatus.SUBMITTED_FOR_QC || status == ProductStatus.PENDING_REVIEW
+                || status == ProductStatus.AWAITING_CATALOGUE_APPROVAL
+                || status == ProductStatus.SUSPENDED) {
             throw InvalidStateTransitionException.notEditable(status);
         }
         return product;
@@ -506,6 +590,117 @@ public class VendorProductService {
 
     private String blankToNull(String value) {
         return value == null || value.isBlank() ? null : value;
+    }
+
+    private void enforceLockedBaseline(VendorProduct product, Map<String, Object> incoming) {
+        CommercialMaster t2 = attachedCommercial(product);
+        if (t2 == null) {
+            return;
+        }
+        if (lockedBaselineGuard.isGradeDefiningChange(t2, incoming)) {
+            throw new InvalidStateTransitionException(
+                    "BRANCH_REQUIRED — grade-defining change must branch to a new T2");
+        }
+        lockedBaselineGuard.rejectIfBaselineMutated(t2, incoming);
+    }
+
+    private void requireLiveCommercialForSubmit(VendorProduct product) {
+        CommercialMaster t2 = attachedCommercial(product);
+        if (t2 == null || !t2.getStatus().isLive()
+                || t2.getScientificMaster() == null || !t2.getScientificMaster().getStatus().isLive()) {
+            throw new InvalidStateTransitionException("PENDING COMMERCIAL MASTER");
+        }
+    }
+
+    private void applyVendorApprove(VendorProduct product) {
+        product.setVerified(true);
+        if (canGoLive(product)) {
+            product.setStatus(ProductStatus.PUBLISHED);
+        } else {
+            product.setStatus(ProductStatus.AWAITING_CATALOGUE_APPROVAL);
+        }
+    }
+
+    private void requireGoLive(VendorProduct product) {
+        if (!canGoLive(product)) {
+            throw new InvalidStateTransitionException(
+                    "Cannot publish: awaiting catalogue approval (T1 and T2 must be live, docs valid, no hold)");
+        }
+    }
+
+    private boolean canGoLive(VendorProduct product) {
+        if (product.isHoldPublish()) {
+            return false;
+        }
+        CommercialMaster t2 = attachedCommercial(product);
+        if (t2 == null || !t2.getStatus().isLive()
+                || t2.getScientificMaster() == null || !t2.getScientificMaster().getStatus().isLive()) {
+            return false;
+        }
+        try {
+            validationService.validateCompleteProduct(product);
+            return true;
+        } catch (ValidationException ex) {
+            return false;
+        }
+    }
+
+    private CommercialMaster attachedCommercial(VendorProduct product) {
+        if (product.getCommercialMasterId() == null) {
+            return null;
+        }
+        return catalogue.findCommercial(product.getCommercialMasterId().toString());
+    }
+
+    private void attachCommercial(VendorProduct product, CommercialMaster t2, String vendorId) {
+        if (t2 == null) {
+            return;
+        }
+        product.setCommercialMasterId(t2.getId());
+        product.setSourceMasterId(t2.getCode());
+        product.setListingCode(catalogueIds.listingCode(t2.getCode(), vendorId));
+    }
+
+    private void rejectDuplicate(String vendorId, UUID commercialMasterId) {
+        rejectDuplicateExcept(vendorId, commercialMasterId, null);
+    }
+
+    private void rejectDuplicateExcept(String vendorId, UUID commercialMasterId, UUID exceptId) {
+        if (vendorId == null || commercialMasterId == null) {
+            return;
+        }
+        for (VendorProduct existing : productRepository.findActiveByVendorAndCommercialMaster(
+                vendorId, commercialMasterId, ProductStatus.REJECTED)) {
+            if (exceptId != null && exceptId.equals(existing.getId())) {
+                continue;
+            }
+            throw new DuplicateListingException(existing.getId(), existing.getListingCode());
+        }
+    }
+
+    private String identityTypeOf(CreateProductRequest request, CommercialMaster t2) {
+        if (request.identityType() != null && !request.identityType().isBlank()) {
+            return request.identityType();
+        }
+        if (t2 != null && t2.getBaseline() != null) {
+            Object value = t2.getBaseline().get("identityType");
+            if (value instanceof String s && !s.isBlank()) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    private static String firstNonBlank(String... values) {
+        if (values == null) {
+            return null;
+        }
+        for (String value : values) {
+            if (value != null && !value.isBlank()) {
+                return value;
+            }
+        }
+        return null;
     }
 
     private Sort parseSort(String sort) {

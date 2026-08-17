@@ -11,6 +11,9 @@ import java.util.Map;
 public record ProductResponse(
 
         String id,
+        @Schema(description = "T3 listing code VCG-…-V### when a T2 is attached.")
+        String code,
+        String listingCode,
         String category,
         @Schema(description = "Catalog chip id — materials | finished | packaging-materials | "
                 + "packaging-machinery | processing-machinery")
@@ -29,6 +32,11 @@ public record ProductResponse(
         boolean verified,
 
         String sourceMasterId,
+        String commercialMasterId,
+        String commercialMasterCode,
+        String scientificMasterId,
+        String scientificMasterCode,
+        boolean holdPublish,
 
         @Schema(description = "Step 1 as saved.")
         IdentitySection productIdentity,
