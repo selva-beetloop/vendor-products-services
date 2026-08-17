@@ -174,8 +174,7 @@ public class VendorServiceController {
 
     @PostMapping("/{id}/submit")
     @Operation(summary = "Submit the batch",
-            description = "Routes to QC review when the batch contains a custom service, mirroring the "
-                    + "wizard's own conditional button; otherwise publishes straight to the catalog.")
+            description = "Always submits to Vendor QC. Custom and catalogue picks follow the same gate.")
     public ServiceDtos.BatchResponse submit(@PathVariable UUID id) {
         return service.submit(id);
     }

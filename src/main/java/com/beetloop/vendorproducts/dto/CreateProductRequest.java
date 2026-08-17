@@ -2,16 +2,14 @@ package com.beetloop.vendorproducts.dto;
 
 import com.beetloop.vendorproducts.domain.ProductCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 
 /**
- * {@code POST /products} — opens a draft as soon as the vendor picks a category
- * card on the "List a Product" screen.
+ * {@code POST /products} and {@code POST /listings} — Flow A sends a live T2 FK;
+ * Flow B sends a live T1 plus grade-defining fields.
  */
-@Schema(description = "Creates an empty draft product for one of the five categories.")
+@Schema(description = "Creates a T3 vendor listing. Prefer commercialMasterId (T2 code or UUID).")
 public record CreateProductRequest(
 
-        @NotNull(message = "Category is required")
         @Schema(example = "raw-materials",
                 allowableValues = {"raw-materials", "processing-machinery", "finished-goods",
                         "packaging-materials", "packaging-machinery"})
@@ -21,10 +19,28 @@ public record CreateProductRequest(
                 example = "botanical-extract")
         String identityType,
 
-        @Schema(description = "Id of the master-catalog record the vendor started from, if any.",
-                example = "curcumin-95")
+        @Schema(description = "Deprecated alias of the T2 code.",
+                example = "CM-CUR95-001")
         String sourceMasterId,
 
         @Schema(description = "Working name shown on the catalog card until Step 1 is saved.")
-        String name) {
+        String name,
+
+        @Schema(description = "T2 UUID or CM- code. Flow A Add to Catalog.")
+        String commercialMasterId,
+
+        String commercialMasterCode,
+
+        @Schema(description = "T1 UUID or SCC- code. Flow B when T2 is missing.")
+        String scientificMasterId,
+
+        String scientificMasterCode,
+
+        String assay,
+        String grade,
+        String form,
+        String origin,
+        String colour,
+        String source,
+        Boolean holdPublish) {
 }

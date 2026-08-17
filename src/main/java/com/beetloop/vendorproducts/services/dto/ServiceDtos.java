@@ -61,6 +61,7 @@ public final class ServiceDtos {
             @Schema(description = "Existing service id; omit to create a new item in the batch.")
             String id,
             String sourceServiceId,
+            String commercialMasterId,
             Boolean custom,
             String name,
             String sku,
@@ -106,6 +107,7 @@ public final class ServiceDtos {
     public record ServiceItemRequest(
             String id,
             String sourceServiceId,
+            String commercialMasterId,
             Boolean custom,
             String name,
             String sku,

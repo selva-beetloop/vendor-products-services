@@ -62,7 +62,7 @@ public class VendorProduct {
     private ProductCategory category;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 30)
+    @Column(name = "status", nullable = false, length = 40)
     private ProductStatus status = ProductStatus.DRAFT;
 
     /**
@@ -76,9 +76,20 @@ public class VendorProduct {
     @Column(name = "role_id", length = 80)
     private String roleId;
 
-    /** Id of the master-catalog record the vendor started from, if any. */
+    /** Id of the master-catalog record the vendor started from, if any. Deprecated alias of T2 code. */
     @Column(name = "source_master_id", length = 120)
     private String sourceMasterId;
+
+    /** T2 Commercial Master FK. */
+    @Column(name = "commercial_master_id")
+    private UUID commercialMasterId;
+
+    /** Marketplace listing id {@code VCG-…-V###}. */
+    @Column(name = "listing_code", length = 80)
+    private String listingCode;
+
+    @Column(name = "hold_publish")
+    private boolean holdPublish;
 
     // ---- denormalised listing columns (drive GET /products, i.e. CatalogProduct) ----
 
@@ -224,6 +235,30 @@ public class VendorProduct {
 
     public void setSourceMasterId(String sourceMasterId) {
         this.sourceMasterId = sourceMasterId;
+    }
+
+    public UUID getCommercialMasterId() {
+        return commercialMasterId;
+    }
+
+    public void setCommercialMasterId(UUID commercialMasterId) {
+        this.commercialMasterId = commercialMasterId;
+    }
+
+    public String getListingCode() {
+        return listingCode;
+    }
+
+    public void setListingCode(String listingCode) {
+        this.listingCode = listingCode;
+    }
+
+    public boolean isHoldPublish() {
+        return holdPublish;
+    }
+
+    public void setHoldPublish(boolean holdPublish) {
+        this.holdPublish = holdPublish;
     }
 
     public String getName() {

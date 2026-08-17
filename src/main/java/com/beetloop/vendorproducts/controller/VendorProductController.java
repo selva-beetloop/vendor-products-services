@@ -129,6 +129,18 @@ public class VendorProductController {
         return service.saveIdentity(id, request);
     }
 
+    public record RepointCommercialRequest(String commercialMasterId, String commercialMasterCode) {
+    }
+
+    @PutMapping("/{id}/commercial-master")
+    @Operation(summary = "Re-point this T3 at another T2 after a grade-defining branch")
+    public ProductResponse repoint(@PathVariable UUID id,
+                                   @RequestBody RepointCommercialRequest request) {
+        String target = request.commercialMasterId() != null
+                ? request.commercialMasterId() : request.commercialMasterCode();
+        return service.repointCommercial(id, target);
+    }
+
     @PutMapping("/{id}/role")
     @Operation(summary = "Save Step 2 — Your Role & Supply Information",
             description = "Validates only this step and preserves the identity saved earlier.")
