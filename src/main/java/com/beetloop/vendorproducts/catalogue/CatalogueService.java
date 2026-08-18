@@ -61,7 +61,7 @@ public class CatalogueService {
             String search, String category, CatalogueKind kind, int page, int size, boolean liveOnly) {
         return PageResponse.of(
                 commercialMasters.search(kind, blankToNull(category), liveOnly ? LIVE : ALL_STATUSES,
-                        blankToNull(search),
+                        search == null ? "" : search,
                         PageRequest.of(Math.max(0, page), size < 1 ? 20 : size, Sort.by("name"))),
                 this::toCommercial);
     }
@@ -77,7 +77,7 @@ public class CatalogueService {
             String search, String category, CatalogueKind kind, int page, int size, boolean liveOnly) {
         return PageResponse.of(
                 scientificMasters.search(kind, blankToNull(category), liveOnly ? LIVE : ALL_STATUSES,
-                        blankToNull(search),
+                        search == null ? "" : search,
                         PageRequest.of(Math.max(0, page), size < 1 ? 20 : size, Sort.by("name"))),
                 this::toScientific);
     }
@@ -235,10 +235,14 @@ public class CatalogueService {
 
     @Transactional(readOnly = true)
     public PageResponse<CatalogueDtos.IntelQcRow> intelQueue(String search, int page, int size) {
-        var t1 = scientificMasters.search(null, null, INTEL_QUEUE, blankToNull(search),
-                PageRequest.of(Math.max(0, page), size < 1 ? 50 : size, Sort.by(Sort.Direction.DESC, "updatedAt")));
-        var t2 = commercialMasters.search(null, null, INTEL_QUEUE, blankToNull(search),
-                PageRequest.of(Math.max(0, page), size < 1 ? 50 : size, Sort.by(Sort.Direction.DESC, "updatedAt")));
+        var pageable = PageRequest.of(Math.max(0, page), size < 1 ? 50 : size, Sort.by(Sort.Direction.DESC, "updatedAt"));
+        String q = blankToNull(search);
+        var t1 = q == null
+                ? scientificMasters.findByStatusIn(INTEL_QUEUE, pageable)
+                : scientificMasters.search(null, null, INTEL_QUEUE, q, pageable);
+        var t2 = q == null
+                ? commercialMasters.findByStatusIn(INTEL_QUEUE, pageable)
+                : commercialMasters.search(null, null, INTEL_QUEUE, q, pageable);
         java.util.ArrayList<CatalogueDtos.IntelQcRow> rows = new java.util.ArrayList<>();
         t1.forEach(s -> rows.add(new CatalogueDtos.IntelQcRow(
                 s.getId(), s.getCode(), s.getKind().name(), "T1", s.getName(), s.getCategory(),

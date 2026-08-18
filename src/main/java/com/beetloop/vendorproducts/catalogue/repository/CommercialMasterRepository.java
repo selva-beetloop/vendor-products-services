@@ -25,17 +25,19 @@ public interface CommercialMasterRepository extends JpaRepository<CommercialMast
 
     List<CommercialMaster> findByScientificMaster_Id(UUID scientificMasterId);
 
+    Page<CommercialMaster> findByStatusIn(Collection<CatalogueStatus> statuses, Pageable pageable);
+
     @Query("""
             SELECT c FROM CommercialMaster c
             JOIN c.scientificMaster s
             WHERE (:kind IS NULL OR c.kind = :kind)
               AND (:category IS NULL OR c.category = :category)
-              AND (:statuses IS NULL OR c.status IN :statuses)
-              AND (:search IS NULL
+              AND c.status IN :statuses
+              AND (:search = ''
                    OR LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%'))
                    OR LOWER(c.code) LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR LOWER(COALESCE(c.assay, '')) LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR LOWER(COALESCE(s.casNumber, '')) LIKE LOWER(CONCAT('%', :search, '%'))
+                   OR (c.assay IS NOT NULL AND LOWER(c.assay) LIKE LOWER(CONCAT('%', :search, '%')))
+                   OR (s.casNumber IS NOT NULL AND LOWER(s.casNumber) LIKE LOWER(CONCAT('%', :search, '%')))
                    OR LOWER(s.name) LIKE LOWER(CONCAT('%', :search, '%')))
             """)
     Page<CommercialMaster> search(@Param("kind") CatalogueKind kind,

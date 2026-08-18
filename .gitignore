@@ -1,2 +1,8 @@
 /target
 /.idea
+
+# Cursor
+/.cursor
+/.cursorrules
+*.md
+*.db

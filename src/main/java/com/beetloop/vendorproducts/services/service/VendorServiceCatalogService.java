@@ -92,7 +92,7 @@ public class VendorServiceCatalogService {
                                                                          int size,
                                                                          String sort) {
         Page<VendorService> result = serviceRepository.search(
-                blankToNull(vendorId), category, status, blankToNull(search),
+                blankToNull(vendorId), category, status, search == null ? "" : search,
                 PageRequest.of(Math.max(0, page), size < 1 ? 10 : size, parseSort(sort)));
         return PageResponse.of(result, mapper::toSummary);
     }
@@ -100,7 +100,7 @@ public class VendorServiceCatalogService {
     @Transactional(readOnly = true)
     public PageResponse<ServiceDtos.ServiceSummaryResponse> qcQueue(String search, int page, int size, String sort) {
         Page<VendorService> result = serviceRepository.search(
-                null, null, ServiceStatus.SUBMITTED_FOR_QC, blankToNull(search),
+                null, null, ServiceStatus.SUBMITTED_FOR_QC, search == null ? "" : search,
                 PageRequest.of(Math.max(0, page), size < 1 ? 10 : size, parseSort(sort)));
         return PageResponse.of(result, mapper::toSummary);
     }
