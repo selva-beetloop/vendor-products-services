@@ -13,6 +13,7 @@ import com.beetloop.vendorproducts.dto.QcDecisionRequest;
 import com.beetloop.vendorproducts.dto.RoleStepRequest;
 import com.beetloop.vendorproducts.dto.VariantRequest;
 import com.beetloop.vendorproducts.dto.VariantResponse;
+import com.beetloop.vendorproducts.security.CurrentUser;
 import com.beetloop.vendorproducts.service.VendorProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,13 +25,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,33 +58,34 @@ import java.util.UUID;
 public class VendorProductController {
 
     private final VendorProductService service;
+    private final CurrentUser currentUser;
 
-    public VendorProductController(VendorProductService service) {
+    public VendorProductController(VendorProductService service, CurrentUser currentUser) {
         this.service = service;
+        this.currentUser = currentUser;
     }
 
     // ---------------------------------------------------------------- create
 
     @PostMapping
+    @PreAuthorize("hasRole('VENDOR')")
     @Operation(summary = "Create a draft product",
             description = "Called when the vendor picks a category card on the 'List a Product' screen. "
                     + "Returns the id every later step uses.")
-    public ResponseEntity<ProductResponse> create(
-            @Valid @RequestBody CreateProductRequest request,
-            @RequestHeader(value = "X-VENDOR-ID", required = false) String vendorId,
-            @RequestHeader(value = "X-USER-ID", required = false) String userId) {
-        ProductResponse created = service.create(request, vendorId, userId);
+    public ResponseEntity<ProductResponse> create(@Valid @RequestBody CreateProductRequest request) {
+        String userId = currentUser.userId();
+        ProductResponse created = service.create(request, userId, userId);
         return ResponseEntity.created(URI.create("/api/vendor/products/" + created.id())).body(created);
     }
 
     // ----------------------------------------------------------------- reads
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "List products",
             description = "Backs the catalog table: free-text search over name/SKU/category, the category "
                     + "chip filter, the status filter and pagination.")
     public PageResponse<ProductSummaryResponse> list(
-            @RequestHeader(value = "X-VENDOR-ID", required = false) String vendorId,
             @Parameter(description = "raw-materials | processing-machinery | finished-goods | "
                     + "packaging-materials | packaging-machinery — also accepts the catalog groupId")
             @RequestParam(required = false) ProductCategory category,
@@ -96,10 +98,11 @@ public class VendorProductController {
             @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "property,asc|desc — e.g. name,asc")
             @RequestParam(required = false) String sort) {
-        return service.list(vendorId, category, status, search, page, size, sort);
+        return service.list(currentUser.vendorScope(), category, status, search, page, size, sort);
     }
 
     @GetMapping("/qc-review")
+    @PreAuthorize("hasAnyRole('QC_ADMIN','QC_USER')")
     @Operation(summary = "QC review queue",
             description = "Products awaiting review (SUBMITTED_FOR_QC or PENDING_REVIEW).")
     public PageResponse<ProductSummaryResponse> qcQueue(
@@ -111,6 +114,7 @@ public class VendorProductController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "Get one product with full nested detail",
             description = "Returns identity, role and every variant with all five sub-steps — enough to "
                     + "rehydrate the whole wizard.")
@@ -121,6 +125,7 @@ public class VendorProductController {
     // ------------------------------------------------- step-based (A) saves
 
     @PutMapping("/{id}/identity")
+    @PreAuthorize("hasRole('VENDOR')")
     @Operation(summary = "Save Step 1 — Product / Machine Identity",
             description = "Validates only this step. Send `draft: true` to store partial progress "
                     + "without required-field checks.")
@@ -133,6 +138,7 @@ public class VendorProductController {
     }
 
     @PutMapping("/{id}/commercial-master")
+    @PreAuthorize("hasRole('VENDOR')")
     @Operation(summary = "Re-point this T3 at another T2 after a grade-defining branch")
     public ProductResponse repoint(@PathVariable UUID id,
                                    @RequestBody RepointCommercialRequest request) {
@@ -142,6 +148,7 @@ public class VendorProductController {
     }
 
     @PutMapping("/{id}/role")
+    @PreAuthorize("hasRole('VENDOR')")
     @Operation(summary = "Save Step 2 — Your Role & Supply Information",
             description = "Validates only this step and preserves the identity saved earlier.")
     public ProductResponse saveRole(@PathVariable UUID id,
@@ -150,12 +157,14 @@ public class VendorProductController {
     }
 
     @GetMapping("/{id}/variants")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "List variants for a product")
     public List<VariantResponse> listVariants(@PathVariable UUID id) {
         return service.listVariants(id);
     }
 
     @PostMapping("/{id}/variants")
+    @PreAuthorize("hasRole('VENDOR')")
     @Operation(summary = "Add a variant",
             description = "Accepts all five Add Variant sub-steps in one payload — what the wizard sends "
                     + "when the vendor clicks 'Add Variant'.")
@@ -165,6 +174,7 @@ public class VendorProductController {
     }
 
     @PutMapping("/{id}/variants/{variantId}")
+    @PreAuthorize("hasRole('VENDOR')")
     @Operation(summary = "Update a variant")
     public VariantResponse updateVariant(@PathVariable UUID id,
                                          @PathVariable UUID variantId,
@@ -173,6 +183,7 @@ public class VendorProductController {
     }
 
     @PutMapping("/{id}/variants/{variantId}/{section}")
+    @PreAuthorize("hasRole('VENDOR')")
     @Operation(summary = "Save one variant sub-step",
             description = "`section` is one of `details`, `technical-specifications`, `commercial-pricing`, "
                     + "`compliance-documents`, `search-marketplace`. Lets the vendor leave the Add Variant "
@@ -185,6 +196,7 @@ public class VendorProductController {
     }
 
     @DeleteMapping("/{id}/variants/{variantId}")
+    @PreAuthorize("hasRole('VENDOR')")
     @Operation(summary = "Delete a variant")
     public ResponseEntity<Void> deleteVariant(@PathVariable UUID id, @PathVariable UUID variantId) {
         service.deleteVariant(id, variantId);
@@ -194,6 +206,7 @@ public class VendorProductController {
     // -------------------------------------------------- overall (B) save + QC
 
     @PostMapping("/{id}/save")
+    @PreAuthorize("hasRole('VENDOR')")
     @Operation(summary = "Overall save",
             description = "Writes Product Identity + Your Role + Variants in a single transaction. "
                     + "Sections omitted keep whatever the step-based saves stored. Set `submitForQc: true` "
@@ -204,6 +217,7 @@ public class VendorProductController {
     }
 
     @PostMapping("/{id}/submit")
+    @PreAuthorize("hasRole('VENDOR')")
     @Operation(summary = "Submit for QC",
             description = "Validates the fully-assembled product and moves it to SUBMITTED_FOR_QC. "
                     + "Backs the 'Submit for QC' button on Review & Submit.")
@@ -212,6 +226,7 @@ public class VendorProductController {
     }
 
     @PutMapping("/{id}/qc-decision")
+    @PreAuthorize("hasAnyRole('QC_ADMIN','QC_USER')")
     @Operation(summary = "Record a QC decision",
             description = "APPROVE / REJECT / QUERY / PUBLISH. REJECT and QUERY require remarks and return "
                     + "the product to an editable state.")
@@ -221,6 +236,7 @@ public class VendorProductController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('VENDOR')")
     @Operation(summary = "Delete a product")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);

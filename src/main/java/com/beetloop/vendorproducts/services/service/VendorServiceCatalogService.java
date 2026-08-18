@@ -14,6 +14,7 @@ import com.beetloop.vendorproducts.services.domain.VendorServiceBatch;
 import com.beetloop.vendorproducts.services.dto.ServiceDtos;
 import com.beetloop.vendorproducts.services.repository.VendorServiceBatchRepository;
 import com.beetloop.vendorproducts.services.repository.VendorServiceRepository;
+import com.beetloop.vendorproducts.security.CurrentUser;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.Page;
@@ -41,6 +42,7 @@ public class VendorServiceCatalogService {
     private final ServiceValidationService validationService;
     private final ServiceMapper mapper;
     private final CatalogueService catalogue;
+    private final CurrentUser currentUser;
 
     /**
      * Flush explicitly rather than calling {@code save()} on a managed entity:
@@ -55,12 +57,14 @@ public class VendorServiceCatalogService {
                                        VendorServiceRepository serviceRepository,
                                        ServiceValidationService validationService,
                                        ServiceMapper mapper,
-                                       CatalogueService catalogue) {
+                                       CatalogueService catalogue,
+                                       CurrentUser currentUser) {
         this.batchRepository = batchRepository;
         this.serviceRepository = serviceRepository;
         this.validationService = validationService;
         this.mapper = mapper;
         this.catalogue = catalogue;
+        this.currentUser = currentUser;
     }
 
     // ------------------------------------------------------------------ create
@@ -340,7 +344,8 @@ public class VendorServiceCatalogService {
             case "QUERY" -> batch.setStatus(ServiceStatus.QUERY);
             default -> throw new IllegalArgumentException("Unknown decision " + decision);
         }
-        batch.setQcReviewer(request.reviewer());
+        batch.setQcReviewer(request.reviewer() == null || request.reviewer().isBlank()
+                ? currentUser.userId() : request.reviewer());
         batch.setQcRemarks(request.remarks());
         batch.setReviewedAt(Instant.now());
         entityManager.flush();
@@ -355,8 +360,10 @@ public class VendorServiceCatalogService {
     // ------------------------------------------------------------- internals
 
     private VendorServiceBatch loadBatch(UUID id) {
-        return batchRepository.findById(id)
+        VendorServiceBatch batch = batchRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Service batch " + id + " not found"));
+        currentUser.requireOwner(batch.getVendorId());
+        return batch;
     }
 
     private VendorServiceBatch loadEditableBatch(UUID id) {

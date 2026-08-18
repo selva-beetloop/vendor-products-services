@@ -5,6 +5,7 @@ import com.beetloop.vendorproducts.services.registry.ServiceFieldRegistry;
 import com.beetloop.vendorproducts.services.registry.ServiceSchema;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,18 +32,21 @@ public class ServiceCatalogMetadataController {
     }
 
     @GetMapping("/service-categories")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "All five service categories with their stages and fields")
     public Map<String, Object> categories() {
         return registry.categoryCatalog();
     }
 
     @GetMapping("/service-categories/{category}")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "One service category's full schema")
     public ServiceSchema.Category category(@PathVariable ServiceCategory category) {
         return registry.category(category);
     }
 
     @GetMapping("/service-categories/{category}/stages")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "Stage keys for a category, in wizard order",
             description = "Counts read from the UI: four categories have 4 stages, CRO has 11.")
     public List<String> stages(@PathVariable ServiceCategory category) {
@@ -50,6 +54,7 @@ public class ServiceCatalogMetadataController {
     }
 
     @GetMapping("/service-categories/{category}/stages/{stageKey}/fields")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "Flattened field list for one stage")
     public List<ServiceSchema.Field> stageFields(@PathVariable ServiceCategory category,
                                                  @PathVariable String stageKey) {
@@ -57,6 +62,7 @@ public class ServiceCatalogMetadataController {
     }
 
     @GetMapping("/service-categories/{category}/document-kinds")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "Which document modals this category offers, with their fields",
             description = "Empty lists are meaningful: Contract Manufacturer has no accreditation kind, "
                     + "and Consultancy offers none of the three.")

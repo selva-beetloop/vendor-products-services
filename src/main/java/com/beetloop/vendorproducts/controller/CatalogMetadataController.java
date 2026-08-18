@@ -5,6 +5,7 @@ import com.beetloop.vendorproducts.registry.CategoryFieldRegistry;
 import com.beetloop.vendorproducts.registry.CategorySchema;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,18 +32,21 @@ public class CatalogMetadataController {
     }
 
     @GetMapping("/categories")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "All five categories with their steps, type cards, role cards and fields")
     public Map<String, Object> categories() {
         return registry.categoryCatalog();
     }
 
     @GetMapping("/categories/{category}")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "One category's full schema")
     public CategorySchema.Category category(@PathVariable ProductCategory category) {
         return registry.category(category);
     }
 
     @GetMapping("/categories/{category}/identity-types")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "Type cards available in Step 1 for this category",
             description = "Empty for categories whose Step 1 has no type selector.")
     public List<String> identityTypes(@PathVariable ProductCategory category) {
@@ -50,12 +54,14 @@ public class CatalogMetadataController {
     }
 
     @GetMapping("/categories/{category}/roles")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "Role cards available in Step 2 for this category")
     public List<String> roles(@PathVariable ProductCategory category) {
         return registry.roleIds(category);
     }
 
     @GetMapping("/categories/{category}/fields")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "Flattened field inventory for one category",
             description = "Identity base fields, per-type-card fields, shared role fields and variant "
                     + "fields — the category-wise field mapping in machine-readable form.")
@@ -81,6 +87,7 @@ public class CatalogMetadataController {
     }
 
     @GetMapping("/shared-variant-sections")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "Field definitions shared by every category's variant sub-steps",
             description = "Technical specifications, commercial & pricing, compliance and marketplace.")
     public Map<String, Object> sharedVariantSections() {

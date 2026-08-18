@@ -7,9 +7,6 @@ spring:
   application:
     name: vendor-products-services
 
-  # H2 file-backed database is the zero-setup default so the service runs with a
-  # single `mvn spring-boot:run`. Switch to PostgreSQL with:
-  #   mvn spring-boot:run -Dspring-boot.run.profiles=postgres
   datasource:
     url: jdbc:h2:file:./data/vendor-products;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
     driver-class-name: org.h2.Driver
@@ -44,7 +41,37 @@ app:
     root: ${UPLOAD_DIR:./data/uploads}
     max-file-size-bytes: 10485760
   cors:
-    allowed-origins: ${CORS_ORIGINS:http://localhost:3000,http://127.0.0.1:3000}
+    allowed-origins:
+      - http://localhost:*
+      - http://127.0.0.1:*
+      - https://*.beetloop.com
+      - https://beetloop.com
+  document-store:
+    enabled: ${DOCUMENT_STORE_ENABLED:true}
+    base-url: ${DOCUMENT_STORE_BASE_URL:https://dev.api.beetloop.com/document-store}
+
+security:
+  jwt:
+    enabled: true
+    mode: hmac
+    secret: ${JWT_SECRET:5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437}
+    allowed-token-types:
+      - ACCESS
+      - SERVICE
+    public-endpoints:
+      - /actuator/health
+      - /v3/api-docs/**
+      - /swagger-ui/**
+      - /swagger-ui.html
+      - /h2-console/**
+  role-permissions:
+    enabled: true
+    base-url: ${ADMIN_SERVICE_BASE_URL:http://localhost:8087}
+    lookup-path: /admin/api/v1/roles
+    fail-closed: true
+    cache:
+      maximum-size: 500
+      expire-after-write: 10m
 
 springdoc:
   api-docs:
@@ -68,9 +95,20 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres}
+  h2:
+    console:
+      enabled: false
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+security:
+  jwt:
+    public-endpoints:
+      - /actuator/health
+      - /v3/api-docs/**
+      - /swagger-ui/**
+      - /swagger-ui.html

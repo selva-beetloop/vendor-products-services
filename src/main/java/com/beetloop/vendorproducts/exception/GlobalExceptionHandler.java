@@ -7,9 +7,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
@@ -43,6 +46,26 @@ public class GlobalExceptionHandler {
                 "Request contains invalid fields",
                 request.getRequestURI(),
                 errors));
+    }
+
+    @ExceptionHandler({ForbiddenException.class, AccessDeniedException.class})
+    public ResponseEntity<ApiError> handleForbidden(RuntimeException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiError.of(
+                HttpStatus.FORBIDDEN.value(),
+                "Forbidden",
+                ex.getMessage() == null ? "Access denied" : ex.getMessage(),
+                request.getRequestURI(),
+                List.of()));
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiError> handleUnauthorized(AuthenticationException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiError.of(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Unauthorized",
+                ex.getMessage() == null ? "Authentication required" : ex.getMessage(),
+                request.getRequestURI(),
+                List.of()));
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -103,6 +126,19 @@ public class GlobalExceptionHandler {
                 "Uploaded file exceeds the configured maximum size",
                 request.getRequestURI(),
                 List.of(new ApiError.FieldError("file", "File is too large", null))));
+    }
+
+    @ExceptionHandler(RestClientResponseException.class)
+    public ResponseEntity<ApiError> handleDownstream(RestClientResponseException ex, HttpServletRequest request) {
+        int status = ex.getStatusCode().value() == 404
+                ? HttpStatus.NOT_FOUND.value()
+                : HttpStatus.BAD_GATEWAY.value();
+        return ResponseEntity.status(status).body(ApiError.of(
+                status,
+                status == 404 ? "Not Found" : "Bad Gateway",
+                status == 404 ? "File not found" : "Document store request failed",
+                request.getRequestURI(),
+                List.of()));
     }
 
     /**
