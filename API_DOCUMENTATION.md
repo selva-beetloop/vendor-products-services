@@ -9,9 +9,10 @@ Interactive: `http://localhost:8086/vendor-products/swagger-ui.html`
 
 | Header | Required | Notes |
 |---|---|---|
+| `Authorization: Bearer <JWT>` | yes | HMAC JWT from auth. `userId` **is** the vendor id |
 | `Content-Type: application/json` | on writes | multipart for `/uploads` |
-| `X-VENDOR-ID` | optional | scopes `GET /products` to one vendor |
-| `X-USER-ID` | optional | recorded as `createdBy` / `uploadedBy` |
+
+Roles: `VENDOR` for listing CRUD and uploads; `QC_ADMIN` / `QC_USER` for Vendor QC; `INTEL_QC` / `INTEL_ADMIN` for Intelligence QC. Catalog schema and live T1/T2 search accept all of those roles.
 
 **Status codes**
 
@@ -23,6 +24,8 @@ Interactive: `http://localhost:8086/vendor-products/swagger-ui.html`
 | `400` | Validation failure — see `fieldErrors` |
 | `404` | Unknown id |
 | `409` | Not allowed from the current status |
+| `401` | Missing or invalid JWT |
+| `403` | Wrong role, or vendor accessing another vendor's listing |
 | `413` | Upload too large |
 
 **Error body** — identical for every failure:
@@ -482,6 +485,8 @@ shape as `GET /products`. Params: `search`, `page`, `size`, `sort`.
 Accepted: documents `pdf, doc, docx, xls, xlsx, csv, txt`; images
 `png, jpg, jpeg, webp, gif, svg`. Max 10 MB.
 
+Requires role `VENDOR`. The service proxies to documents-store (`POST /document/api/documents/store/upload`) and returns the same `UploadResponse` shape. `id` is the document-store Mongo id (or a UUID when profile `local-storage` is on). `url` stays `/api/vendor/uploads/{id}` so existing clients do not change path.
+
 **Response `201`**
 
 ```json
@@ -495,9 +500,9 @@ Accepted: documents `pdf, doc, docx, xls, xlsx, csv, txt`; images
 Put the returned `id`/`url` on a compliance document (`fileId`, `fileUrl`) or a
 spec parameter (`attachment`).
 
-**Errors**: `400` (no file, unsupported type, oversize); `413`.
+**Errors**: `400` (no file, unsupported type, oversize); `401`; `413`.
 
-`GET /uploads/{id}` streams the file back.
+`GET /uploads/{id}` streams the file back (proxied from documents-store view/download, or local disk).
 
 ---
 
