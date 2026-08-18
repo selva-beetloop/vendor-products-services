@@ -6,6 +6,9 @@ import com.beetloop.vendorproducts.services.domain.VendorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+import java.util.UUID;
+
 public interface VendorServiceRepository {
 
     /**
@@ -17,4 +20,6 @@ public interface VendorServiceRepository {
                                ServiceStatus status,
                                String search,
                                Pageable pageable);
+
+    Optional<VendorService> findItem(UUID itemId, ServiceStatus requiredStatus);
 }

@@ -4,6 +4,7 @@ import com.beetloop.vendorproducts.services.domain.ServiceCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -159,6 +160,8 @@ public final class ServiceDtos {
     /** PUT /services/{id}/qc-decision. */
     public record QcDecisionRequest(
             @NotBlank(message = "Decision is required")
+            @Pattern(regexp = "(?i)APPROVE|REJECT|QUERY|PUBLISH",
+                    message = "Decision must be APPROVE, REJECT, QUERY or PUBLISH")
             @Schema(example = "APPROVE", allowableValues = {"APPROVE", "REJECT", "QUERY", "PUBLISH"})
             String decision,
             String reviewer,
@@ -244,7 +247,7 @@ public final class ServiceDtos {
             String deliveryMode,
             String turnaround,
             String region,
-            @Schema(description = "draft | qc-pending | query | published")
+            @Schema(description = "draft | submitted | qc-pending | query | rejected | approved | published")
             String status,
             String statusLabel,
             @Schema(description = "Raw state machine value, e.g. SUBMITTED_FOR_QC")
@@ -258,6 +261,8 @@ public final class ServiceDtos {
             String groupId,
             int documentCount,
             Instant createdAt,
-            Instant updatedAt) {
+            Instant updatedAt,
+            String vendorId,
+            String qcRemarks) {
     }
 }

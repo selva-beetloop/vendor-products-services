@@ -19,7 +19,7 @@ public record ProductResponse(
                 + "packaging-machinery | processing-machinery")
         String groupId,
         String status,
-        @Schema(description = "Frontend StatusKind — draft | qc-pending | query | published")
+        @Schema(description = "Frontend StatusKind — draft | submitted | qc-pending | query | rejected | approved | published")
         String statusKind,
         String statusLabel,
 

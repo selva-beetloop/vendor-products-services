@@ -1,5 +1,8 @@
 /target
 /.idea
+/e2e
+
+# Cursor
 
 # Cursor
 /.cursor

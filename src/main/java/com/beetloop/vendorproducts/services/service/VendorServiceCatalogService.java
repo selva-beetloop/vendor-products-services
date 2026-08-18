@@ -98,6 +98,25 @@ public class VendorServiceCatalogService {
         return PageResponse.of(result, mapper::toSummary);
     }
 
+    @Transactional(readOnly = true)
+    public PageResponse<ServiceDtos.ServiceSummaryResponse> listPublished(ServiceCategory category,
+                                                                         String search,
+                                                                         int page,
+                                                                         int size,
+                                                                         String sort) {
+        Page<VendorService> result = serviceRepository.search(
+                null, category, ServiceStatus.PUBLISHED, search == null ? "" : search,
+                PageRequest.of(Math.max(0, page), size < 1 ? 10 : size, parseSort(sort)));
+        return PageResponse.of(result, mapper::toSummary);
+    }
+
+    @Transactional(readOnly = true)
+    public ServiceDtos.ServiceResponse getPublished(UUID itemId) {
+        VendorService item = serviceRepository.findItem(itemId, ServiceStatus.PUBLISHED)
+                .orElseThrow(() -> new ResourceNotFoundException("Service " + itemId + " not found"));
+        return mapper.toServiceResponse(item);
+    }
+
     // ------------------------------------------------------- step-based saves
 
     /**
@@ -313,7 +332,7 @@ public class VendorServiceCatalogService {
     @Transactional
     public ServiceDtos.BatchResponse submit(UUID batchId) {
         VendorServiceBatch batch = loadBatch(batchId);
-        if (batch.getStatus().isSubmitted()) {
+        if (blocksSubmit(batch.getStatus())) {
             throw InvalidStateTransitionException.cannotSubmit(
                     com.beetloop.vendorproducts.domain.ProductStatus.SUBMITTED_FOR_QC);
         }
@@ -342,7 +361,7 @@ public class VendorServiceCatalogService {
         }
 
         switch (decision) {
-            case "APPROVE" -> batch.setStatus(ServiceStatus.APPROVED);
+            case "APPROVE" -> batch.setStatus(ServiceStatus.PUBLISHED);
             case "PUBLISH" -> batch.setStatus(ServiceStatus.PUBLISHED);
             case "REJECT" -> batch.setStatus(ServiceStatus.REJECTED);
             case "QUERY" -> batch.setStatus(ServiceStatus.QUERY);
@@ -386,6 +405,13 @@ public class VendorServiceCatalogService {
                 .filter(i -> itemId.equals(i.getId()))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("Service " + itemId + " not found"));
+    }
+
+    private static boolean blocksSubmit(ServiceStatus status) {
+        return status == ServiceStatus.SUBMITTED_FOR_QC
+                || status == ServiceStatus.PENDING_REVIEW
+                || status == ServiceStatus.APPROVED
+                || status == ServiceStatus.PUBLISHED;
     }
 
     private VendorService newItem(VendorServiceBatch batch) {

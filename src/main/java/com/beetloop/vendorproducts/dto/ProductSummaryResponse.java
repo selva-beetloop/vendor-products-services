@@ -32,7 +32,7 @@ public record ProductSummaryResponse(
         String sample,
         String inventoryQty,
         String inventoryBatches,
-        @Schema(description = "draft | qc-pending | query | published")
+        @Schema(description = "draft | submitted | qc-pending | query | rejected | approved | published")
         String status,
         String statusLabel,
         @Schema(description = "Raw state machine value, e.g. SUBMITTED_FOR_QC")
@@ -43,5 +43,7 @@ public record ProductSummaryResponse(
         String thumbImage,
         int variantCount,
         Instant createdAt,
-        Instant updatedAt) {
+        Instant updatedAt,
+        String vendorId,
+        String qcRemarks) {
 }

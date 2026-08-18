@@ -15,6 +15,8 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class VendorServiceRepositoryImpl implements VendorServiceRepository {
@@ -51,6 +53,7 @@ public class VendorServiceRepositoryImpl implements VendorServiceRepository {
                 continue;
             }
             for (VendorService item : batch.getItems()) {
+                item.setBatch(batch);
                 if (matches(item, needle)) {
                     items.add(item);
                 }
@@ -60,6 +63,27 @@ public class VendorServiceRepositoryImpl implements VendorServiceRepository {
         int from = Math.min((int) pageable.getOffset(), items.size());
         int to = Math.min(from + pageable.getPageSize(), items.size());
         return new PageImpl<>(items.subList(from, to), pageable, items.size());
+    }
+
+    @Override
+    public Optional<VendorService> findItem(UUID itemId, ServiceStatus requiredStatus) {
+        List<Criteria> parts = new ArrayList<>();
+        parts.add(Criteria.where("items.id").is(itemId));
+        if (requiredStatus != null) {
+            parts.add(Criteria.where("status").is(requiredStatus));
+        }
+        Query query = new Query(new Criteria().andOperator(parts));
+        VendorServiceBatch batch = mongoTemplate.findOne(query, VendorServiceBatch.class);
+        if (batch == null || batch.getItems() == null) {
+            return Optional.empty();
+        }
+        for (VendorService item : batch.getItems()) {
+            if (itemId.equals(item.getId())) {
+                item.setBatch(batch);
+                return Optional.of(item);
+            }
+        }
+        return Optional.empty();
     }
 
     private static boolean matches(VendorService item, String needle) {

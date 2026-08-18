@@ -55,4 +55,22 @@ class SecurityJwtTest {
                         .header("Authorization", JwtTestTokenFactory.bearerToken("intel-1", List.of("INTEL_QC"))))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void marketplaceProductsArePublic() throws Exception {
+        mockMvc.perform(get("/api/marketplace/products"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void marketplaceServicesArePublic() throws Exception {
+        mockMvc.perform(get("/api/marketplace/services"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void unpublishedVendorListIsNotPublic() throws Exception {
+        mockMvc.perform(get("/api/vendor/products"))
+                .andExpect(status().isUnauthorized());
+    }
 }

@@ -182,6 +182,29 @@ public class VendorProductService {
     }
 
     @Transactional(readOnly = true)
+    public PageResponse<ProductSummaryResponse> listPublished(ProductCategory category,
+                                                             String search,
+                                                             int page,
+                                                             int size,
+                                                             String sort) {
+        Page<VendorProduct> result = productRepository.search(
+                null, category, ProductStatus.PUBLISHED, List.of(ProductStatus.PUBLISHED),
+                search == null ? "" : search,
+                PageRequest.of(Math.max(0, page), size < 1 ? 10 : size, parseSort(sort)));
+        return PageResponse.of(result, mapper::toSummary);
+    }
+
+    @Transactional(readOnly = true)
+    public ProductResponse getPublished(UUID id) {
+        VendorProduct product = productRepository.findById(id)
+                .orElseThrow(() -> ResourceNotFoundException.product(id));
+        if (product.getStatus() != ProductStatus.PUBLISHED) {
+            throw ResourceNotFoundException.product(id);
+        }
+        return mapper.toResponse(product);
+    }
+
+    @Transactional(readOnly = true)
     public List<VariantResponse> listVariants(UUID productId) {
         return load(productId).getVariants().stream().map(mapper::toVariantResponse).toList();
     }

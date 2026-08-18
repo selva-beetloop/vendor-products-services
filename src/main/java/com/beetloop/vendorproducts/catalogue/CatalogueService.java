@@ -32,7 +32,8 @@ import java.util.UUID;
 public class CatalogueService {
 
     private static final List<CatalogueStatus> LIVE = List.of(CatalogueStatus.LIVE, CatalogueStatus.APPROVED);
-    private static final List<CatalogueStatus> INTEL_QUEUE = List.of(CatalogueStatus.SUBMITTED, CatalogueStatus.IN_QC);
+    private static final List<CatalogueStatus> INTEL_QUEUE = List.of(
+            CatalogueStatus.SUBMITTED, CatalogueStatus.IN_QC, CatalogueStatus.QUERY);
 
     private static final List<CatalogueStatus> ALL_STATUSES = List.of(CatalogueStatus.values());
 
@@ -274,12 +275,14 @@ public class CatalogueService {
         if ("T1".equalsIgnoreCase(layer) || "SCI".equalsIgnoreCase(layer)) {
             ScientificMaster t1 = scientificMasters.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Scientific master " + id + " not found"));
+            requireIntelQueue(t1.getStatus());
             applyIntel(t1::setStatus, t1::setQcReviewer, t1::setQcRemarks, t1::setReviewedAt, decision, request);
             scientificMasters.save(t1);
             return;
         }
         CommercialMaster t2 = commercialMasters.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Commercial master " + id + " not found"));
+        requireIntelQueue(t2.getStatus());
         applyIntel(t2::setStatus, t2::setQcReviewer, t2::setQcRemarks, t2::setReviewedAt, decision, request);
         commercialMasters.save(t2);
         if (t2.getStatus().isLive()) {
@@ -299,6 +302,15 @@ public class CatalogueService {
                 products.save(listing);
             }
         }
+    }
+
+    private void requireIntelQueue(CatalogueStatus status) {
+        if (status != null && (status.isInIntelQueue() || status == CatalogueStatus.QUERY)) {
+            return;
+        }
+        throw new InvalidStateTransitionException(
+                "Catalogue record is not awaiting Intelligence QC (current status "
+                        + (status == null ? "unknown" : status.name()) + ")");
     }
 
     private void applyIntel(java.util.function.Consumer<CatalogueStatus> status,

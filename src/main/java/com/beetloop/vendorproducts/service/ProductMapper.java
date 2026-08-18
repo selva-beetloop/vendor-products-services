@@ -144,7 +144,9 @@ public class ProductMapper {
                 product.getThumbImage(),
                 product.getVariants().size(),
                 product.getCreatedAt(),
-                product.getUpdatedAt());
+                product.getUpdatedAt(),
+                product.getVendorId(),
+                product.getQcRemarks());
     }
 
     // ---- variant: entity → DTO ----

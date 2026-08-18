@@ -19,11 +19,11 @@ public enum ServiceStatus {
 
     DRAFT("draft", "Draft"),
     CONFIGURED("draft", "Draft"),
-    SUBMITTED_FOR_QC("qc-pending", "QC Pending"),
-    PENDING_REVIEW("qc-pending", "Pending Review"),
-    QUERY("query", "Query Raised"),
-    APPROVED("published", "Approved"),
-    REJECTED("query", "Rejected"),
+    SUBMITTED_FOR_QC("submitted", "Submitted"),
+    PENDING_REVIEW("qc-pending", "In QC"),
+    QUERY("query", "Query / Rework"),
+    APPROVED("approved", "Approved"),
+    REJECTED("rejected", "Rejected"),
     PUBLISHED("published", "Published");
 
     private final String statusKind;

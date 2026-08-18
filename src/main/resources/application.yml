@@ -55,6 +55,7 @@ security:
       - /v3/api-docs/**
       - /swagger-ui/**
       - /swagger-ui.html
+      - /api/marketplace/**
   role-permissions:
     enabled: true
     base-url: ${ADMIN_SERVICE_BASE_URL:http://localhost:8087}

@@ -109,7 +109,9 @@ public class ServiceMapper {
                 batch.getCategory().getGroupId(),
                 service.getDocuments().size(),
                 service.getCreatedAt(),
-                service.getUpdatedAt());
+                service.getUpdatedAt(),
+                batch.getVendorId(),
+                batch.getQcRemarks());
     }
 
     // ---- DTO → entity ----
