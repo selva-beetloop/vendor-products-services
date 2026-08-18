@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,7 @@ public class CatalogueMasterController {
     }
 
     @GetMapping("/catalog/commercial-masters")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "Search approved / live T2 commercial masters")
     public PageResponse<CatalogueDtos.CommercialMasterResponse> commercialMasters(
             @RequestParam(required = false) String search,
@@ -41,6 +43,7 @@ public class CatalogueMasterController {
     }
 
     @GetMapping("/catalog/scientific-masters")
+    @PreAuthorize("hasAnyRole('VENDOR','QC_ADMIN','QC_USER','INTEL_QC','INTEL_ADMIN')")
     @Operation(summary = "Search approved / live T1 scientific masters")
     public PageResponse<CatalogueDtos.ScientificMasterResponse> scientificMasters(
             @RequestParam(required = false) String search,
@@ -53,6 +56,7 @@ public class CatalogueMasterController {
     }
 
     @PostMapping("/catalog/scientific-masters")
+    @PreAuthorize("hasAnyRole('VENDOR','INTEL_QC','INTEL_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public CatalogueDtos.ScientificMasterResponse createScientific(
             @RequestBody CatalogueDtos.CreateScientificRequest request) {
@@ -60,6 +64,7 @@ public class CatalogueMasterController {
     }
 
     @PostMapping("/catalog/commercial-masters")
+    @PreAuthorize("hasAnyRole('VENDOR','INTEL_QC','INTEL_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public CatalogueDtos.CommercialMasterResponse createCommercial(
             @RequestBody CatalogueDtos.CreateCommercialRequest request) {
@@ -67,6 +72,7 @@ public class CatalogueMasterController {
     }
 
     @PostMapping("/commercial-masters/{code}/branch")
+    @PreAuthorize("hasAnyRole('VENDOR','INTEL_QC','INTEL_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Grade-defining branch — never mutates the shared T2")
     public CatalogueDtos.CommercialMasterResponse branch(

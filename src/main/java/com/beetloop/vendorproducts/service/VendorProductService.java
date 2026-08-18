@@ -24,6 +24,7 @@ import com.beetloop.vendorproducts.exception.InvalidStateTransitionException;
 import com.beetloop.vendorproducts.exception.ResourceNotFoundException;
 import com.beetloop.vendorproducts.exception.ValidationException;
 import com.beetloop.vendorproducts.repository.VendorProductRepository;
+import com.beetloop.vendorproducts.security.CurrentUser;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.Page;
@@ -56,6 +57,7 @@ public class VendorProductService {
     private final CatalogueService catalogue;
     private final CatalogueIdService catalogueIds;
     private final LockedBaselineGuard lockedBaselineGuard;
+    private final CurrentUser currentUser;
 
     /**
      * Used instead of {@code repository.save()} on the variant paths.
@@ -75,13 +77,15 @@ public class VendorProductService {
                                 ProductMapper mapper,
                                 CatalogueService catalogue,
                                 CatalogueIdService catalogueIds,
-                                LockedBaselineGuard lockedBaselineGuard) {
+                                LockedBaselineGuard lockedBaselineGuard,
+                                CurrentUser currentUser) {
         this.productRepository = productRepository;
         this.validationService = validationService;
         this.mapper = mapper;
         this.catalogue = catalogue;
         this.catalogueIds = catalogueIds;
         this.lockedBaselineGuard = lockedBaselineGuard;
+        this.currentUser = currentUser;
     }
 
     // ------------------------------------------------------------------ create
@@ -441,7 +445,8 @@ public class VendorProductService {
             default -> throw new IllegalArgumentException("Unknown decision " + decision);
         }
 
-        product.setQcReviewer(request.reviewer());
+        product.setQcReviewer(blankToNull(request.reviewer()) != null
+                ? request.reviewer() : currentUser.userId());
         product.setQcRemarks(request.remarks());
         product.setReviewedAt(Instant.now());
         return mapper.toResponse(productRepository.save(product));
@@ -455,7 +460,10 @@ public class VendorProductService {
     // ------------------------------------------------------------- internals
 
     private VendorProduct load(UUID id) {
-        return productRepository.findById(id).orElseThrow(() -> ResourceNotFoundException.product(id));
+        VendorProduct product = productRepository.findById(id)
+                .orElseThrow(() -> ResourceNotFoundException.product(id));
+        currentUser.requireOwner(product.getVendorId());
+        return product;
     }
 
     /**

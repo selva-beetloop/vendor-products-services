@@ -15,6 +15,7 @@ import com.beetloop.vendorproducts.exception.InvalidStateTransitionException;
 import com.beetloop.vendorproducts.exception.ResourceNotFoundException;
 import com.beetloop.vendorproducts.exception.ValidationException;
 import com.beetloop.vendorproducts.repository.VendorProductRepository;
+import com.beetloop.vendorproducts.security.CurrentUser;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -39,15 +40,18 @@ public class CatalogueService {
     private final CommercialMasterRepository commercialMasters;
     private final CatalogueIdService ids;
     private final VendorProductRepository products;
+    private final CurrentUser currentUser;
 
     public CatalogueService(ScientificMasterRepository scientificMasters,
                             CommercialMasterRepository commercialMasters,
                             CatalogueIdService ids,
-                            VendorProductRepository products) {
+                            VendorProductRepository products,
+                            CurrentUser currentUser) {
         this.scientificMasters = scientificMasters;
         this.commercialMasters = commercialMasters;
         this.ids = ids;
         this.products = products;
+        this.currentUser = currentUser;
     }
 
     @Transactional(readOnly = true)
@@ -309,7 +313,8 @@ public class CatalogueService {
             case "QUERY" -> status.accept(CatalogueStatus.QUERY);
             default -> throw new IllegalArgumentException("Unknown decision " + decision);
         }
-        reviewer.accept(request.reviewer());
+        reviewer.accept(request.reviewer() == null || request.reviewer().isBlank()
+                ? currentUser.userId() : request.reviewer());
         remarks.accept(request.remarks());
         reviewedAt.accept(Instant.now());
     }

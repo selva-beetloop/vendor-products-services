@@ -2,13 +2,14 @@ package com.beetloop.vendorproducts.controller;
 
 import com.beetloop.vendorproducts.dto.CreateProductRequest;
 import com.beetloop.vendorproducts.dto.ProductResponse;
+import com.beetloop.vendorproducts.security.CurrentUser;
 import com.beetloop.vendorproducts.service.VendorProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,18 +22,19 @@ import java.net.URI;
 public class VendorListingController {
 
     private final VendorProductService products;
+    private final CurrentUser currentUser;
 
-    public VendorListingController(VendorProductService products) {
+    public VendorListingController(VendorProductService products, CurrentUser currentUser) {
         this.products = products;
+        this.currentUser = currentUser;
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('VENDOR')")
     @Operation(summary = "Create a T3 listing from a live T2")
-    public ResponseEntity<ProductResponse> create(
-            @RequestBody CreateProductRequest request,
-            @RequestHeader(value = "X-VENDOR-ID", required = false) String vendorId,
-            @RequestHeader(value = "X-USER-ID", required = false) String userId) {
-        ProductResponse created = products.create(request, vendorId, userId);
+    public ResponseEntity<ProductResponse> create(@RequestBody CreateProductRequest request) {
+        String userId = currentUser.userId();
+        ProductResponse created = products.create(request, userId, userId);
         return ResponseEntity.created(URI.create("/api/vendor/products/" + created.id())).body(created);
     }
 }
