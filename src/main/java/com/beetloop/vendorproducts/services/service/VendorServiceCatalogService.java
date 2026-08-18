@@ -200,6 +200,12 @@ public class VendorServiceCatalogService {
         }
 
         if (request.items() != null) {
+            Map<String, VendorService> previousBySource = new LinkedHashMap<>();
+            for (VendorService existing : batch.getItems()) {
+                if (existing.getSourceServiceId() != null && !existing.getSourceServiceId().isBlank()) {
+                    previousBySource.put(existing.getSourceServiceId(), existing);
+                }
+            }
             batch.getItems().clear();
             for (ServiceDtos.ServiceItemRequest itemRequest : request.items()) {
                 for (Map.Entry<String, Object> stage : itemRequest.stagePayloadsOrEmpty().entrySet()) {
@@ -215,10 +221,22 @@ public class VendorServiceCatalogService {
                         itemRequest.serviceType(), itemRequest.deliveryMode(), itemRequest.turnaround(),
                         itemRequest.region(), itemRequest.thumbEmoji(), itemRequest.configurationStatus());
                 bindCommercialMaster(item, itemRequest.commercialMasterId(), itemRequest.sourceServiceId());
-                item.setStagePayloads(new LinkedHashMap<>(itemRequest.stagePayloadsOrEmpty()));
-                for (ServiceDtos.DocumentRequest documentRequest : itemRequest.documentsOrEmpty()) {
-                    validationService.validateDocument(batch.getCategory(), documentRequest, draft);
-                    item.addDocument(mapper.toDocument(documentRequest));
+                Map<String, Object> stages = new LinkedHashMap<>(itemRequest.stagePayloadsOrEmpty());
+                VendorService previous = itemRequest.sourceServiceId() == null
+                        ? null : previousBySource.get(itemRequest.sourceServiceId());
+                // Publish/submit often sends listing columns only. Keep the stage
+                // data already saved by Save & Continue so it is not wiped.
+                if (stages.isEmpty() && previous != null && previous.getStagePayloads() != null) {
+                    stages.putAll(previous.getStagePayloads());
+                }
+                item.setStagePayloads(stages);
+                if (!itemRequest.documentsOrEmpty().isEmpty()) {
+                    for (ServiceDtos.DocumentRequest documentRequest : itemRequest.documentsOrEmpty()) {
+                        validationService.validateDocument(batch.getCategory(), documentRequest, draft);
+                        item.addDocument(mapper.toDocument(documentRequest));
+                    }
+                } else if (previous != null) {
+                    copyDocuments(previous, item);
                 }
             }
         }
@@ -377,12 +395,34 @@ public class VendorServiceCatalogService {
     }
 
     private void bindCommercialMaster(VendorService item, String commercialMasterId, String sourceServiceId) {
+        if (CustomSourceIds.isCustom(sourceServiceId) && (commercialMasterId == null || commercialMasterId.isBlank())) {
+            return;
+        }
         CommercialMaster t2 = catalogue.findCommercial(firstNonBlank(commercialMasterId, sourceServiceId));
         if (t2 == null && "lab-hplc-001".equals(sourceServiceId)) {
             t2 = catalogue.findCommercial("CM-HPLC-001");
         }
         if (t2 != null) {
             item.setCommercialMasterId(t2.getId());
+        }
+    }
+
+    private void copyDocuments(VendorService from, VendorService to) {
+        for (ServiceDocument source : from.getDocuments()) {
+            ServiceDocument copy = new ServiceDocument();
+            copy.setKind(source.getKind());
+            copy.setExternalRef(source.getExternalRef());
+            copy.setName(source.getName());
+            copy.setIssuingBody(source.getIssuingBody());
+            copy.setReferenceNumber(source.getReferenceNumber());
+            copy.setValidFrom(source.getValidFrom());
+            copy.setValidTo(source.getValidTo());
+            copy.setStatus(source.getStatus());
+            copy.setFileName(source.getFileName());
+            copy.setFileId(source.getFileId());
+            copy.setFileUrl(source.getFileUrl());
+            copy.setData(source.getData() == null ? new LinkedHashMap<>() : new LinkedHashMap<>(source.getData()));
+            to.addDocument(copy);
         }
     }
 

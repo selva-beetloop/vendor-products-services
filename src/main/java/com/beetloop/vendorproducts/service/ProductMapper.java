@@ -14,6 +14,7 @@ import com.beetloop.vendorproducts.dto.ProductResponse;
 import com.beetloop.vendorproducts.dto.ProductSummaryResponse;
 import com.beetloop.vendorproducts.dto.VariantRequest;
 import com.beetloop.vendorproducts.dto.VariantResponse;
+import com.beetloop.vendorproducts.storage.DataUriPersister;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -26,9 +27,11 @@ import java.util.Map;
 public class ProductMapper {
 
     private final CommercialMasterRepository commercialMasters;
+    private final DataUriPersister dataUriPersister;
 
-    public ProductMapper(CommercialMasterRepository commercialMasters) {
+    public ProductMapper(CommercialMasterRepository commercialMasters, DataUriPersister dataUriPersister) {
         this.commercialMasters = commercialMasters;
+        this.dataUriPersister = dataUriPersister;
     }
 
     private static final Map<String, String> FLAG_BY_COUNTRY = Map.ofEntries(
@@ -243,7 +246,7 @@ public class ProductMapper {
         if (details.status() != null) {
             variant.setStatus(details.status());
         }
-        variant.setImages(new ArrayList<>(details.imagesOrEmpty()));
+        variant.setImages(persistImageList(details.imagesOrEmpty()));
         variant.setDetailsExtra(new LinkedHashMap<>(details.extraOrEmpty()));
     }
 
@@ -267,7 +270,7 @@ public class ProductMapper {
                 parameter.setUnit(row.unit());
                 parameter.setMethod(row.testMethodOrStandard());
                 parameter.setSource(row.requirementSource());
-                parameter.setAttachment(row.attachment());
+                parameter.setAttachment(persistMaybeDataUri(row.attachment(), null, "product-spec"));
                 parameter.setPriority(row.priority());
                 parameter.setRemarks(row.remarks());
                 rows.add(parameter);
@@ -376,6 +379,7 @@ public class ProductMapper {
             document.setFileName(dto.fileName());
             document.setFileId(dto.fileId());
             document.setFileUrl(dto.fileUrl());
+            persistComplianceFile(document);
             documents.add(document);
         }
         variant.replaceComplianceDocuments(documents);
@@ -402,5 +406,34 @@ public class ProductMapper {
             return null;
         }
         return commercialMasters.findById(product.getCommercialMasterId()).orElse(null);
+    }
+
+    private List<String> persistImageList(List<String> images) {
+        List<String> out = new ArrayList<>();
+        for (String image : images) {
+            out.add(persistMaybeDataUri(image, null, "product-image"));
+        }
+        return out;
+    }
+
+    private void persistComplianceFile(VariantComplianceDocument document) {
+        DataUriPersister.StoredRef stored = dataUriPersister.persist(
+                document.getFileUrl(), document.getFileName(), "product-document");
+        if (stored == null) {
+            return;
+        }
+        document.setFileId(stored.id());
+        document.setFileUrl(stored.url());
+        if (stored.fileName() != null) {
+            document.setFileName(stored.fileName());
+        }
+    }
+
+    private String persistMaybeDataUri(String value, String fileName, String module) {
+        DataUriPersister.StoredRef stored = dataUriPersister.persist(value, fileName, module);
+        if (stored == null) {
+            return value;
+        }
+        return stored.url();
     }
 }

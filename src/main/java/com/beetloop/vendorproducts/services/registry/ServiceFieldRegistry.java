@@ -76,7 +76,12 @@ public class ServiceFieldRegistry {
     }
 
     public boolean isKnownStage(ServiceCategory category, String stageKey) {
-        return stageKeys(category).contains(stageKey);
+        if (stageKeys(category).contains(stageKey)) {
+            return true;
+        }
+        // CRO's 11 configure sections are persisted as one nested envelope under
+        // the same `configure-services` key every other category uses.
+        return category == ServiceCategory.CRO && "configure-services".equals(stageKey);
     }
 
     /** Every field declared for one stage, flattened across its sections. */

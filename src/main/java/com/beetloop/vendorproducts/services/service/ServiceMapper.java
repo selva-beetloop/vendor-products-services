@@ -5,6 +5,7 @@ import com.beetloop.vendorproducts.services.domain.VendorService;
 import com.beetloop.vendorproducts.services.domain.VendorServiceBatch;
 import com.beetloop.vendorproducts.services.dto.ServiceDtos;
 import com.beetloop.vendorproducts.services.registry.ServiceFieldRegistry;
+import com.beetloop.vendorproducts.storage.DataUriPersister;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -17,9 +18,11 @@ import java.util.Map;
 public class ServiceMapper {
 
     private final ServiceFieldRegistry registry;
+    private final DataUriPersister dataUriPersister;
 
-    public ServiceMapper(ServiceFieldRegistry registry) {
+    public ServiceMapper(ServiceFieldRegistry registry, DataUriPersister dataUriPersister) {
         this.registry = registry;
+        this.dataUriPersister = dataUriPersister;
     }
 
     public ServiceDtos.BatchResponse toBatchResponse(VendorServiceBatch batch) {
@@ -129,7 +132,7 @@ public class ServiceMapper {
             // Vendor-created entries are prefixed custom-… by the wizard; that flag
             // decides whether submit routes to QC or straight to publish.
             if (custom == null) {
-                target.setCustom(sourceServiceId.startsWith("custom-"));
+                target.setCustom(CustomSourceIds.isCustom(sourceServiceId));
             }
         }
         if (custom != null) {
@@ -185,7 +188,21 @@ public class ServiceMapper {
         target.setFileName(request.fileName());
         target.setFileId(request.fileId());
         target.setFileUrl(request.fileUrl());
+        persistEmbeddedFile(target);
         target.setData(new LinkedHashMap<>(request.dataOrEmpty()));
+    }
+
+    private void persistEmbeddedFile(ServiceDocument target) {
+        DataUriPersister.StoredRef stored = dataUriPersister.persist(
+                target.getFileUrl(), target.getFileName(), "service-document");
+        if (stored == null) {
+            return;
+        }
+        target.setFileId(stored.id());
+        target.setFileUrl(stored.url());
+        if (stored.fileName() != null) {
+            target.setFileName(stored.fileName());
+        }
     }
 
     public List<ServiceDocument> toDocuments(List<ServiceDtos.DocumentRequest> requests) {

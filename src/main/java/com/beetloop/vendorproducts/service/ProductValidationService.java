@@ -190,6 +190,16 @@ public class ProductValidationService {
         validateIdentity(product.getCategory(), product.getIdentityType(),
                 product.getIdentityPayload(), false);
         validateRole(product.getCategory(), product.getRoleId(), product.getRolePayload(), false);
+        int variantIndex = 0;
+        for (var variant : product.getVariants()) {
+            if (isBlank(variant.getName())) {
+                ValidationException.Builder variantErrors = new ValidationException.Builder();
+                variantErrors.add("variants[" + variantIndex + "].variantDetails.name",
+                        "Finish adding this variant or discard it before submitting");
+                variantErrors.throwIfAny("Variant " + (variantIndex + 1) + " is incomplete");
+            }
+            variantIndex++;
+        }
         validateExpiryDocuments(product);
     }
 

@@ -82,7 +82,9 @@ public class ServiceValidationService {
         }
 
         List<ServiceSchema.Field> fields = registry.documentFields(category, kind);
-        rejectUnknownKeys(request.dataOrEmpty(), fields, "document", errors);
+        // Unknown keys are not rejected: the credential modal sends the whole row
+        // (ids, logo tone, service links) alongside the declared fields. Required
+        // checks still apply so an empty accreditation cannot land.
         if (!draft) {
             requireAll(request.dataOrEmpty(), fields, errors);
         }
