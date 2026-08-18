@@ -19,14 +19,16 @@ public interface ScientificMasterRepository extends JpaRepository<ScientificMast
 
     boolean existsByCode(String code);
 
+    Page<ScientificMaster> findByStatusIn(Collection<CatalogueStatus> statuses, Pageable pageable);
+
     @Query("""
             SELECT s FROM ScientificMaster s
             WHERE (:kind IS NULL OR s.kind = :kind)
               AND (:category IS NULL OR s.category = :category)
-              AND (:statuses IS NULL OR s.status IN :statuses)
-              AND (:search IS NULL
+              AND s.status IN :statuses
+              AND (:search = ''
                    OR LOWER(s.name) LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR LOWER(COALESCE(s.casNumber, '')) LIKE LOWER(CONCAT('%', :search, '%'))
+                   OR (s.casNumber IS NOT NULL AND LOWER(s.casNumber) LIKE LOWER(CONCAT('%', :search, '%')))
                    OR LOWER(s.code) LIKE LOWER(CONCAT('%', :search, '%')))
             """)
     Page<ScientificMaster> search(@Param("kind") CatalogueKind kind,

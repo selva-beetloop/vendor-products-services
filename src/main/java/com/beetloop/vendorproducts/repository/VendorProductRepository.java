@@ -38,11 +38,11 @@ public interface VendorProductRepository extends JpaRepository<VendorProduct, UU
             WHERE (:vendorId IS NULL OR p.vendorId = :vendorId)
               AND (:category IS NULL OR p.category = :category)
               AND (:status IS NULL OR p.status = :status)
-              AND (:statuses IS NULL OR p.status IN :statuses)
-              AND (:search IS NULL
-                   OR LOWER(COALESCE(p.name, '')) LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR LOWER(COALESCE(p.sku, '')) LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR LOWER(COALESCE(p.listingCategory, '')) LIKE LOWER(CONCAT('%', :search, '%')))
+              AND p.status IN :statuses
+            AND (:search = ''
+                   OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))
+                   OR LOWER(p.sku) LIKE LOWER(CONCAT('%', :search, '%'))
+                   OR LOWER(p.listingCategory) LIKE LOWER(CONCAT('%', :search, '%')))
             """)
     Page<VendorProduct> search(@Param("vendorId") String vendorId,
                                @Param("category") ProductCategory category,

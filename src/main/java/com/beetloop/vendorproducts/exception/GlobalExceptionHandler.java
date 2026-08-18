@@ -55,6 +55,18 @@ public class GlobalExceptionHandler {
                 List.of()));
     }
 
+    @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class)
+    public ResponseEntity<ApiError> handleNoResource(
+            org.springframework.web.servlet.resource.NoResourceFoundException ex,
+            HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiError.of(
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                "No endpoint " + request.getMethod() + " " + request.getRequestURI(),
+                request.getRequestURI(),
+                List.of()));
+    }
+
     @ExceptionHandler(DuplicateListingException.class)
     public ResponseEntity<ApiError> handleDuplicate(DuplicateListingException ex,
                                                     HttpServletRequest request) {

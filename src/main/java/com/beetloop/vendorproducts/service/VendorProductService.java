@@ -48,6 +48,7 @@ public class VendorProductService {
 
     private static final List<ProductStatus> QC_QUEUE_STATUSES =
             List.of(ProductStatus.SUBMITTED_FOR_QC, ProductStatus.PENDING_REVIEW);
+    private static final List<ProductStatus> ALL_STATUSES = List.of(ProductStatus.values());
 
     private final VendorProductRepository productRepository;
     private final ProductValidationService validationService;
@@ -177,7 +178,8 @@ public class VendorProductService {
                                                      int size,
                                                      String sort) {
         Page<VendorProduct> result = productRepository.search(
-                blankToNull(vendorId), category, status, null, blankToNull(search),
+                blankToNull(vendorId), category, status, ALL_STATUSES,
+                search == null ? "" : search,
                 PageRequest.of(Math.max(0, page), size < 1 ? 10 : size, parseSort(sort)));
         return PageResponse.of(result, mapper::toSummary);
     }
@@ -185,7 +187,7 @@ public class VendorProductService {
     @Transactional(readOnly = true)
     public PageResponse<ProductSummaryResponse> qcQueue(String search, int page, int size, String sort) {
         Page<VendorProduct> result = productRepository.search(
-                null, null, null, QC_QUEUE_STATUSES, blankToNull(search),
+                null, null, null, QC_QUEUE_STATUSES, search == null ? "" : search,
                 PageRequest.of(Math.max(0, page), size < 1 ? 10 : size, parseSort(sort)));
         return PageResponse.of(result, mapper::toSummary);
     }

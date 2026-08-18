@@ -25,10 +25,10 @@ public interface VendorServiceRepository extends JpaRepository<VendorService, UU
             WHERE (:vendorId IS NULL OR b.vendorId = :vendorId)
               AND (:category IS NULL OR b.category = :category)
               AND (:status IS NULL OR b.status = :status)
-              AND (:search IS NULL
-                   OR LOWER(COALESCE(s.name, '')) LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR LOWER(COALESCE(s.sku, '')) LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR LOWER(COALESCE(s.categoryLabel, '')) LIKE LOWER(CONCAT('%', :search, '%')))
+              AND (:search = ''
+                   OR LOWER(s.name) LIKE LOWER(CONCAT('%', :search, '%'))
+                   OR LOWER(s.sku) LIKE LOWER(CONCAT('%', :search, '%'))
+                   OR LOWER(s.categoryLabel) LIKE LOWER(CONCAT('%', :search, '%')))
             """)
     Page<VendorService> search(@Param("vendorId") String vendorId,
                                @Param("category") ServiceCategory category,
