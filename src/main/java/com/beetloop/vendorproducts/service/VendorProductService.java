@@ -25,8 +25,6 @@ import com.beetloop.vendorproducts.exception.ResourceNotFoundException;
 import com.beetloop.vendorproducts.exception.ValidationException;
 import com.beetloop.vendorproducts.repository.VendorProductRepository;
 import com.beetloop.vendorproducts.security.CurrentUser;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -58,19 +56,6 @@ public class VendorProductService {
     private final CatalogueIdService catalogueIds;
     private final LockedBaselineGuard lockedBaselineGuard;
     private final CurrentUser currentUser;
-
-    /**
-     * Used instead of {@code repository.save()} on the variant paths.
-     * {@code save()} on an entity that already has an id performs an
-     * {@code EntityManager.merge()}, and merging a graph that contains a
-     * <em>transient</em> child returns a managed <em>copy</em> — the child
-     * instance we still hold a reference to never receives its generated id.
-     * Since the product is already managed inside these transactions, an explicit
-     * flush is both sufficient and correct: it cascades the persist and populates
-     * the ids on the instances we are about to map into the response.
-     */
-    @PersistenceContext
-    private EntityManager entityManager;
 
     public VendorProductService(VendorProductRepository productRepository,
                                 ProductValidationService validationService,
@@ -254,7 +239,7 @@ public class VendorProductService {
         mapper.applyVariant(variant, request);
 
         advanceToVariantsSaved(product);
-        entityManager.flush();
+        productRepository.save(product);
         return mapper.toVariantResponse(variant);
     }
 
@@ -268,7 +253,7 @@ public class VendorProductService {
         mapper.applyVariant(variant, request);
 
         advanceToVariantsSaved(product);
-        entityManager.flush();
+        productRepository.save(product);
         return mapper.toVariantResponse(variant);
     }
 
@@ -311,7 +296,7 @@ public class VendorProductService {
         }
 
         advanceToVariantsSaved(product);
-        entityManager.flush();
+        productRepository.save(product);
         return mapper.toVariantResponse(variant);
     }
 
@@ -363,11 +348,7 @@ public class VendorProductService {
             for (int i = 0; i < incoming.size(); i++) {
                 validationService.validateVariant(product.getCategory(), incoming.get(i), i, draft);
             }
-            // Flush the orphan-removal of the old variants before adding the new
-            // ones; clearing and re-populating a collection in a single flush
-            // makes Hibernate re-insert rows it is also deleting.
             product.getVariants().clear();
-            entityManager.flush();
             for (VariantRequest variantRequest : incoming) {
                 ProductVariant variant = new ProductVariant();
                 product.addVariant(variant);
@@ -392,9 +373,7 @@ public class VendorProductService {
             transitionToSubmitted(product);
         }
 
-        // Flush rather than save(): the product is managed, and newly added
-        // variants need their generated ids before the response is mapped.
-        entityManager.flush();
+        productRepository.save(product);
         return mapper.toResponse(product);
     }
 

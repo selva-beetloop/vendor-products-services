@@ -5,49 +5,30 @@ import com.beetloop.vendorproducts.domain.ProductStatus;
 import com.beetloop.vendorproducts.domain.VendorProduct;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-public interface VendorProductRepository extends JpaRepository<VendorProduct, UUID> {
+public interface VendorProductRepository extends MongoRepository<VendorProduct, UUID>, VendorProductRepositoryCustom {
 
     List<VendorProduct> findByCommercialMasterId(UUID commercialMasterId);
 
-    @Query("""
-            SELECT p FROM VendorProduct p
-            WHERE p.vendorId = :vendorId
-              AND p.commercialMasterId = :commercialMasterId
-              AND p.status <> :rejected
-            """)
-    List<VendorProduct> findActiveByVendorAndCommercialMaster(
-            @Param("vendorId") String vendorId,
-            @Param("commercialMasterId") UUID commercialMasterId,
-            @Param("rejected") ProductStatus rejected);
+    List<VendorProduct> findByVendorIdAndCommercialMasterIdAndStatusNot(
+            String vendorId, UUID commercialMasterId, ProductStatus rejected);
 
-    /**
-     * Backs {@code GET /products}. Mirrors the catalog page's controls: free-text
-     * search over name/SKU/category, the category chip, the status filter and the
-     * vendor scope. Every filter is optional.
-     */
-    @Query("""
-            SELECT p FROM VendorProduct p
-            WHERE (:vendorId IS NULL OR p.vendorId = :vendorId)
-              AND (:category IS NULL OR p.category = :category)
-              AND (:status IS NULL OR p.status = :status)
-              AND p.status IN :statuses
-            AND (:search = ''
-                   OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR LOWER(p.sku) LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR LOWER(p.listingCategory) LIKE LOWER(CONCAT('%', :search, '%')))
-            """)
-    Page<VendorProduct> search(@Param("vendorId") String vendorId,
-                               @Param("category") ProductCategory category,
-                               @Param("status") ProductStatus status,
-                               @Param("statuses") Collection<ProductStatus> statuses,
-                               @Param("search") String search,
+    default List<VendorProduct> findActiveByVendorAndCommercialMaster(
+            String vendorId, UUID commercialMasterId, ProductStatus rejected) {
+        return findByVendorIdAndCommercialMasterIdAndStatusNot(vendorId, commercialMasterId, rejected);
+    }
+}
+
+interface VendorProductRepositoryCustom {
+    Page<VendorProduct> search(String vendorId,
+                               ProductCategory category,
+                               ProductStatus status,
+                               Collection<ProductStatus> statuses,
+                               String search,
                                Pageable pageable);
 }

@@ -1,18 +1,8 @@
 package com.beetloop.vendorproducts.pm.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -27,90 +17,63 @@ import java.util.UUID;
  * quantity/units and packaging. Status flow (BP-25): Created → Dispatched →
  * In Transit → Delivered → QC.
  */
-@Entity
-@Table(name = "pm_shipment", indexes = {@Index(name = "idx_pm_shipment_code", columnList = "code"), @Index(name = "idx_pm_shipment_parent", columnList = "project_id")})
 public class PmShipment {
 
     @Id
-    @GeneratedValue
-    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     /** Business ID from the BRD §12.2 matrix. */
-    @Column(name = "code", length = 40, nullable = false, unique = true)
+    @Indexed(unique = true)
     private String code;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "project_id", nullable = false)
+    @Transient
     private PmProject project;
 
-    @Column(name = "position", nullable = false)
     private int position;
 
     /** Batch | Formulation Trial | Raw Material. */
-    @Column(name = "origin_type", length = 30)
     private String originType;
 
-    @Column(name = "batch_code", length = 40)
     private String batchCode;
 
-    @Column(name = "trial_code", length = 40)
     private String trialCode;
 
-    @Column(name = "prototype_code", length = 40)
     private String prototypeCode;
 
-    @Column(name = "bom_code", length = 40)
     private String bomCode;
 
-    @Column(name = "invoice_code", length = 40)
     private String invoiceCode;
 
-    @Column(name = "order_code", length = 40)
     private String orderCode;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 30, nullable = false)
     private PmEnums.ShipmentStatus status;
 
-    @Column(name = "quantity", precision = 19, scale = 3)
     private java.math.BigDecimal quantity;
 
-    @Column(name = "uom", length = 30)
     private String uom;
 
-    @Column(name = "packaging", length = 400)
     private String packaging;
 
-    @Column(name = "carrier", length = 200)
     private String carrier;
 
-    @Column(name = "tracking_number", length = 120)
     private String trackingNumber;
 
-    @Column(name = "dispatched_at")
     private Instant dispatchedAt;
 
-    @Column(name = "delivered_at")
     private Instant deliveredAt;
 
-    @Column(name = "destination", length = 1000)
     private String destination;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @PrePersist
     void onCreate() {
         Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
-    @PreUpdate
     void onUpdate() {
         this.updatedAt = Instant.now();
     }

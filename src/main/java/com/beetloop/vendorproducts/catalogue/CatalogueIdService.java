@@ -1,12 +1,7 @@
 package com.beetloop.vendorproducts.catalogue;
 
-import com.beetloop.vendorproducts.pm.domain.PmIdSequence;
-import com.beetloop.vendorproducts.pm.repository.PmIdSequenceRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import com.beetloop.vendorproducts.persistence.SequenceGeneratorService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Locale;
 
@@ -20,23 +15,18 @@ public class CatalogueIdService {
     public static final String CM = "CM";
     public static final String VCG = "VCG";
 
-    private final PmIdSequenceRepository repository;
+    private final SequenceGeneratorService sequences;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    public CatalogueIdService(PmIdSequenceRepository repository) {
-        this.repository = repository;
+    public CatalogueIdService(SequenceGeneratorService sequences) {
+        this.sequences = sequences;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public String nextScientific(String materialToken) {
-        return SCC + "-" + token(materialToken) + "-" + String.format("%03d", nextNumber(SCC));
+        return SCC + "-" + token(materialToken) + "-" + String.format("%03d", sequences.next("catalogue_" + SCC));
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public String nextCommercial(String materialAssayToken) {
-        return CM + "-" + token(materialAssayToken) + "-" + String.format("%03d", nextNumber(CM));
+        return CM + "-" + token(materialAssayToken) + "-" + String.format("%03d", sequences.next("catalogue_" + CM));
     }
 
     public String listingCode(String commercialCode, String vendorId) {
@@ -56,19 +46,6 @@ public class CatalogueIdService {
             return String.format("V%03d", n);
         }
         return String.format("V%03d", Math.abs(vendorId.hashCode()) % 1000);
-    }
-
-    private long nextNumber(String prefix) {
-        int year = 0;
-        PmIdSequence sequence = repository.lock(prefix, year);
-        if (sequence == null) {
-            sequence = repository.save(new PmIdSequence(prefix, year));
-            entityManager.flush();
-        }
-        long value = sequence.getNextValue();
-        sequence.setNextValue(value + 1);
-        repository.save(sequence);
-        return value;
     }
 
     static String token(String raw) {

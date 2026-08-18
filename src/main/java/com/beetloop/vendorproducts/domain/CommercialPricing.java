@@ -1,10 +1,5 @@
 package com.beetloop.vendorproducts.domain;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import org.hibernate.annotations.Type;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,97 +10,68 @@ import java.util.List;
  * Included Documents &amp; Services. The repeatable lists live in
  * {@link VariantPriceTier} and {@link VariantPackagingOption}.
  */
-@Embeddable
 public class CommercialPricing {
 
     // ---- Tab 1: Pricing & Quantity → Base Pricing ----
 
-    @Column(name = "cp_unit", length = 60)
     private String unit;
 
-    @Column(name = "cp_base_cost", precision = 19, scale = 4)
     private BigDecimal baseCost;
 
-    @Column(name = "cp_moq", length = 80)
     private String moq;
 
-    @Column(name = "cp_lead_time", length = 120)
     private String leadTime;
 
     // ---- Tab 1: Commercial Charges ----
 
-    @Column(name = "cp_freight_charges", length = 120)
     private String freightCharges;
 
-    @Column(name = "cp_insurance_charges", length = 120)
     private String insuranceCharges;
 
-    @Column(name = "cp_handling_charges", length = 120)
     private String handlingCharges;
 
-    @Column(name = "cp_other_charges", length = 120)
     private String otherCharges;
 
     // ---- Tab 2: Commercial & Trade Terms ----
 
-    @Column(name = "cp_currency", length = 40)
     private String currency;
 
-    @Column(name = "cp_payment_terms", length = 200)
     private String paymentTerms;
 
-    @Column(name = "cp_incoterms", length = 120)
     private String incoterms;
 
-    @Column(name = "cp_price_validity_days", length = 60)
     private String priceValidityDays;
 
-    @Column(name = "cp_gst_taxes", length = 80)
     private String gstTaxes;
 
-    @Column(name = "cp_export_available")
     private Boolean exportAvailable;
 
-    @Column(name = "cp_min_order_value", length = 80)
     private String minOrderValue;
 
-    @Column(name = "cp_partial_shipment_allowed")
     private Boolean partialShipmentAllowed;
 
-    @Column(name = "cp_return_policy", length = 2000)
     private String returnPolicy;
 
-    @Column(name = "cp_warranty_period", length = 120)
     private String warrantyPeriod;
 
     // ---- Tab 3: Packaging & Samples → Sample Information ----
 
-    @Column(name = "cp_sample_available")
     private Boolean sampleAvailable;
 
-    @Column(name = "cp_free_paid_sample", length = 40)
     private String freePaidSample;
 
-    @Column(name = "cp_sample_cost", length = 80)
     private String sampleCost;
 
-    @Column(name = "cp_sample_turnaround_days", length = 80)
     private String sampleTurnaroundDays;
 
-    @Column(name = "cp_max_sample_qty", length = 80)
     private String maxSampleQty;
 
-    @Column(name = "cp_sample_shipping_borne_by", length = 40)
     private String sampleShippingBorneBy;
 
     // ---- Tab 4: Included Documents & Services (checkbox groups) ----
 
-    @Type(JsonType.class)
-    @Column(name = "cp_included_documents", columnDefinition = "text")
     private List<String> includedDocuments = new ArrayList<>();
 
-    @Type(JsonType.class)
-    @Column(name = "cp_included_services", columnDefinition = "text")
     private List<String> includedServices = new ArrayList<>();
 
     public String getUnit() {

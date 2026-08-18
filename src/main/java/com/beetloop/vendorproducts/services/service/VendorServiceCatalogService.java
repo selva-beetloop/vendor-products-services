@@ -15,8 +15,6 @@ import com.beetloop.vendorproducts.services.dto.ServiceDtos;
 import com.beetloop.vendorproducts.services.repository.VendorServiceBatchRepository;
 import com.beetloop.vendorproducts.services.repository.VendorServiceRepository;
 import com.beetloop.vendorproducts.security.CurrentUser;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -43,15 +41,6 @@ public class VendorServiceCatalogService {
     private final ServiceMapper mapper;
     private final CatalogueService catalogue;
     private final CurrentUser currentUser;
-
-    /**
-     * Flush explicitly rather than calling {@code save()} on a managed entity:
-     * {@code save()} performs a merge, and merging a graph containing a transient
-     * child returns a managed <em>copy</em>, leaving the instance we still hold
-     * without its generated id. Same trap the products module hit.
-     */
-    @PersistenceContext
-    private EntityManager entityManager;
 
     public VendorServiceCatalogService(VendorServiceBatchRepository batchRepository,
                                        VendorServiceRepository serviceRepository,
@@ -148,7 +137,7 @@ public class VendorServiceCatalogService {
             batch.setStatus(ServiceStatus.CONFIGURED);
         }
 
-        entityManager.flush();
+        batchRepository.save(batch);
         return mapper.toBatchResponse(batch);
     }
 
@@ -189,7 +178,7 @@ public class VendorServiceCatalogService {
         for (VendorService remaining : batch.getItems()) {
             remaining.setPosition(index++);
         }
-        entityManager.flush();
+        batchRepository.save(batch);
     }
 
     // ------------------------------------------------------------ overall save
@@ -211,10 +200,7 @@ public class VendorServiceCatalogService {
         }
 
         if (request.items() != null) {
-            // Flush the orphan-removal before re-populating; clearing and refilling a
-            // collection in one flush makes Hibernate re-insert rows it is deleting.
             batch.getItems().clear();
-            entityManager.flush();
             for (ServiceDtos.ServiceItemRequest itemRequest : request.items()) {
                 for (Map.Entry<String, Object> stage : itemRequest.stagePayloadsOrEmpty().entrySet()) {
                     if (stage.getValue() instanceof Map<?, ?> map) {
@@ -248,7 +234,7 @@ public class VendorServiceCatalogService {
             transitionToSubmitted(batch);
         }
 
-        entityManager.flush();
+        batchRepository.save(batch);
         return mapper.toBatchResponse(batch);
     }
 
@@ -261,7 +247,7 @@ public class VendorServiceCatalogService {
         VendorService item = findItem(batch, itemId);
         validationService.validateDocument(batch.getCategory(), request, false);
         item.addDocument(mapper.toDocument(request));
-        entityManager.flush();
+        batchRepository.save(batch);
         return mapper.toServiceResponse(item);
     }
 
@@ -276,7 +262,7 @@ public class VendorServiceCatalogService {
                 .orElseThrow(() -> new ResourceNotFoundException("Document " + documentId + " not found"));
         validationService.validateDocument(batch.getCategory(), request, false);
         mapper.applyDocument(document, request);
-        entityManager.flush();
+        batchRepository.save(batch);
         return mapper.toServiceResponse(item);
     }
 
@@ -293,7 +279,7 @@ public class VendorServiceCatalogService {
         for (ServiceDocument remaining : item.getDocuments()) {
             remaining.setPosition(index++);
         }
-        entityManager.flush();
+        batchRepository.save(batch);
         return mapper.toServiceResponse(item);
     }
 
@@ -316,7 +302,7 @@ public class VendorServiceCatalogService {
         validationService.validateCompleteBatch(batch.getCategory(),
                 batch.getStagePayloads(), batch.getItems().size());
         transitionToSubmitted(batch);
-        entityManager.flush();
+        batchRepository.save(batch);
         return mapper.toBatchResponse(batch);
     }
 
@@ -348,7 +334,7 @@ public class VendorServiceCatalogService {
                 ? currentUser.userId() : request.reviewer());
         batch.setQcRemarks(request.remarks());
         batch.setReviewedAt(Instant.now());
-        entityManager.flush();
+        batchRepository.save(batch);
         return mapper.toBatchResponse(batch);
     }
 

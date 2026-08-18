@@ -1,14 +1,7 @@
 package com.beetloop.vendorproducts.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 
 import java.util.UUID;
 
@@ -17,63 +10,44 @@ import java.util.UUID;
  * modal on the Compliance &amp; Certifications sub-step. Field names mirror
  * {@code CertificateDraft} / {@code DocumentRowState} in the frontend.
  */
-@Entity
-@Table(name = "variant_compliance_document", indexes = {
-        @Index(name = "idx_compliance_doc_variant", columnList = "variant_id")
-})
 public class VariantComplianceDocument {
 
     @Id
-    @GeneratedValue
-    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "variant_id", nullable = false)
+    @Transient
     private ProductVariant variant;
 
-    @Column(name = "position", nullable = false)
     private int position;
 
     /**
      * UI label: "Type" — Standard Certification / Additional Certification /
      * Product Document / COA &amp; Test Report.
      */
-    @Column(name = "category", length = 120)
     private String category;
 
-    @Column(name = "name", length = 400)
     private String name;
 
     /** UI label: "Reference No.". */
-    @Column(name = "reference", length = 200)
     private String reference;
 
     /** UI label: "Authority". */
-    @Column(name = "authority", length = 300)
     private String authority;
 
-    @Column(name = "applicable_to", length = 400)
     private String applicableTo;
 
-    @Column(name = "issue_date", length = 60)
     private String date;
 
-    @Column(name = "expiry_date", length = 60)
     private String expiryDate;
 
     /** Active / Expiring / Expired. */
-    @Column(name = "status", length = 40)
     private String status;
 
-    @Column(name = "file_name", length = 400)
     private String fileName;
 
     /** Stored-file id returned by POST /uploads, when the file went through the API. */
-    @Column(name = "file_id", length = 120)
     private String fileId;
 
-    @Column(name = "file_url", length = 1000)
     private String fileUrl;
 
     public UUID getId() {

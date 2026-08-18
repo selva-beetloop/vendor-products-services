@@ -1,21 +1,8 @@
 package com.beetloop.vendorproducts.pm.domain;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -39,95 +26,64 @@ import java.util.UUID;
  * which stages are payment-eligible", so not every stage can raise a payment
  * request even once approved.
  */
-@Entity
-@Table(name = "pm_stage", indexes = {
-        @Index(name = "idx_pm_stage_code", columnList = "stage_code", unique = true),
-        @Index(name = "idx_pm_stage_order", columnList = "order_id")
-})
 public class PmStage {
 
     @Id
-    @GeneratedValue
-    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     /**
      * Business ID — STG-YYYY-NNNN. The positional label (STG-01, STG-02…) used in
      * the UI is derived from {@link #position}; see {@link #stageNumber()}.
      */
-    @Column(name = "stage_code", length = 40, nullable = false, unique = true)
+    @Indexed(unique = true)
     private String stageCode;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "order_id", nullable = false)
+    @Transient
     private PmOrder order;
 
-    @Column(name = "position", nullable = false)
     private int position;
 
-    @Column(name = "name", length = 400, nullable = false)
     private String name;
 
-    @Column(name = "description", length = 4000)
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 40, nullable = false)
     private PmEnums.StageStatus status = PmEnums.StageStatus.NOT_STARTED;
 
     /** §5.2 step 4 — only payment-eligible stages expose Request for Payment. */
-    @Column(name = "payment_eligible", nullable = false)
     private boolean paymentEligible;
 
-    @Column(name = "payment_amount", precision = 19, scale = 2)
     private BigDecimal paymentAmount;
 
-    @Column(name = "due_date")
     private LocalDate dueDate;
 
-    @Column(name = "owner", length = 200)
     private String owner;
 
-    @Column(name = "qc_submitted_at")
     private Instant qcSubmittedAt;
 
-    @Column(name = "qc_decided_at")
     private Instant qcDecidedAt;
 
-    @Column(name = "qc_remarks", length = 2000)
     private String qcRemarks;
 
-    @Column(name = "buyer_decided_at")
     private Instant buyerDecidedAt;
 
-    @Column(name = "buyer_remarks", length = 2000)
     private String buyerRemarks;
 
-    @Column(name = "payment_requested_at")
     private Instant paymentRequestedAt;
 
-    @OneToMany(mappedBy = "stage", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OrderBy("position ASC")
     private List<PmTask> tasks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "stage", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OrderBy("position ASC")
     private List<PmChecklistItem> checklist = new ArrayList<>();
 
-    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @PrePersist
     void onCreate() {
         Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
-    @PreUpdate
     void onUpdate() {
         this.updatedAt = Instant.now();
     }

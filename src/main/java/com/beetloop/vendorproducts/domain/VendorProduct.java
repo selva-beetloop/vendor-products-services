@@ -1,21 +1,8 @@
 package com.beetloop.vendorproducts.domain;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.Type;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -38,124 +25,87 @@ import java.util.UUID;
  * almost no overlap between categories, and the role field set changes for each of
  * the 7 role cards in every category.
  */
-@Entity
-@Table(name = "vendor_product", indexes = {
-        @Index(name = "idx_vendor_product_vendor", columnList = "vendor_id"),
-        @Index(name = "idx_vendor_product_category", columnList = "category"),
-        @Index(name = "idx_vendor_product_status", columnList = "status")
-})
+@Document(collection = "vendor_product")
 public class VendorProduct {
 
     @Id
-    @GeneratedValue
-    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "vendor_id", length = 120)
+    @Indexed
     private String vendorId;
 
-    @Column(name = "created_by", length = 120)
     private String createdBy;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "category", nullable = false, length = 40)
+    @Indexed
     private ProductCategory category;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 40)
+    @Indexed
     private ProductStatus status = ProductStatus.DRAFT;
 
     /**
      * The type card chosen inside Step 1 — e.g. {@code raw-commodity} for Raw
      * Materials. Null for categories whose Step 1 has no type selector.
      */
-    @Column(name = "identity_type", length = 80)
     private String identityType;
 
     /** The role card chosen in Step 2 — e.g. {@code manufacturer}. */
-    @Column(name = "role_id", length = 80)
     private String roleId;
 
     /** Id of the master-catalog record the vendor started from, if any. Deprecated alias of T2 code. */
-    @Column(name = "source_master_id", length = 120)
     private String sourceMasterId;
 
     /** T2 Commercial Master FK. */
-    @Column(name = "commercial_master_id")
     private UUID commercialMasterId;
 
     /** Marketplace listing id {@code VCG-…-V###}. */
-    @Column(name = "listing_code", length = 80)
     private String listingCode;
 
-    @Column(name = "hold_publish")
     private boolean holdPublish;
 
     // ---- denormalised listing columns (drive GET /products, i.e. CatalogProduct) ----
 
-    @Column(name = "name", length = 400)
     private String name;
 
-    @Column(name = "sku", length = 120)
     private String sku;
 
-    @Column(name = "listing_category", length = 200)
     private String listingCategory;
 
-    @Column(name = "origin_country", length = 120)
     private String originCountry;
 
-    @Column(name = "thumb_emoji", length = 40)
     private String thumbEmoji;
 
-    @Column(name = "thumb_image", length = 1000)
     private String thumbImage;
 
-    @Column(name = "verified")
     private boolean verified;
 
     // ---- category-specific dynamic sections ----
 
-    @Type(JsonType.class)
-    @Column(name = "identity_payload", columnDefinition = "text")
     private Map<String, Object> identityPayload = new LinkedHashMap<>();
 
-    @Type(JsonType.class)
-    @Column(name = "role_payload", columnDefinition = "text")
     private Map<String, Object> rolePayload = new LinkedHashMap<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OrderBy("position ASC")
     private List<ProductVariant> variants = new ArrayList<>();
 
     // ---- QC ----
 
-    @Column(name = "qc_reviewer", length = 200)
     private String qcReviewer;
 
-    @Column(name = "qc_remarks", length = 2000)
     private String qcRemarks;
 
-    @Column(name = "submitted_at")
     private Instant submittedAt;
 
-    @Column(name = "reviewed_at")
     private Instant reviewedAt;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @PrePersist
     void onCreate() {
         Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
-    @PreUpdate
     void onUpdate() {
         this.updatedAt = Instant.now();
     }

@@ -1,18 +1,8 @@
 package com.beetloop.vendorproducts.pm.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -25,72 +15,51 @@ import java.util.UUID;
  * pending. {@link #sourceCode} carries the ID of the awaiting item (an order,
  * stage or change order) as required by §12.2.
  */
-@Entity
-@Table(name = "pm_approval", indexes = {@Index(name = "idx_pm_approval_code", columnList = "code"), @Index(name = "idx_pm_approval_parent", columnList = "project_id")})
 public class PmApproval {
 
     @Id
-    @GeneratedValue
-    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     /** Business ID from the BRD §12.2 matrix. */
-    @Column(name = "code", length = 40, nullable = false, unique = true)
+    @Indexed(unique = true)
     private String code;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "project_id", nullable = false)
+    @Transient
     private PmProject project;
 
-    @Column(name = "position", nullable = false)
     private int position;
 
     /** ID of the item awaiting approval (ORD/STG/CO). */
-    @Column(name = "source_code", length = 40, nullable = false)
     private String sourceCode;
 
     /** Order | Stage | Change Order. */
-    @Column(name = "source_type", length = 40)
     private String sourceType;
 
-    @Column(name = "title", length = 400)
     private String title;
 
     /** PM-08 — whose approval is still outstanding. */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "pending_with", length = 30, nullable = false)
     private PmEnums.PmParty pendingWith;
 
-    @Column(name = "pending_with_name", length = 200)
     private String pendingWithName;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "decision", length = 30, nullable = false)
     private PmEnums.ApprovalDecision decision;
 
-    @Column(name = "decided_at")
     private Instant decidedAt;
 
-    @Column(name = "remarks", length = 2000)
     private String remarks;
 
-    @Column(name = "due_date")
     private java.time.LocalDate dueDate;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @PrePersist
     void onCreate() {
         Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
-    @PreUpdate
     void onUpdate() {
         this.updatedAt = Instant.now();
     }

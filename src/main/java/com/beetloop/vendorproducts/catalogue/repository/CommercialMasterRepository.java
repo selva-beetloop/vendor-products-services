@@ -6,16 +6,15 @@ import com.beetloop.vendorproducts.catalogue.domain.CommercialMaster;
 import com.beetloop.vendorproducts.catalogue.domain.ScientificMaster;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface CommercialMasterRepository extends JpaRepository<CommercialMaster, UUID> {
+public interface CommercialMasterRepository extends MongoRepository<CommercialMaster, UUID>,
+        CommercialMasterRepositoryCustom {
 
     Optional<CommercialMaster> findByCode(String code);
 
@@ -26,23 +25,12 @@ public interface CommercialMasterRepository extends JpaRepository<CommercialMast
     List<CommercialMaster> findByScientificMaster_Id(UUID scientificMasterId);
 
     Page<CommercialMaster> findByStatusIn(Collection<CatalogueStatus> statuses, Pageable pageable);
+}
 
-    @Query("""
-            SELECT c FROM CommercialMaster c
-            JOIN c.scientificMaster s
-            WHERE (:kind IS NULL OR c.kind = :kind)
-              AND (:category IS NULL OR c.category = :category)
-              AND c.status IN :statuses
-              AND (:search = ''
-                   OR LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR LOWER(c.code) LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR (c.assay IS NOT NULL AND LOWER(c.assay) LIKE LOWER(CONCAT('%', :search, '%')))
-                   OR (s.casNumber IS NOT NULL AND LOWER(s.casNumber) LIKE LOWER(CONCAT('%', :search, '%')))
-                   OR LOWER(s.name) LIKE LOWER(CONCAT('%', :search, '%')))
-            """)
-    Page<CommercialMaster> search(@Param("kind") CatalogueKind kind,
-                                  @Param("category") String category,
-                                  @Param("statuses") Collection<CatalogueStatus> statuses,
-                                  @Param("search") String search,
+interface CommercialMasterRepositoryCustom {
+    Page<CommercialMaster> search(CatalogueKind kind,
+                                  String category,
+                                  Collection<CatalogueStatus> statuses,
+                                  String search,
                                   Pageable pageable);
 }

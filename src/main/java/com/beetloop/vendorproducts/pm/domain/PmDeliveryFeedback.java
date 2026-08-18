@@ -1,16 +1,8 @@
 package com.beetloop.vendorproducts.pm.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -21,69 +13,50 @@ import java.util.UUID;
  * <p>Keyed to the shipment (§12.2). The buyer records how the delivered product
  * or formulation item performed; the vendor views this at project level.
  */
-@Entity
-@Table(name = "pm_delivery_feedback", indexes = {@Index(name = "idx_pm_delivery_feedback_code", columnList = "code"), @Index(name = "idx_pm_delivery_feedback_parent", columnList = "project_id")})
 public class PmDeliveryFeedback {
 
     @Id
-    @GeneratedValue
-    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     /** Business ID from the BRD §12.2 matrix. */
-    @Column(name = "code", length = 40, nullable = false, unique = true)
+    @Indexed(unique = true)
     private String code;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "project_id", nullable = false)
+    @Transient
     private PmProject project;
 
-    @Column(name = "position", nullable = false)
     private int position;
 
     /** §12.2 — DFB is keyed to the Shipment ID. */
-    @Column(name = "shipment_code", length = 40, nullable = false)
     private String shipmentCode;
 
     /** 1–5 overall rating. */
-    @Column(name = "rating")
     private Integer rating;
 
-    @Column(name = "quality_rating")
     private Integer qualityRating;
 
-    @Column(name = "packaging_rating")
     private Integer packagingRating;
 
-    @Column(name = "timeliness_rating")
     private Integer timelinessRating;
 
-    @Column(name = "comments", length = 4000)
     private String comments;
 
-    @Column(name = "accepted", nullable = false)
     private boolean accepted;
 
-    @Column(name = "submitted_by_name", length = 200)
     private String submittedByName;
 
-    @Column(name = "submitted_at")
     private Instant submittedAt;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @PrePersist
     void onCreate() {
         Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
-    @PreUpdate
     void onUpdate() {
         this.updatedAt = Instant.now();
     }

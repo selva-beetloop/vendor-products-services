@@ -1,21 +1,7 @@
 package com.beetloop.vendorproducts.services.domain;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.Type;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -40,31 +26,18 @@ import java.util.UUID;
  * {@link com.beetloop.vendorproducts.services.registry.ServiceFieldRegistry}.
  * This mirrors the approach already proven in the products module.
  */
-@Entity
-@Table(name = "vendor_service_batch", indexes = {
-        @Index(name = "idx_vsb_vendor", columnList = "vendor_id"),
-        @Index(name = "idx_vsb_category", columnList = "category"),
-        @Index(name = "idx_vsb_status", columnList = "status")
-})
+@Document(collection = "vendor_service_batch")
 public class VendorServiceBatch {
 
     @Id
-    @GeneratedValue
-    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "category", nullable = false, length = 40)
     private ServiceCategory category;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 30)
     private ServiceStatus status = ServiceStatus.DRAFT;
 
-    @Column(name = "vendor_id", length = 120)
     private String vendorId;
 
-    @Column(name = "created_by", length = 120)
     private String createdBy;
 
     /**
@@ -72,42 +45,30 @@ public class VendorServiceBatch {
      * service — Stage 1 "Select Service", and the Compliance /
      * "Accreditations &amp; Certifications" stage where it applies to the batch.
      */
-    @Type(JsonType.class)
-    @Column(name = "stage_payloads", columnDefinition = "text")
     private Map<String, Object> stagePayloads = new LinkedHashMap<>();
 
-    @OneToMany(mappedBy = "batch", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OrderBy("position ASC")
     private List<VendorService> items = new ArrayList<>();
 
     // ---- QC ----
 
-    @Column(name = "qc_reviewer", length = 200)
     private String qcReviewer;
 
-    @Column(name = "qc_remarks", length = 2000)
     private String qcRemarks;
 
-    @Column(name = "submitted_at")
     private Instant submittedAt;
 
-    @Column(name = "reviewed_at")
     private Instant reviewedAt;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @PrePersist
     void onCreate() {
         Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
-    @PreUpdate
     void onUpdate() {
         this.updatedAt = Instant.now();
     }

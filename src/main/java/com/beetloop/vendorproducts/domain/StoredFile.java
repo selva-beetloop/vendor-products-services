@@ -1,11 +1,7 @@
 package com.beetloop.vendorproducts.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -15,42 +11,30 @@ import java.util.UUID;
  * local disk under the configured storage root; this row is the stable reference
  * the frontend attaches to a spec parameter, compliance document or image field.
  */
-@Entity
-@Table(name = "stored_file")
+@Document(collection = "stored_file")
 public class StoredFile {
 
     @Id
-    @GeneratedValue
-    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "original_filename", length = 400, nullable = false)
     private String originalFilename;
 
-    @Column(name = "content_type", length = 200)
     private String contentType;
 
-    @Column(name = "size_bytes", nullable = false)
     private long sizeBytes;
 
     /** Path relative to the storage root. */
-    @Column(name = "storage_path", length = 1000, nullable = false)
     private String storagePath;
 
     /** Logical grouping, e.g. {@code compliance-document}, {@code variant-image}. */
-    @Column(name = "module", length = 120)
     private String module;
 
-    @Column(name = "reference_id", length = 120)
     private String referenceId;
 
-    @Column(name = "uploaded_by", length = 200)
     private String uploadedBy;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @PrePersist
     void onCreate() {
         this.createdAt = Instant.now();
     }

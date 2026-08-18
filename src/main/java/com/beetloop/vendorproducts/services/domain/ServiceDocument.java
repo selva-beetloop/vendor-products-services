@@ -1,20 +1,7 @@
 package com.beetloop.vendorproducts.services.domain;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.Type;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -39,11 +26,6 @@ import java.util.UUID;
  *
  * so a uniform sub-resource would have been wrong.
  */
-@Entity
-@jakarta.persistence.Table(name = "service_document", indexes = {
-        @Index(name = "idx_svc_doc_service", columnList = "service_id"),
-        @Index(name = "idx_svc_doc_kind", columnList = "kind")
-})
 public class ServiceDocument {
 
     /** Which modal produced the record. */
@@ -68,19 +50,13 @@ public class ServiceDocument {
     }
 
     @Id
-    @GeneratedValue
-    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "service_id", nullable = false)
+    @Transient
     private VendorService service;
 
-    @Column(name = "position", nullable = false)
     private int position;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "kind", nullable = false, length = 30)
     private Kind kind;
 
     // ---- columns common to all three kinds, so the Manage Documents list can
@@ -93,55 +69,39 @@ public class ServiceDocument {
      * created it. Without it the client can only guess by comparing reference
      * numbers, and an edit to a reference number breaks the link.
      */
-    @Column(name = "external_ref", length = 120)
     private String externalRef;
 
-    @Column(name = "name", length = 400)
     private String name;
 
-    @Column(name = "issuing_body", length = 300)
     private String issuingBody;
 
-    @Column(name = "reference_number", length = 200)
     private String referenceNumber;
 
-    @Column(name = "valid_from", length = 60)
     private String validFrom;
 
-    @Column(name = "valid_to", length = 60)
     private String validTo;
 
-    @Column(name = "status", length = 60)
     private String status;
 
-    @Column(name = "file_name", length = 400)
     private String fileName;
 
-    @Column(name = "file_id", length = 120)
     private String fileId;
 
-    @Column(name = "file_url", length = 1000)
     private String fileUrl;
 
     /** The remaining kind- and category-specific fields. */
-    @Type(JsonType.class)
-    @Column(name = "data", columnDefinition = "text")
     private Map<String, Object> data = new LinkedHashMap<>();
 
-    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @PrePersist
     void onCreate() {
         Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
-    @PreUpdate
     void onUpdate() {
         this.updatedAt = Instant.now();
     }

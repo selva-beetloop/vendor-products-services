@@ -1,12 +1,7 @@
 package com.beetloop.vendorproducts.pm.service;
 
-import com.beetloop.vendorproducts.pm.domain.PmIdSequence;
-import com.beetloop.vendorproducts.pm.repository.PmIdSequenceRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import com.beetloop.vendorproducts.persistence.SequenceGeneratorService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Year;
 
@@ -40,32 +35,19 @@ public class PmIdService {
     public static final String DELIVERY_FEEDBACK = "DFB";
     public static final String STOCK_CHECK = "STK";
 
-    private final PmIdSequenceRepository repository;
+    private final SequenceGeneratorService sequences;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    public PmIdService(PmIdSequenceRepository repository) {
-        this.repository = repository;
+    public PmIdService(SequenceGeneratorService sequences) {
+        this.sequences = sequences;
     }
 
     /**
-     * Reserves the next id for a prefix.
-     *
-     * <p>Runs in its own transaction with a pessimistic row lock so two
-     * concurrent creates cannot be handed the same number.
+     * Reserves the next id for a prefix. Uses an atomic Mongo counter so concurrent
+     * creates cannot be handed the same number.
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public String next(String prefix) {
         int year = Year.now().getValue();
-        PmIdSequence sequence = repository.lock(prefix, year);
-        if (sequence == null) {
-            sequence = repository.save(new PmIdSequence(prefix, year));
-            entityManager.flush();
-        }
-        long value = sequence.getNextValue();
-        sequence.setNextValue(value + 1);
-        repository.save(sequence);
+        long value = sequences.next("pm_" + prefix + "_" + year);
         return format(prefix, year, value);
     }
 

@@ -1,16 +1,8 @@
 package com.beetloop.vendorproducts.pm.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -26,82 +18,56 @@ import java.util.UUID;
  * which the two tracks diverge, so the action is derived rather than stored —
  * see {@link #resolveAction()}.
  */
-@Entity
-@Table(name = "pm_project_line_item", indexes = {
-        @Index(name = "idx_pm_pli_code", columnList = "line_code", unique = true),
-        @Index(name = "idx_pm_pli_project", columnList = "project_id")
-})
 public class PmProjectLineItem {
 
     @Id
-    @GeneratedValue
-    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     /** Business ID — PLI-YYYY-NNNN. */
-    @Column(name = "line_code", length = 40, nullable = false, unique = true)
+    @Indexed(unique = true)
     private String lineCode;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "project_id", nullable = false)
+    @Transient
     private PmProject project;
 
-    @Column(name = "position", nullable = false)
     private int position;
 
-    @Column(name = "material_code", length = 120)
     private String materialCode;
 
-    @Column(name = "material_name", length = 400)
     private String materialName;
 
-    @Column(name = "specification", length = 2000)
     private String specification;
 
     /** PM-02a — Finished Goods or Raw Material, taken from the RFQ. */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "product_class", length = 40, nullable = false)
     private PmEnums.ProductClass productClass = PmEnums.ProductClass.FINISHED_GOODS;
 
-    @Column(name = "quantity", precision = 19, scale = 3)
     private BigDecimal quantity;
 
-    @Column(name = "uom", length = 30)
     private String uom;
 
     /** RM-01 — result of the last stock check, held against the line. */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "stock_state", length = 30, nullable = false)
     private PmEnums.StockState stockState = PmEnums.StockState.NOT_CHECKED;
 
-    @Column(name = "available_quantity", precision = 19, scale = 3)
     private BigDecimal availableQuantity;
 
     /** Free text describing the chosen route, e.g. "FEFO issue" or "Internal BOM". */
-    @Column(name = "fulfilment_route", length = 200)
     private String fulfilmentRoute;
 
-    @Column(name = "status", length = 60)
     private String status;
 
     /** Linked BOM once Open BOM has been used on a finished-goods line. */
-    @Column(name = "bom_id", length = 40)
     private String bomId;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @jakarta.persistence.PrePersist
     void onCreate() {
         Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
-    @jakarta.persistence.PreUpdate
     void onUpdate() {
         this.updatedAt = Instant.now();
     }

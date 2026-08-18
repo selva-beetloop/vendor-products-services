@@ -1,5 +1,6 @@
 package com.beetloop.vendorproducts.documentstore;
 
+import com.beetloop.vendorproducts.EmbeddedMongoConfig;
 import com.beetloop.vendorproducts.VendorProductsServicesApplication;
 import com.beetloop.vendorproducts.security.JwtTestTokenFactory;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -27,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = VendorProductsServicesApplication.class)
+@SpringBootTest(classes = {VendorProductsServicesApplication.class, EmbeddedMongoConfig.class})
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class DocumentStoreUploadTest {

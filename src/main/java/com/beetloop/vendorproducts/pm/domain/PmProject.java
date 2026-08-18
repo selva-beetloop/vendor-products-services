@@ -1,19 +1,8 @@
 package com.beetloop.vendorproducts.pm.domain;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -30,113 +19,75 @@ import java.util.UUID;
  * stages defined during the RFQ. {@link #rfqId} retains the originating RFQ ID as
  * required by the §12.2 ID matrix.
  */
-@Entity
-@Table(name = "pm_project", indexes = {
-        @Index(name = "idx_pm_project_code", columnList = "project_code", unique = true),
-        @Index(name = "idx_pm_project_vendor", columnList = "vendor_id"),
-        @Index(name = "idx_pm_project_status", columnList = "status")
-})
+@Document(collection = "pm_project")
 public class PmProject {
 
     @Id
-    @GeneratedValue
-    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     /** Business ID — PRJ-YYYY-NNNN (§12.1). */
-    @Column(name = "project_code", length = 40, nullable = false, unique = true)
+    @Indexed(unique = true)
     private String projectCode;
 
     /** Originating RFQ, retained per the §12.2 matrix. */
-    @Column(name = "rfq_id", length = 40)
     private String rfqId;
 
-    @Column(name = "vendor_id", length = 120)
     private String vendorId;
 
-    @Column(name = "name", length = 400, nullable = false)
     private String name;
 
-    @Column(name = "buyer_name", length = 300)
     private String buyerName;
 
-    @Column(name = "buyer_id", length = 120)
     private String buyerId;
 
-    @Column(name = "project_manager", length = 200)
     private String projectManager;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "track", length = 40)
     private PmEnums.ProjectTrack track;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 30, nullable = false)
     private PmEnums.ProjectStatus status = PmEnums.ProjectStatus.ACTIVE;
 
-    @Column(name = "start_date")
     private LocalDate startDate;
 
-    @Column(name = "target_date")
     private LocalDate targetDate;
 
-    @Column(name = "contract_value", precision = 19, scale = 2)
     private BigDecimal contractValue;
 
-    @Column(name = "currency", length = 10)
     private String currency = "INR";
 
-    @Column(name = "description", length = 4000)
     private String description;
 
     // ---- Active Projects card fields (§6.1) ----
 
     /** e.g. "Nutraceuticals", "Raw Material", "Machinery" — shown under the name. */
-    @Column(name = "product_category", length = 200)
     private String productCategory;
 
     /** Risk badge + card accent on the project card. */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "risk_level", length = 20)
     private PmEnums.RiskLevel riskLevel = PmEnums.RiskLevel.GREEN;
 
-    @Column(name = "profit_margin")
     private Integer profitMargin;
 
-    @Column(name = "vendor_pm_name", length = 200)
     private String vendorPmName;
 
-    @Column(name = "vendor_pm_avatar", length = 10)
     private String vendorPmAvatar;
 
-    @Column(name = "beetloop_am_name", length = 200)
     private String beetloopAmName;
 
-    @Column(name = "beetloop_am_avatar", length = 10)
     private String beetloopAmAvatar;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OrderBy("position ASC")
     private List<PmProjectLineItem> lineItems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OrderBy("position ASC")
     private List<PmOrder> orders = new ArrayList<>();
 
-    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @PrePersist
     void onCreate() {
         Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
-    @PreUpdate
     void onUpdate() {
         this.updatedAt = Instant.now();
     }

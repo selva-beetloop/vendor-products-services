@@ -22,28 +22,20 @@ cd vendor-products-services && JAVA_HOME=$(/usr/libexec/java_home -v 21) mvn spr
 | Base URL | `http://localhost:8086/vendor-products` |
 | Swagger UI | http://localhost:8086/vendor-products/swagger-ui.html |
 | OpenAPI JSON | http://localhost:8086/vendor-products/v3/api-docs |
-| H2 console | http://localhost:8086/vendor-products/h2-console |
 
 ### Database
 
-**H2, file-backed, is the default** so the service runs with no setup. The
-schema is created by Hibernate (`ddl-auto: update`) into `./data/vendor-products.mv.db`.
-
-For PostgreSQL:
-
-```bash
-mvn spring-boot:run -Dspring-boot.run.profiles=postgres
-```
+**MongoDB** on the same replica set as `be-leads-rfq`, database **`ProductService`**.
 
 | Env var | Default |
 |---|---|
 | `SERVER_PORT` | `8086` |
-| `DB_URL` | `jdbc:postgresql://localhost:5432/vendor_products` |
-| `DB_USER` / `DB_PASSWORD` | `postgres` / `postgres` |
+| `SPRING_DATA_MONGODB_URI` | replica-set URI (authSource=admin, database ProductService) |
+| `SPRING_DATA_MONGODB_DATABASE` | `ProductService` |
 | `UPLOAD_DIR` | `./data/uploads` |
 | `CORS_ORIGINS` | `http://localhost:3000,http://127.0.0.1:3000` |
 
-Deleting `./data/` resets the database.
+Unit tests use embedded MongoDB and do not touch the shared cluster.
 
 ### Tests
 

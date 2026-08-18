@@ -1,5 +1,6 @@
 package com.beetloop.vendorproducts.security;
 
+import com.beetloop.vendorproducts.EmbeddedMongoConfig;
 import com.beetloop.vendorproducts.VendorProductsServicesApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = VendorProductsServicesApplication.class)
+@SpringBootTest(classes = {VendorProductsServicesApplication.class, EmbeddedMongoConfig.class})
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class SecurityJwtTest {

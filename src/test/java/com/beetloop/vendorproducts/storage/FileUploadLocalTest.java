@@ -1,5 +1,6 @@
 package com.beetloop.vendorproducts.storage;
 
+import com.beetloop.vendorproducts.EmbeddedMongoConfig;
 import com.beetloop.vendorproducts.VendorProductsServicesApplication;
 import com.beetloop.vendorproducts.security.JwtTestTokenFactory;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = VendorProductsServicesApplication.class)
+@SpringBootTest(classes = {VendorProductsServicesApplication.class, EmbeddedMongoConfig.class})
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class FileUploadLocalTest {

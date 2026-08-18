@@ -7,24 +7,11 @@ spring:
   application:
     name: vendor-products-services
 
-  datasource:
-    url: jdbc:h2:file:./data/vendor-products;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ""
-
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    open-in-view: false
-    properties:
-      hibernate:
-        format_sql: false
+  data:
+    mongodb:
+      database: ${SPRING_DATA_MONGODB_DATABASE:ProductService}
+      auto-index-creation: true
+      uuid-representation: standard
 
   jackson:
     default-property-inclusion: non_null
@@ -63,7 +50,6 @@ security:
       - /v3/api-docs/**
       - /swagger-ui/**
       - /swagger-ui.html
-      - /h2-console/**
   role-permissions:
     enabled: true
     base-url: ${ADMIN_SERVICE_BASE_URL:http://localhost:8087}
@@ -89,26 +75,7 @@ logging:
 spring:
   config:
     activate:
-      on-profile: postgres
-  datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5434/vendor_products}
-    driver-class-name: org.postgresql.Driver
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:postgres}
-  h2:
-    console:
-      enabled: false
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-
-security:
-  jwt:
-    public-endpoints:
-      - /actuator/health
-      - /v3/api-docs/**
-      - /swagger-ui/**
-      - /swagger-ui.html
+      on-profile: "!test"
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://admin:beetloop%402026@20.219.145.243:27017,20.219.145.243:27018,20.219.145.243:27019/ProductService?replicaSet=rs0&authSource=admin}
