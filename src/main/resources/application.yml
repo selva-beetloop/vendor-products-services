@@ -50,6 +50,10 @@ beetloop:
         - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
     qc:
       claim-timeout-minutes: 120
+    pm:
+      base-url: ${PM_WEBHOOK_BASE_URL:}
+      service-token: ${PM_SERVICE_TOKEN:}
+      webhook-enabled: ${PM_CATALOG_QC_WEBHOOK_ENABLED:false}
     idempotency:
       ttl-hours: 24
     storage:
