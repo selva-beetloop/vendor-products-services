@@ -8,7 +8,7 @@ import com.beetloop.catalog.shared.error.ErrorCode;
 import com.beetloop.catalog.shared.model.Lifecycle;
 import com.beetloop.catalog.shared.model.QcStatus;
 import com.beetloop.catalog.shared.tenant.TenantContext;
-import com.beetloop.catalog.shared.util.Ids;
+import com.beetloop.catalog.integration.pm.PmCatalogQcSyncClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,15 +38,17 @@ public class QcReviewService {
     private final List<ReviewableListingPort> ports;
     private final CatalogProperties properties;
     private final AuditService audit;
+    private final PmCatalogQcSyncClient pmCatalogQcSyncClient;
 
     public QcReviewService(QcReviewRepository reviews, StatusHistoryRepository history,
                            List<ReviewableListingPort> ports, CatalogProperties properties,
-                           AuditService audit) {
+                           AuditService audit, PmCatalogQcSyncClient pmCatalogQcSyncClient) {
         this.reviews = reviews;
         this.history = history;
         this.ports = ports;
         this.properties = properties;
         this.audit = audit;
+        this.pmCatalogQcSyncClient = pmCatalogQcSyncClient;
     }
 
     // ------------------------------------------------------------------ submission
@@ -161,6 +163,8 @@ public class QcReviewService {
                 QcStatus.APPROVED, "QC_REVIEWER", notes);
         audit.record(AuditEvent.QC_APPROVED, review.getEntityType(), review.getEntityId(),
                 Map.of("reviewId", review.getId(), "notes", notes == null ? "" : notes));
+        port(review.getEntityType()).find(review.getEntityId()).ifPresent(snapshot ->
+                pmCatalogQcSyncClient.notifyQcApproved(snapshot.code(), snapshot.name(), review.getVendorId()));
         return review;
     }
 
